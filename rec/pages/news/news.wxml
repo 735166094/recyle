@@ -1,0 +1,171 @@
+<!-- 顶部搜索栏 + UI切换 -->
+<view class="search-bar">
+  <view class="search-input">
+    <icon type="search" size="18" color="#888"></icon>
+    <input 
+      placeholder="搜索新闻..." 
+      placeholder-class="placeholder-style" 
+      bindinput="onSearchInput"
+      value="{{searchValue}}"
+    />
+  </view>
+  <!-- UI模式切换按钮（列表/卡片） -->
+  <view class="ui-toggle" bindtap="toggleUIMode">
+    <text>{{uiMode === 'points' ? '列表' : '卡片'}}</text>
+  </view>
+</view>
+
+<!-- 分类标签（横向滚动） -->
+<scroll-view 
+  class="category-scroll" 
+  scroll-x="true" 
+  enable-flex 
+  scroll-with-animation
+>
+  <view class="category-wrapper">
+    <view 
+      class="category-item {{currentCategory === 'all' ? 'active' : ''}}" 
+      bindtap="switchCategory" 
+      data-category="all"
+    >
+      全部
+    </view>
+    <view 
+      class="category-item {{currentCategory === 'tech' ? 'active' : ''}}" 
+      bindtap="switchCategory" 
+      data-category="tech"
+    >
+      科技
+    </view>
+    <view 
+      class="category-item {{currentCategory === 'finance' ? 'active' : ''}}" 
+      bindtap="switchCategory" 
+      data-category="finance"
+    >
+      财经
+    </view>
+    <view 
+      class="category-item {{currentCategory === 'sports' ? 'active' : ''}}" 
+      bindtap="switchCategory" 
+      data-category="sports"
+    >
+      体育
+    </view>
+    <view 
+      class="category-item {{currentCategory === 'entertainment' ? 'active' : ''}}" 
+      bindtap="switchCategory" 
+      data-category="entertainment"
+    >
+      娱乐
+    </view>
+    <view 
+      class="category-item {{currentCategory === 'policy' ? 'active' : ''}}" 
+      bindtap="switchCategory" 
+      data-category="policy"
+    >
+      政策
+    </view>
+  </view>
+</scroll-view>
+
+<!-- 模式1：列表样式（默认） -->
+<view wx:if="{{uiMode === 'points'}}">
+  <view class="news-list">
+    <block wx:for="{{filteredNews}}" wx:key="id">
+      <view 
+        class="news-item" 
+        bindtap="goToDetail" 
+        data-id="{{item.id}}" 
+        data-category="{{item.category}}"
+      >
+        <view class="news-image">
+          <image src="{{item.image}}" mode="cover"></image>
+        </view>
+        <view class="news-content">
+          <view class="news-title">{{item.title}}</view>
+          <view class="news-meta">
+            <text class="news-source">{{item.source}}</text>
+            <text class="news-time">{{item.time}}</text>
+            <text class="news-views">{{item.views}} 阅读</text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 加载提示 -->
+    <view class="loading-tip" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text>加载中...</text>
+    </view>
+
+    <!-- 无数据提示 -->
+    <view class="no-more" wx:if="{{!loading && filteredNews.length === 0}}">
+      暂无相关资讯
+    </view>
+
+    <!-- 到底提示 -->
+    <view class="no-more" wx:if="{{!loading && hasMore === false && filteredNews.length > 0}}">
+      已经到底啦~
+    </view>
+  </view>
+</view>
+
+<!-- 模式2：卡片样式 -->
+<view wx:else>
+  <view class="list-container">
+    <view class="cards-group">
+      <block wx:for="{{filteredNews}}" wx:key="id">
+        <view 
+          class="card" 
+          bindtap="goToDetail" 
+          data-id="{{item.id}}" 
+          data-category="{{item.category}}"
+        >
+          <!-- 卡片图片 -->
+          <image class="card-img" src="{{item.image}}" mode="widthFix"></image>
+          <!-- 卡片内容 -->
+          <view class="card-content">
+            <text class="card-title">{{item.title}}</text>
+
+            <view class="card-meta">
+              <view class="meta-item">
+                <image class="meta-icon" src="/static/icon/calendar.png"></image>
+                <text>{{item.time}}</text>
+              </view>
+              <view class="meta-item">
+                <image class="meta-icon" src="/static/icon/eye.png"></image>
+                <text>{{item.views}} 阅读</text>
+              </view>
+              <view class="meta-item">
+                <image class="meta-icon" src="/static/icon/source.png"></image>
+                <text>{{item.source}}</text>
+              </view>
+            </view>
+
+            <text class="card-desc">{{item.desc}}</text>
+
+            <view class="read-more" bindtap="goToDetail" data-id="{{item.id}}" data-category="{{item.category}}">
+              阅读全文 >
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- 加载提示 -->
+    <view class="loading-tip" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text>加载中...</text>
+    </view>
+
+    <!-- 无数据提示 -->
+    <view class="no-more" wx:if="{{!loading && filteredNews.length === 0}}">
+      暂无相关资讯
+    </view>
+
+    <!-- 到底提示 -->
+    <view class="no-more" wx:if="{{!loading && hasMore === false && filteredNews.length > 0}}">
+      已经到底啦~
+    </view>
+  </view>
+</view>

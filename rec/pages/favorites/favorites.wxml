@@ -1,0 +1,29 @@
+<!-- 收藏页面 -->
+<view class="favorites-container">
+  <!-- 空收藏状态 -->
+  <view wx:if="{{favorites.length === 0}}" class="empty-favorites">
+    <image src="/static/icon/empty-star.png" mode="widthFix" class="empty-img" />
+    <text class="empty-text">还没有收藏商品哦~</text>
+    <button class="go-shopping" bindtap="goToMall">去逛逛</button>
+  </view>
+
+  <!-- 收藏列表 -->
+  <view wx:else class="favorites-list">
+    <view class="favorite-item" wx:for="{{favorites}}" wx:key="id">
+      <view class="item-img" bindtap="goToDetail" data-id="{{item.id}}">
+        <image src="{{item.imgUrl}}" mode="aspectFill" />
+      </view>
+      
+      <view class="item-info" bindtap="goToDetail" data-id="{{item.id}}">
+        <view class="item-title">{{item.title}}</view>
+        <view class="item-price">{{item.currency}}{{item.price}}</view>
+        <view class="item-sales">销量: {{item.sales}}件</view>
+      </view>
+      
+      <view class="item-actions">
+        <button class="add-to-cart" bindtap="addToCart" data-id="{{item.id}}">加入购物车</button>
+        <button class="remove-favorite" bindtap="removeFavorite" data-id="{{item.id}}">取消收藏</button>
+      </view>
+    </view>
+  </view>
+</view>

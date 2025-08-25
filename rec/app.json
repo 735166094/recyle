@@ -1,0 +1,60 @@
+{
+  "pages": [
+    "pages/welcome/welcome",
+    "pages/index/index",
+    "pages/logs/logs",
+    "pages/mall/mall",
+    "pages/news/news",
+    "pages/my/my",
+    "pages/recycle/recycle",
+    "pages/points/points",
+    "pages/recycleInfo/recycleInfo",
+    "pages/newsdetail/newsdetail",
+    "pages/cart/cart",
+    "pages/favorites/favorites",
+    "pages/gooddetail/gooddetail"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#0d1b2a",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "奇奇回收",
+    "backgroundColor": "#0a0f1d",
+    "backgroundTextStyle": "light",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "position": "bottom",
+    "color": "#778da9",
+    "selectedColor": "#e0e1dd",
+    "backgroundColor": "#0d1b2a",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "/static/tabbar/home.png",
+        "selectedIconPath": "/static/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/mall/mall",
+        "text": "商城",
+        "iconPath": "/static/tabbar/mall.png",
+        "selectedIconPath": "/static/tabbar/mall-active.png"
+      },
+      {
+        "pagePath": "pages/news/news",
+        "text": "资讯",
+        "iconPath": "/static/tabbar/notice.png",
+        "selectedIconPath": "/static/tabbar/notice-active.png"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "text": "我的",
+        "iconPath": "/static/tabbar/my.png",
+        "selectedIconPath": "/static/tabbar/my-active.png"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "usingComponents": {}
+}

@@ -1,0 +1,56 @@
+<!-- 购物车页面 -->
+<view class="cart-container">
+  <!-- 空购物车状态 -->
+  <view wx:if="{{cartData.length === 0}}" class="empty-cart">
+    <image src="/static/icon/empty-cart.png" mode="widthFix" class="empty-img" />
+    <text class="empty-text">购物车还是空的哦~</text>
+    <button class="go-shopping" bindtap="goToMall">去购物</button>
+  </view>
+
+  <!-- 购物车有商品状态 -->
+  <view wx:else class="cart-list">
+    <view class="cart-item" wx:for="{{cartData}}" wx:key="id">
+      <view class="item-check">
+        <checkbox checked="{{item.checked}}" bindchange="toggleCheck" data-id="{{item.id}}" />
+      </view>
+      
+      <view class="item-img" bindtap="goToDetail" data-id="{{item.id}}">
+        <image src="{{item.imgUrl}}" mode="aspectFill" />
+      </view>
+      
+      <view class="item-info" bindtap="goToDetail" data-id="{{item.id}}">
+        <view class="item-title">{{item.title}}</view>
+        <view class="item-price">{{item.currency}}{{item.price}}</view>
+      </view>
+      
+      <view class="item-count">
+        <view class="count-btn minus" bindtap="decreaseCount" data-id="{{item.id}}" wx:if="{{item.quantity > 1}}">-</view>
+        <view class="count-btn minus disabled" wx:else>-</view>
+        <view class="count-number">{{item.quantity}}</view>
+        <view class="count-btn plus" bindtap="increaseCount" data-id="{{item.id}}">+</view>
+      </view>
+      
+      <view class="item-delete" bindtap="deleteItem" data-id="{{item.id}}">
+        <icon type="clear" size="28" color="#999" />
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部结算栏 -->
+  <view wx:if="{{cartData.length > 0}}" class="cart-footer">
+    <view class="footer-check">
+      <checkbox checked="{{allChecked}}" bindchange="toggleAllCheck" />
+      <text>全选</text>
+    </view>
+    
+    <view class="footer-total">
+      <text class="total-text">合计:</text>
+      <text class="total-price">{{totalCurrency}}{{totalPrice.toFixed(2)}}</text>
+      <text class="total-note">(不含运费)</text>
+    </view>
+    
+    <button class="footer-pay" bindtap="goToPay">
+      结算({{selectedCount}})
+    </button>
+  </view>
+</view>

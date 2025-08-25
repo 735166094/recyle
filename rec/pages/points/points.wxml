@@ -1,0 +1,149 @@
+<!-- 搜索框 -->
+<view class="search-wrap">
+  <view class="search-bar">
+    <icon type="search" size="20" color="#B0B6BE" class="search-icon" />
+    <input class="search-input" type="text" placeholder="{{isCategoryPage ? '搜索分类或商品' : '搜索车辆品牌或商城商品'}}" placeholder-style="color:#B0B6BE;" bindinput="onInput" bindconfirm="onSearch" value="{{inputValue}}" />
+    <icon wx:if="{{inputValue}}" type="clear" size="20" color="#B0B6BE" class="clear-icon" bindtap="clearInput" />
+  </view>
+</view>
+<!-- 首页内容 -->
+<view wx:if="{{!isCategoryPage}}">
+  <!-- 商品分类 -->
+  <view class="news-header">
+    <view class="news-title">
+      <view class="news-titlespace"></view>
+      <text class="news-titlename">商品分类</text>
+    </view>
+  </view>
+
+  <!-- 快捷入口 -->
+  <view class="menu">
+    <view class="menu-item" bindtap="goToCategoryPage" data-id="1">
+      <view class="menu-backc">
+        <image class="menu-icon" src="/static/icon/oil.png" mode="widthFix" />
+      </view>
+      <text class="menu-text">机油养护</text>
+    </view>
+    <view class="menu-item" bindtap="goToCategoryPage" data-id="2">
+      <view class="menu-backc">
+        <image class="menu-icon" src="/static/icon/tools.png" mode="widthFix" />
+      </view>
+      <text class="menu-text">维修配件</text>
+    </view>
+    <view class="menu-item" bindtap="goToCategoryPage" data-id="3">
+      <view class="menu-backc">
+        <image class="menu-icon" src="/static/icon/car.png" mode="widthFix" />
+      </view>
+      <text class="menu-text">汽车装饰</text>
+    </view>
+    <view class="menu-item" bindtap="goToCategoryPage" data-id="4">
+      <view class="menu-backc">
+        <image class="menu-icon" src="/static/icon/fan.png" mode="widthFix" />
+      </view>
+      <text class="menu-text">车载电器</text>
+    </view>
+  </view>
+
+  <view class="news-header">
+    <view class="news-title">
+      <view class="news-titlespace"></view>
+      <text class="news-titlename">促销活动</text>
+    </view>
+    <navigator url="/pages/more/more?category={{item.titles}}" class="news-more">
+      更多 >
+    </navigator>
+  </view>
+
+  <!-- 轮播图  indicator-dots -->
+  <view class="banner-wrapper">
+    <swiper autoplay interval="3500" circular indicator-active-color="#FFFFFF" indicator-color="rgba(255,255,255,0.3)" class="banner-swiper">
+      <block wx:for="{{activeList}}" wx:key="id">
+        <swiper-item class="swiper-item">
+          <image src="{{item.image}}" mode="aspectFill" class="banner-img" />
+          <view class="banner-text">
+            <text class="banner-title">{{item.title}}</text>
+            <text class="banner-desc">{{item.desc}}</text>
+          </view>
+        </swiper-item>
+      </block>
+    </swiper>
+  </view>
+
+
+  <view class="news-header">
+    <view class="news-title">
+      <view class="news-titlespace"></view>
+      <text class="news-titlename">热门商品</text>
+    </view>
+    <navigator url="/pages/more/more?category={{item.titles}}" class="news-more">
+      更多 >
+    </navigator>
+  </view>
+
+  <view class="hot-items">
+    <view class="hot-item" wx:for="{{goodList}}" wx:key="index" bindtap="goToGoodDetail" data-id="{{item.id}}">
+      <view class="hot-card">
+        <image class="hot-img" src="{{item.imgUrl}}" mode="aspectFill" />
+      </view>
+      <view class="hot-title">{{item.title}}</view>
+      <view class="hot-price">
+        <text class="hot-pricebefore">{{item.currency}}</text>
+        <text class="hot-pricetext">{{item.price}}</text>
+        <image class="add-to-cart-icon" src="/static/icon/shopcart.png" bindtap="addToCart" data-id="{{item.id}}" catchtap mode="widthFix" hover-class="none" />
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 分类页面内容 -->
+<view wx:if="{{isCategoryPage}}">
+  <!-- 返回按钮 -->
+  <view class="back-button" bindtap="backToHome">
+    <icon type="back" size="20" color="#FFFFFF" />
+    <text>返回商城首页</text>
+  </view>
+
+  <!-- 分类导航 -->
+  <view class="category-nav">
+    <scroll-view scroll-x="true" class="category-scroll">
+      <view class="category-items">
+        <view class="category-item" wx:for="{{categories}}" wx:key="id" data-id="{{item.id}}" bindtap="switchCategory" class="{{activeCategoryId == item.id ? 'category-item active' : 'category-item'}}">
+          <view class="category-icon">
+            <image src="{{item.icon}}" mode="widthFix" />
+          </view>
+          <text class="category-name">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 分类商品列表标题 -->
+  <view class="news-header">
+    <view class="news-title">
+      <view class="news-titlespace"></view>
+      <text class="news-titlename">{{activeCategoryName}}</text>
+    </view>
+    <navigator url="/pages/more/more?category={{activeCategoryId}}" class="news-more"> 更多 ></navigator>
+  </view>
+
+  <view class="good-grid">
+    <view class="good-item" wx:for="{{categoryGoods[activeCategoryId]}}" wx:key="id" bindtap="goToGoodDetail" data-id="{{item.id}}">
+      <view class="good-img-container">
+        <image class="good-img" src="{{item.imgUrl}}" mode="aspectFill" />
+        <view class="good-sales">销量: {{item.sales}}</view>
+      </view>
+      <view class="good-title">{{item.title}}</view>
+      <view class="good-price">
+        <text class="good-pricebefore">{{item.currency}}</text>
+        <text class="good-pricetext">{{item.price}}</text>
+        <image class="add-to-cart-icon" src="/static/icon/shopcart.png" bindtap="addToCart" data-id="{{item.id}}" catchtap mode="widthFix" hover-class="none" />
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 新增：购物车悬浮窗口 -->
+<view class="cart-float-window" bindtap="goToCart">
+  <image class="cart-float-icon" src="/static/icon/shopcart.png" mode="widthFix" />
+  <view class="cart-float-badge">{{cartBadgeCount}}</view>
+</view>

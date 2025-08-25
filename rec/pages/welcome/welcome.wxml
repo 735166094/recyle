@@ -1,0 +1,4 @@
+<view class="container">
+  <text class="jump" bind:tap="doJump">跳过{{second}}秒</text>
+  <image class="img" src="{{img}}" mode="cover" />
+</view>
