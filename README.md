@@ -3,7 +3,9 @@
 
 ## ✨ 核心特性
 
+
 #### 👤 用户认证：注册、登录、Token 鉴权（7天有效期），密码加密存储。
+
 
 #### 📰 新闻模块：分类列表、分页新闻列表、新闻详情、自动增加浏览量。
 
@@ -101,12 +103,12 @@
   
 ### 1. 克隆项目
 ```bash
-git clone https://github.com/yourusername/toutiao-news-backend.git
-cd toutiao-news-backend
+git clone https://github.com/735166094/recyle.git
 ```
 
 ### 2. 安装依赖
 ```bash
+cd News/Admin
 pip install -r requirements.txt
 ```
 
