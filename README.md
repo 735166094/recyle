@@ -75,13 +75,14 @@ venv\Scripts\activate
 # 安装依赖
 cd rec/Admin/
 pip install -r requirements.txt
+
 ```
 
 ### 配置环境变量
 
 在 `/rec/Admin/recycle_admin/` 目录下创建 `setting` 文件，配置如下核心参数：
 
-```env
+```bash
 # 数据库配置
 DB_HOST=127.0.0.1
 DB_PORT=3306
@@ -160,7 +161,7 @@ const baseUrl = "http://127.0.0.1:8000/api";
 
 #### 1. 员工通道 - 证件 OCR 识别
 
-```python
+```bash
 # 后端核心逻辑示例（参考）
 from aip import AipOcr
 
@@ -178,10 +179,11 @@ def verify_certificates(id_card_info, license_info, driving_license_info):
         is_match = False
     # ... 其他核验规则
     return is_match
+```
 
 ### 2. VIN 码查询车型
 
-```javascript
+```bash
 // 小程序端调用示例
 wx.request({
   url: `${baseUrl}/vin/query`,
@@ -196,11 +198,13 @@ wx.request({
     }
   }
 });
+```
 
 
 ## 项目目录结构
 
 ### 后端（backend/）
+
 ```bash
 backend/
 ├── qihi_recycle/          # Django项目主目录
