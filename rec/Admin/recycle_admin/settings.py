@@ -25,7 +25,7 @@ ALLOWED_HOSTS = [
 ]
 # 添加 CSRF 信任域名
 CSRF_TRUSTED_ORIGINS = [
-    "https://qiqi.cheryapp.com"
+    "https://你的域名.com"
 ]
 
 # simpleUI跳转改成域名
@@ -148,8 +148,8 @@ AUTH_PASSWORD_VALIDATORS = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'recycle_db',  # 数据库名
-        'USER': 'root',  # 用户名
+        'NAME': '',  # 数据库名
+        'USER': '',  # 用户名
         'PASSWORD': '111@Chery',  # 数据库密码
         'HOST': '127.0.0.1',  # 主机地址
         'PORT': '3306',  # 端口
@@ -287,11 +287,11 @@ SIMPLE_JWT = {
 }
 
 # 微信小程序配置
-WECHAT_APPID = 'wx4ce25a8caecc6505'  # AppID
-WECHAT_SECRET = '5bff3eda26180f2a53f03ff19c93a394'  # AppSecret
-# WECHAT_LOGIN_URL = 'https://api.weixin.qq.com/sns/jscode2session'
-WECHAT_ACCESS_TOKEN_URL = 'https://api.weixin.qq.com/cgi-bin/token'
-WECHAT_PHONE_NUMBER_URL = 'https://api.weixin.qq.com/wxa/business/getuserphonenumber'
+WECHAT_APPID = ''  # AppID
+WECHAT_SECRET = ''  # AppSecret
+# WECHAT_LOGIN_URL = 'https://api.weixin.qq.com/sns/jscode2session' # 用于将用户的临时登录凭证（code）换取 openid 和 session_key
+WECHAT_ACCESS_TOKEN_URL = 'https://api.weixin.qq.com/cgi-bin/token' # 获取小程序全局唯一后台接口调用凭据（access_token），有效期为2小时，需定时刷新
+WECHAT_PHONE_NUMBER_URL = 'https://api.weixin.qq.com/wxa/business/getuserphonenumber'# 获取用户手机号（需用户主动触发，并传递 code 参数），用于快速注册或登录
 
 # 小程序配置
 MINI_PROGRAM = {
