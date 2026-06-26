@@ -1,0 +1,575 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block content %}
+<div id="content-main" class="vue-style-container">
+    <div class="page-header">
+        <h1 class="page-title">{{ title }}</h1>
+    </div>
+
+    <div class="centered-card-container">
+        <div class="card result-card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="icon-result"></i>
+                    测试结果
+                </h2>
+            </div>
+            <div class="card-body">
+                {% if result.success %}
+                <!-- 成功结果 -->
+                <div class="result-success">
+                    <div class="success-header">
+                        <i class="icon-success"></i>
+                        <span>接口测试成功！</span>
+                    </div>
+
+                    {% if interface.interface_type == 'vin' %}
+                    <!-- VIN查询结果 -->
+                    <div class="result-content centered-result">
+                        <h3 class="section-title">VIN查询结果</h3>
+
+                        <!-- 基本信息 -->
+                        <div class="info-section">
+                            <h4 class="section-subtitle">基本信息</h4>
+                            <div class="info-grid compact centered-grid">
+                                <div class="info-item">
+                                    <span class="info-label">品牌</span>
+                                    <span class="info-value">{{ result.result.basic_info.brand }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">生产年份</span>
+                                    <span class="info-value">{{ result.result.basic_info.model_year }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">生产日期</span>
+                                    <span class="info-value">{{ result.result.basic_info.build_date }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">EPC中文名</span>
+                                    <span class="info-value">{{ result.result.basic_info.epc_cn }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 车型列表 -->
+                        {% if result.result.model_list %}
+                        <div class="info-section">
+                            <h4 class="section-subtitle">车型列表</h4>
+                            <div class="model-list centered-list">
+                                {% for model in result.result.model_list %}
+                                <div class="model-card">
+                                    <div class="model-header">
+                                        <h5 class="model-name">{{ model.model_detail }}</h5>
+                                    </div>
+                                    <div class="model-details">
+                                        <div class="detail-grid centered-details">
+                                            <div class="detail-item">
+                                                <span class="detail-label">厂家</span>
+                                                <span class="detail-value">{{ model.factory }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">车系</span>
+                                                <span class="detail-value">{{ model.series }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">销售版本</span>
+                                                <span class="detail-value">{{ model.sales_version }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">排量</span>
+                                                <span class="detail-value">{{ model.cc }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">发动机</span>
+                                                <span class="detail-value">{{ model.engine_no }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">参考价格</span>
+                                                <span class="detail-value">{{ model.price }}元</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- 原厂配置 -->
+                        {% if result.result.original_attributes %}
+                        <div class="info-section">
+                            <h4 class="section-subtitle">原厂配置</h4>
+                            <div class="attributes-grid centered-attributes">
+                                {% for attr in result.result.original_attributes %}
+                                {% if attr.IsMajorAttribute %}
+                                <div class="attribute-item major">
+                                    <span class="attribute-label">{{ attr.Col_name }}</span>
+                                    <span class="attribute-value">{{ attr.Col_value }}</span>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <!-- OCR识别结果 -->
+                    <div class="result-content centered-result">
+                        <h3 class="section-title">OCR识别结果</h3>
+                        <div class="code-block centered-code">
+                            <pre>{{ result.result|pprint }}</pre>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% else %}
+                <!-- 失败结果 -->
+                <div class="result-error">
+                    <div class="error-header">
+                        <i class="icon-error"></i>
+                        <span>接口测试失败！</span>
+                    </div>
+                    <div class="error-content">
+                        <p class="error-message">错误信息: {{ result.error }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- 操作按钮 -->
+                <div class="result-actions centered-actions">
+                    <a href="{% url 'admin:ocr_ocrinterface_test' interface.id %}" class="btn btn-primary">
+                        <i class="icon-retry"></i>
+                        重新测试
+                    </a>
+                    <a href="{% url 'admin:ocr_ocrinterface_changelist' %}" class="btn btn-secondary">
+                        <i class="icon-back"></i>
+                        返回列表
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.vue-style-container {
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.page-header {
+    margin-bottom: 24px;
+    text-align: center;
+    width: 100%;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.centered-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.result-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e4e7ed;
+    overflow: hidden;
+    width: 100%;
+}
+
+.card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e4e7ed;
+    background: #f8f9fa;
+    text-align: center;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* 成功状态 */
+.result-success {
+    margin-bottom: 24px;
+}
+
+.success-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #f0f9eb;
+    border: 1px solid #e1f3d8;
+    border-radius: 4px;
+    color: #67c23a;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+/* 失败状态 */
+.result-error {
+    margin-bottom: 24px;
+}
+
+.error-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #fef0f0;
+    border: 1px solid #fbc4c4;
+    border-radius: 4px;
+    color: #f56c6c;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.error-message {
+    color: #f56c6c;
+    margin: 0;
+    padding: 12px 16px;
+    background: #fef0f0;
+    border-radius: 4px;
+    text-align: center;
+}
+
+/* 内容区域 */
+.centered-result {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 16px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #67c23a;
+    text-align: center;
+    width: 100%;
+}
+
+.section-subtitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 12px 0;
+    text-align: center;
+    width: 100%;
+}
+
+.info-section {
+    margin-bottom: 24px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border-left: 4px solid #67c23a;
+    width: 100%;
+    max-width: 800px;
+}
+
+/* 信息网格 */
+.centered-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    justify-items: center;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e4e7ed;
+    width: 100%;
+    max-width: 300px;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    color: #606266;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 100px;
+    text-align: left;
+}
+
+.info-value {
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 14px;
+    text-align: right;
+    min-width: 150px;
+}
+
+/* 车型列表 */
+.centered-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    width: 100%;
+}
+
+.model-card {
+    background: #fff;
+    border: 1px solid #e4e7ed;
+    border-radius: 6px;
+    overflow: hidden;
+    transition: box-shadow 0.3s;
+    width: 100%;
+    max-width: 600px;
+}
+
+.model-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.model-header {
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e4e7ed;
+    text-align: center;
+}
+
+.model-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.model-details {
+    padding: 16px;
+}
+
+.centered-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    justify-items: center;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    text-align: center;
+}
+
+.detail-label {
+    font-size: 12px;
+    color: #909399;
+    font-weight: 500;
+}
+
+.detail-value {
+    font-size: 14px;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+/* 属性网格 */
+.centered-attributes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 12px;
+    justify-items: center;
+}
+
+.attribute-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #fff;
+    border: 1px solid #e4e7ed;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.attribute-item.major {
+    border-left: 3px solid #67c23a;
+    background: #f0f9eb;
+}
+
+.attribute-label {
+    color: #606266;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 120px;
+    text-align: left;
+}
+
+.attribute-value {
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 14px;
+    text-align: right;
+    min-width: 150px;
+}
+
+/* 代码块 */
+.centered-code {
+    background: #f8f9fa;
+    border: 1px solid #e4e7ed;
+    border-radius: 4px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 800px;
+}
+
+.centered-code pre {
+    margin: 0;
+    padding: 16px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #2c3e50;
+    overflow-x: auto;
+    background: #f8f9fa;
+    text-align: left;
+}
+
+/* 操作按钮 */
+.centered-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    padding-top: 20px;
+    border-top: 1px solid #e4e7ed;
+    width: 100%;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: #67c23a;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #5daf34;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(103, 194, 58, 0.3);
+}
+
+.btn-secondary {
+    background: #909399;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #7a7e83;
+}
+
+/* 图标样式 */
+.icon-result:before { content: "📊"; }
+.icon-success:before { content: "✅"; }
+.icon-error:before { content: "❌"; }
+.icon-retry:before { content: "🔄"; }
+.icon-back:before { content: "←"; }
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .vue-style-container {
+        padding: 16px;
+        max-width: 100%;
+    }
+
+    .centered-card-container {
+        max-width: 100%;
+    }
+
+    .centered-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        text-align: left;
+    }
+
+    .info-label, .info-value {
+        text-align: left;
+        min-width: auto;
+    }
+
+    .centered-grid,
+    .centered-details,
+    .centered-attributes {
+        grid-template-columns: 1fr;
+    }
+
+    .attribute-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .attribute-label, .attribute-value {
+        text-align: left;
+        min-width: auto;
+    }
+}
+</style>
+{% endblock %}

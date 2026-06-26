@@ -1,0 +1,433 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block content %}
+<div id="content-main" class="vue-style-container">
+    <div class="page-header">
+        <h1 class="page-title">{{ title }}</h1>
+    </div>
+
+    <div class="centered-card-container">
+        <!-- 测试表单卡片 -->
+        <div class="card test-form-card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="icon-test"></i>
+                    {{ interface.get_interface_type_display }}接口测试
+                </h2>
+            </div>
+            <div class="card-body">
+                {% if interface.interface_type == 'vin' %}
+                <!-- VIN测试表单 -->
+                <form method="post" enctype="multipart/form-data" class="vue-form centered-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="vin_code" class="form-label">VIN码</label>
+                        <input type="text" name="vin_code" id="vin_code"
+                               placeholder="请输入17位VIN码"
+                               pattern="[A-HJ-NPR-Z0-9]{17}"
+                               title="请输入17位VIN码（不含I、O、Q）"
+                               required class="form-input centered-input">
+                        <div class="form-hint">请输入17位VIN码（不含I、O、Q）</div>
+                    </div>
+                    <div class="form-actions centered-actions">
+                        <button type="submit" class="btn btn-primary test-btn">
+                            <i class="icon-search"></i>
+                            测试VIN查询
+                        </button>
+                        <a href="{% url 'admin:ocr_ocrinterface_changelist' %}" class="btn btn-secondary">
+                            <i class="icon-back"></i>
+                            返回列表
+                        </a>
+                    </div>
+                </form>
+                {% else %}
+                <!-- OCR图片测试表单 -->
+                <form method="post" enctype="multipart/form-data" class="vue-form centered-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="test_image" class="form-label">测试图片</label>
+                        <div class="file-upload-area centered-upload">
+                            <input type="file" name="test_image" id="test_image"
+                                   accept="image/jpeg,image/png,image/jpg" required
+                                   class="file-input">
+                            <div class="upload-hint">
+                                <i class="icon-upload"></i>
+                                <span>点击选择图片或拖拽到此区域</span>
+                                <small>支持 JPG、PNG 格式，最大 5MB</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions centered-actions">
+                        <button type="submit" class="btn btn-primary test-btn">
+                            <i class="icon-scan"></i>
+                            测试识别
+                        </button>
+                        <a href="{% url 'admin:ocr_ocrinterface_changelist' %}" class="btn btn-secondary">
+                            <i class="icon-back"></i>
+                            返回列表
+                        </a>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 接口信息卡片 -->
+        <div class="card info-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="icon-info"></i>
+                    接口信息
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="info-grid centered-info">
+                    <div class="info-item">
+                        <span class="info-label">接口名称</span>
+                        <span class="info-value">{{ interface.name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">接口类型</span>
+                        <span class="info-value">{{ interface.get_interface_type_display }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">
+                            {% if interface.interface_type == 'vin' %}VIN配置{% else %}华为云配置{% endif %}
+                        </span>
+                        <span class="info-value">
+                            {% if interface.interface_type == 'vin' %}
+                                {{ interface.vin_config.name|default:"未配置" }}
+                            {% else %}
+                                {{ interface.huawei_config.name|default:"未配置" }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">状态</span>
+                        <span class="info-value status-badge {% if interface.is_active and interface.huawei_config and interface.huawei_config.is_active or interface.is_active and interface.vin_config and interface.vin_config.is_active %}status-active{% else %}status-inactive{% endif %}">
+                            {% if interface.is_active and interface.huawei_config and interface.huawei_config.is_active or interface.is_active and interface.vin_config and interface.vin_config.is_active %}
+                                可用
+                            {% else %}
+                                不可用
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.vue-style-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.page-header {
+    margin-bottom: 24px;
+    text-align: center;
+    width: 100%;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.centered-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e4e7ed;
+    overflow: hidden;
+    width: 100%;
+}
+
+.card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e4e7ed;
+    background: #f8f9fa;
+    text-align: center;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.centered-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #2c3e50;
+    font-size: 14px;
+    text-align: center;
+}
+
+.centered-input {
+    padding: 10px 12px;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+    width: 100%;
+    text-align: center;
+}
+
+.centered-input:focus {
+    outline: none;
+    border-color: #67c23a;
+    box-shadow: 0 0 0 2px rgba(103, 194, 58, 0.2);
+}
+
+.form-hint {
+    font-size: 12px;
+    color: #909399;
+    text-align: center;
+}
+
+.centered-upload {
+    border: 2px dashed #dcdfe6;
+    border-radius: 6px;
+    padding: 40px 20px;
+    text-align: center;
+    transition: border-color 0.3s;
+    cursor: pointer;
+    position: relative;
+    width: 100%;
+}
+
+.centered-upload:hover {
+    border-color: #67c23a;
+}
+
+.file-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-hint {
+    color: #909399;
+    text-align: center;
+}
+
+.upload-hint i {
+    font-size: 24px;
+    margin-bottom: 8px;
+    display: block;
+    color: #c0c4cc;
+}
+
+.upload-hint span {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.upload-hint small {
+    font-size: 12px;
+}
+
+.centered-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: #67c23a;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #5daf34;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(103, 194, 58, 0.3);
+}
+
+.btn-secondary {
+    background: #909399;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #7a7e83;
+}
+
+/* 特别为测试接口按钮设置样式 */
+.test-btn {
+    background: #67c23a !important;
+    color: white !important;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.test-btn:hover {
+    background: #5daf34 !important;
+    color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(103, 194, 58, 0.3);
+}
+
+.centered-info {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f2f5;
+    width: 100%;
+    max-width: 400px;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    color: #606266;
+    font-size: 14px;
+    min-width: 120px;
+    text-align: left;
+}
+
+.info-value {
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 14px;
+    text-align: right;
+    min-width: 150px;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-active {
+    background: #f0f9eb;
+    color: #67c23a;
+    border: 1px solid #e1f3d8;
+}
+
+.status-inactive {
+    background: #fef0f0;
+    color: #f56c6c;
+    border: 1px solid #fbc4c4;
+}
+
+/* 图标样式 */
+.icon-test:before { content: "🧪"; }
+.icon-search:before { content: "🔍"; }
+.icon-scan:before { content: "📷"; }
+.icon-upload:before { content: "📁"; }
+.icon-info:before { content: "ℹ️"; }
+.icon-back:before { content: "←"; }
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .vue-style-container {
+        padding: 16px;
+        max-width: 100%;
+    }
+
+    .centered-card-container {
+        max-width: 100%;
+    }
+
+    .centered-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        text-align: left;
+    }
+
+    .info-label, .info-value {
+        text-align: left;
+        min-width: auto;
+    }
+}
+</style>
+{% endblock %}

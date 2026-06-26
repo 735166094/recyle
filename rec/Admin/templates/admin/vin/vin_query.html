@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIN码查询系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin-top: 30px;
+        }
+
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: none;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #4b6cb7, #182848);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(75,108,183,0.4);
+        }
+
+        .btn-outline-secondary {
+            border-radius: 8px;
+            padding: 10px 20px;
+        }
+
+        .vin-input {
+            font-size: 18px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .status-badge {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-failed {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .vehicle-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            border-left: 4px solid #4b6cb7;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+
+        .section-title {
+            color: #182848;
+            border-bottom: 2px solid #4b6cb7;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .attribute-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .attribute-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .attribute-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #4b6cb7, #182848);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .feature-card {
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #4b6cb7;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin-top: 15px;
+            }
+
+            .vin-input {
+                font-size: 16px;
+            }
+
+            .btn-primary {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">加载中...</span>
+            </div>
+            <p class="mt-3 fw-bold">正在查询VIN码信息，请稍候...</p>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="container">
+        <!-- 标题区域 -->
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <div class="brand-logo">
+                        VIN
+                    </div>
+                    <h1 class="mb-0" style="color: #182848;">VIN码查询系统</h1>
+                </div>
+                <p class="text-muted">输入车辆VIN码（17位），快速查询车辆详细信息</p>
+            </div>
+        </div>
+
+        <!-- 功能特性 -->
+        <div class="row mb-5">
+            <div class="col-md-3 col-sm-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-car-front-fill"></i>
+                    </div>
+                    <h5>车辆识别</h5>
+                    <p class="text-muted">精准识别车辆品牌、型号、年份</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-gear-fill"></i>
+                    </div>
+                    <h5>配置查询</h5>
+                    <p class="text-muted">查询车辆详细配置参数</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-image-fill"></i>
+                    </div>
+                    <h5>车辆图片</h5>
+                    <p class="text-muted">查看车辆外观及内饰图片</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-file-text-fill"></i>
+                    </div>
+                    <h5>公告信息</h5>
+                    <p class="text-muted">获取车辆公告及技术参数</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 查询输入区域 -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-4">
+                        <h4 class="section-title mb-4">
+                            <i class="bi bi-search me-2"></i>VIN码查询
+                        </h4>
+
+                        <form id="vinQueryForm">
+                            <div class="row align-items-end">
+                                <div class="col-md-8 mb-3">
+                                    <label for="vinCode" class="form-label fw-bold">请输入VIN码（17位）</label>
+                                    <input type="text"
+                                           class="form-control form-control-lg vin-input"
+                                           id="vinCode"
+                                           placeholder="例如：LCN643DTXD0000288"
+                                           maxlength="17"
+                                           pattern="[A-HJ-NPR-Z0-9]{17}"
+                                           title="请输入17位有效的VIN码（大写字母和数字）"
+                                           required>
+                                    <div class="form-text mt-2">
+                                        VIN码示例：LSVHJ133022221361, LSVHJ133022221361, LSVHJ133022221361
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="bi bi-search me-2"></i>查询车辆信息
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-check form-switch mt-3">
+                                <input class="form-check-input" type="checkbox" id="saveResult" checked>
+                                <label class="form-check-label" for="saveResult">
+                                    保存查询记录（可在VIN查询模块中管理）
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 查询结果区域 -->
+        <div id="resultArea" style="display: none;">
+            <!-- 基本信息卡片 -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h4 class="section-title mb-0">
+                                    <i class="bi bi-info-circle-fill me-2"></i>车辆基本信息
+                                </h4>
+                                <span id="queryStatus" class="status-badge">查询成功</span>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="info-card">
+                                        <div class="attribute-label">VIN码</div>
+                                        <div class="attribute-value" id="displayVin"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="info-card">
+                                        <div class="attribute-label">品牌</div>
+                                        <div class="attribute-value" id="displayBrand"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="info-card">
+                                        <div class="attribute-label">生产年份</div>
+                                        <div class="attribute-value" id="displayYear"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="info-card">
+                                        <div class="attribute-label">车型名称</div>
+                                        <div class="attribute-value" id="displayModel"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="info-card">
+                                        <div class="attribute-label">生产日期</div>
+                                        <div class="attribute-value" id="displayBuildDate"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="info-card">
+                                        <div class="attribute-label">匹配模式</div>
+                                        <div class="attribute-value" id="displayMatchMode"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="info-card">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <div class="attribute-label">查询耗时</div>
+                                                <div class="attribute-value" id="displayProcessTime"></div>
+                                            </div>
+                                            <button class="btn btn-outline-secondary" id="exportJsonBtn">
+                                                <i class="bi bi-download me-2"></i>导出JSON数据
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 车型图片区域 -->
+            <div class="row mb-4" id="imageSection">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body p-4">
+                            <h4 class="section-title">
+                                <i class="bi bi-images me-2"></i>车辆图片
+                            </h4>
+                            <div class="row" id="vehicleImages">
+                                <!-- 图片将通过JavaScript动态加载 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 车型列表 -->
+            <div class="row mb-4" id="modelsSection">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body p-4">
+                            <h4 class="section-title">
+                                <i class="bi bi-list-ul me-2"></i>匹配车型列表 (<span id="modelCount">0</span>个)
+                            </h4>
+                            <div id="modelsList">
+                                <!-- 车型将通过JavaScript动态加载 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 车辆配置详情 -->
+            <div class="row mb-4" id="configSection">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body p-4">
+                            <h4 class="section-title">
+                                <i class="bi bi-gear-fill me-2"></i>车辆配置详情
+                            </h4>
+                            <div class="row" id="vehicleConfig">
+                                <!-- 配置详情将通过JavaScript动态加载 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 公告信息 -->
+            <div class="row mb-4" id="gonggaoSection">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body p-4">
+                            <h4 class="section-title">
+                                <i class="bi bi-file-text-fill me-2"></i>车辆公告信息
+                            </h4>
+                            <div id="gonggaoInfo">
+                                <!-- 公告信息将通过JavaScript动态加载 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部信息 -->
+        <div class="row mt-5">
+            <div class="col-12 text-center">
+                <hr>
+                <p class="text-muted">
+                    <small>
+                        数据来源：17VIN API | 查询结果仅供参考，实际车辆信息以实车为准
+                        <br>
+                        <span id="saveStatusInfo"></span>
+                    </small>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('vinQueryForm');
+            const resultArea = document.getElementById('resultArea');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const toastContainer = document.getElementById('toastContainer');
+            const saveResultCheckbox = document.getElementById('saveResult');
+            const saveStatusInfo = document.getElementById('saveStatusInfo');
+
+            // 显示Toast通知
+            function showToast(message, type = 'info') {
+                const toastId = 'toast-' + Date.now();
+                const bgClass = {
+                    'success': 'bg-success',
+                    'error': 'bg-danger',
+                    'info': 'bg-info'
+                }[type] || 'bg-info';
+
+                const toastHtml = `
+                    <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header">
+                            <strong class="me-auto">VIN查询系统</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                            <i class="bi bi-info-circle-fill me-2"></i>${message}
+                        </div>
+                    </div>
+                `;
+
+                toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+                const toastElement = document.getElementById(toastId);
+                const toast = new bootstrap.Toast(toastElement);
+                toast.show();
+
+                // 5秒后自动移除
+                setTimeout(() => {
+                    toastElement.remove();
+                }, 5000);
+            }
+
+            // 显示加载中
+            function showLoading() {
+                loadingOverlay.style.display = 'flex';
+            }
+
+            // 隐藏加载中
+            function hideLoading() {
+                loadingOverlay.style.display = 'none';
+            }
+
+            // 导出JSON数据
+            document.getElementById('exportJsonBtn').addEventListener('click', function() {
+                const vinCode = document.getElementById('vinCode').value;
+                if (!vinCode) {
+                    showToast('请先查询VIN码', 'error');
+                    return;
+                }
+
+                // 这里可以调用后端导出接口
+                const url = `/api/vin/query/?vin_code=${vinCode}&format=json`;
+                window.open(url, '_blank');
+            });
+
+            // 表单提交处理
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const vinCode = document.getElementById('vinCode').value.trim().toUpperCase();
+                const saveResult = saveResultCheckbox.checked;
+
+                // 验证VIN码
+                if (vinCode.length !== 17) {
+                    showToast('VIN码必须为17位字符', 'error');
+                    return;
+                }
+
+                const vinPattern = /^[A-HJ-NPR-Z0-9]{17}$/;
+                if (!vinPattern.test(vinCode)) {
+                    showToast('VIN码格式不正确，请检查输入', 'error');
+                    return;
+                }
+
+                // 显示加载状态
+                showLoading();
+
+                try {
+                    // 调用后端API
+                    const response = await fetch('/api/vin/query/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify({
+                            vin_code: vinCode,
+                            save_result: saveResult
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // 显示结果区域
+                        resultArea.style.display = 'block';
+
+                        // 更新保存状态信息
+                        if (saveResult) {
+                            saveStatusInfo.textContent = '本次查询结果已保存到数据库';
+                        } else {
+                            saveStatusInfo.textContent = '本次查询结果未保存（配置控制）';
+                        }
+
+                        // 填充基本信息
+                        updateBasicInfo(data);
+
+                        // 填充其他信息
+                        updateVehicleInfo(data);
+
+                        // 滚动到结果区域
+                        resultArea.scrollIntoView({ behavior: 'smooth' });
+
+                        showToast('VIN码查询成功！', 'success');
+                    } else {
+                        showToast(`查询失败: ${data.error || data.message}`, 'error');
+                    }
+                } catch (error) {
+                    console.error('查询错误:', error);
+                    showToast('网络错误，请稍后重试', 'error');
+                } finally {
+                    hideLoading();
+                }
+            });
+
+            // 更新基本信息
+            function updateBasicInfo(data) {
+                const statusBadge = document.getElementById('queryStatus');
+
+                if (data.success) {
+                    statusBadge.textContent = '查询成功';
+                    statusBadge.className = 'status-badge status-success';
+
+                    document.getElementById('displayVin').textContent = data.vin_code;
+                    document.getElementById('displayBrand').textContent = data.basic_info?.brand || '未知';
+                    document.getElementById('displayYear').textContent = data.basic_info?.model_year || '未知';
+                    document.getElementById('displayModel').textContent = data.basic_info?.model_name || '未知';
+                    document.getElementById('displayBuildDate').textContent = data.basic_info?.build_date || '未知';
+                    document.getElementById('displayMatchMode').textContent = data.basic_info?.matching_mode || '未知';
+                    document.getElementById('displayProcessTime').textContent = `${data.processing_time}秒`;
+                } else {
+                    statusBadge.textContent = '查询失败';
+                    statusBadge.className = 'status-badge status-failed';
+
+                    document.getElementById('displayVin').textContent = data.vin_code;
+                    document.getElementById('displayBrand').textContent = '-';
+                    document.getElementById('displayYear').textContent = '-';
+                    document.getElementById('displayModel').textContent = '-';
+                    document.getElementById('displayBuildDate').textContent = '-';
+                    document.getElementById('displayMatchMode').textContent = '-';
+                    document.getElementById('displayProcessTime').textContent = `${data.processing_time}秒`;
+                }
+            }
+
+            // 更新车辆信息
+            function updateVehicleInfo(data) {
+                if (!data.success) return;
+
+                // 更新车型数量
+                document.getElementById('modelCount').textContent = data.statistics?.model_count || 0;
+
+                // 显示车辆图片
+                const imageSection = document.getElementById('imageSection');
+                const vehicleImages = document.getElementById('vehicleImages');
+                vehicleImages.innerHTML = '';
+
+                if (data.statistics?.has_images && data.models && data.models.length > 0) {
+                    const firstModel = data.models[0];
+                    if (firstModel.images && firstModel.images.length > 0) {
+                        imageSection.style.display = 'block';
+                        firstModel.images.forEach((imageUrl, index) => {
+                            if (index < 4) { // 最多显示4张图片
+                                const colClass = firstModel.images.length === 1 ? 'col-12' :
+                                               firstModel.images.length === 2 ? 'col-md-6' : 'col-md-6 col-lg-3';
+                                const imgHtml = `
+                                    <div class="${colClass} mb-3">
+                                        <img src="${imageUrl}"
+                                             class="vehicle-image"
+                                             alt="车辆图片 ${index + 1}"
+                                             style="cursor: pointer;"
+                                             onclick="window.open('${imageUrl}', '_blank')">
+                                    </div>
+                                `;
+                                vehicleImages.insertAdjacentHTML('beforeend', imgHtml);
+                            }
+                        });
+                    } else {
+                        imageSection.style.display = 'none';
+                    }
+                } else {
+                    imageSection.style.display = 'none';
+                }
+
+                // 显示车型列表
+                const modelsSection = document.getElementById('modelsSection');
+                const modelsList = document.getElementById('modelsList');
+                modelsList.innerHTML = '';
+
+                if (data.models && data.models.length > 0) {
+                    modelsSection.style.display = 'block';
+                    data.models.forEach((model, index) => {
+                        const modelHtml = `
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <i class="bi bi-car-front-fill text-primary me-2"></i>
+                                        车型 ${index + 1}: ${model.model_detail || '未知车型'}
+                                    </h5>
+                                    <div class="row mt-3">
+                                        <div class="col-md-3">
+                                            <div class="attribute-item">
+                                                <span class="attribute-label">品牌:</span>
+                                                <span class="attribute-value">${model.brand || '-'}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="attribute-item">
+                                                <span class="attribute-label">车系:</span>
+                                                <span class="attribute-value">${model.series || '-'}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="attribute-item">
+                                                <span class="attribute-label">排量:</span>
+                                                <span class="attribute-value">${model.cc || '-'}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="attribute-item">
+                                                <span class="attribute-label">变速箱:</span>
+                                                <span class="attribute-value">${model.transmission_detail || '-'}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="attribute-item">
+                                                <span class="attribute-label">发动机:</span>
+                                                <span class="attribute-value">${model.engine_no || '-'}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="attribute-item">
+                                                <span class="attribute-label">燃油类型:</span>
+                                                <span class="attribute-value">${model.fuel_type || '-'}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="attribute-item">
+                                                <span class="attribute-label">参考价格:</span>
+                                                <span class="attribute-value">${model.price ? model.price + '元' : '-'}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        modelsList.insertAdjacentHTML('beforeend', modelHtml);
+                    });
+                } else {
+                    modelsSection.style.display = 'none';
+                }
+
+                // 显示车辆配置
+                const configSection = document.getElementById('configSection');
+                const vehicleConfig = document.getElementById('vehicleConfig');
+                vehicleConfig.innerHTML = '';
+
+                if (data.main_attributes && data.main_attributes.length > 0) {
+                    configSection.style.display = 'block';
+                    data.main_attributes.forEach((attr, index) => {
+                        const colClass = data.main_attributes.length <= 3 ? 'col-md-4' : 'col-md-6';
+                        const attrHtml = `
+                            <div class="${colClass} mb-3">
+                                <div class="info-card">
+                                    <div class="attribute-label">${attr.name}</div>
+                                    <div class="attribute-value">${attr.value || '-'}</div>
+                                </div>
+                            </div>
+                        `;
+                        vehicleConfig.insertAdjacentHTML('beforeend', attrHtml);
+                    });
+                } else {
+                    configSection.style.display = 'none';
+                }
+
+                // 显示公告信息
+                const gonggaoSection = document.getElementById('gonggaoSection');
+                const gonggaoInfo = document.getElementById('gonggaoInfo');
+                gonggaoInfo.innerHTML = '';
+
+                if (data.gonggao_list && data.gonggao_list.length > 0) {
+                    gonggaoSection.style.display = 'block';
+                    data.gonggao_list.forEach((gonggao, index) => {
+                        if (index < 3) { // 最多显示3个公告
+                            const gonggaoHtml = `
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h6 class="card-subtitle mb-3 text-muted">公告 ${index + 1}</h6>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="attribute-item">
+                                                    <span class="attribute-label">公告型号:</span>
+                                                    <span class="attribute-value">${gonggao.F4 || '-'}</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="attribute-item">
+                                                    <span class="attribute-label">燃料种类:</span>
+                                                    <span class="attribute-value">${gonggao.F11 || '-'}</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="attribute-item">
+                                                    <span class="attribute-label">排放标准:</span>
+                                                    <span class="attribute-value">${gonggao.F12 || '-'}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            gonggaoInfo.insertAdjacentHTML('beforeend', gonggaoHtml);
+                        }
+                    });
+                } else {
+                    gonggaoSection.style.display = 'none';
+                }
+            }
+
+            // 获取CSRF Token
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            // 示例VIN码快速输入
+            const exampleVins = [
+                'LSVHJ133022221361',
+                'LFV2A2157G3002476',
+                'LGB2221E0CY000008'
+            ];
+
+            // 添加示例VIN码快速输入按钮
+            const exampleContainer = document.createElement('div');
+            exampleContainer.className = 'mt-3';
+            exampleContainer.innerHTML = `
+                <small class="text-muted">快速测试：</small>
+                ${exampleVins.map(vin => `
+                    <button type="button" class="btn btn-sm btn-outline-secondary me-2 mb-2" onclick="document.getElementById('vinCode').value='${vin}';">
+                        ${vin}
+                    </button>
+                `).join('')}
+            `;
+            form.querySelector('.form-text').after(exampleContainer);
+        });
+    </script>
+</body>
+</html>

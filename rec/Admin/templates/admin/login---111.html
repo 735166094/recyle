@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+{% load i18n static %}
+
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    {% block title %}
+        <title>奇奇管理平台 - {% trans "登录" %}</title>
+    {% endblock %}
+
+    {% block icon %}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            /* 基础样式保持不变 */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+                color: white;
+                overflow: hidden;
+                position: relative;
+                min-height: 100vh;
+            }
+
+            /* 动态背景容器 */
+            #dynamic-bg {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: -2;
+                background: linear-gradient(135deg, #1a2980, #26d0ce);
+            }
+
+            /* Particles.js 容器 - 从 login背景提取.html 提取 */
+            #particles-js {
+                position: fixed;
+                top: 0px;
+                left: 0px;
+                right: 0px;
+                bottom: 0px;
+                z-index: -1;
+            }
+
+            /* 登录容器 - 磨砂玻璃效果 */
+            .login-container {
+                position: relative;
+                width: 100%;
+                max-width: 420px;
+                margin: 0 auto;
+                padding: 40px 30px;
+                background: rgba(255, 255, 255, 0.08);
+                backdrop-filter: blur(15px);
+                -webkit-backdrop-filter: blur(15px);
+                border-radius: 20px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                animation: slideUp 0.8s ease-out;
+                z-index: 10;
+            }
+
+            @keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(40px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* 头部保持不变 */
+            .login-header {
+                text-align: center;
+                margin-bottom: 40px;
+            }
+
+            .login-logo {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto 20px;
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.2));
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 36px;
+                color: white;
+                border: 2px solid rgba(255, 255, 255, 0.2);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
+
+            .login-title {
+                font-size: 28px;
+                font-weight: 600;
+                margin-bottom: 8px;
+                background: linear-gradient(45deg, #fff, #a0e7ff);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            }
+
+            .login-subtitle {
+                font-size: 14px;
+                color: rgba(255, 255, 255, 0.7);
+                letter-spacing: 1px;
+            }
+
+            /* 表单区域 */
+            .login-body {
+                position: relative;
+            }
+
+            /* 输入组 - 优化图标清晰度 */
+            .input-group {
+                margin-bottom: 24px;
+                position: relative;
+            }
+
+            .input-label {
+                display: block;
+                font-size: 14px;
+                font-weight: 500;
+                color: rgba(255, 255, 255, 0.95); /* 提高对比度 */
+                margin-bottom: 8px;
+                margin-left: 5px;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* 添加文字阴影增强可读性 */
+            }
+
+            .input-wrapper {
+                position: relative;
+                transition: all 0.3s ease;
+            }
+
+            /* 图标样式优化 - 增强清晰度 */
+            .input-icon {
+                position: absolute;
+                left: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: rgba(255, 255, 255, 0.8); /* 增加不透明度 */
+                font-size: 18px; /* 稍微增大图标 */
+                z-index: 2; /* 确保图标在最上层 */
+                text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); /* 添加阴影增强对比 */
+                transition: all 0.3s ease;
+            }
+
+            /* 输入框获得焦点时图标更清晰 */
+            .input-wrapper:focus-within .input-icon {
+                color: #4cc9f0; /* 焦点时使用主题色 */
+                text-shadow: 0 0 8px rgba(76, 201, 240, 0.5); /* 添加发光效果 */
+                transform: translateY(-50%) scale(1.05); /* 轻微放大 */
+            }
+
+            /* 输入框有内容时图标状态 */
+            .input-wrapper.has-content .input-icon {
+                color: rgba(255, 255, 255, 0.9);
+            }
+
+            .form-input {
+                width: 100%;
+                height: 50px; /* 稍微增加高度 */
+                padding: 0 16px 0 52px; /* 增加左侧内边距确保图标不被文字遮挡 */
+                border: 1.5px solid rgba(255, 255, 255, 0.25); /* 增加边框宽度 */
+                border-radius: 12px;
+                font-size: 15px;
+                transition: all 0.3s ease;
+                background: rgba(255, 255, 255, 0.1); /* 稍微加深背景增强图标对比 */
+                color: white;
+                position: relative;
+                z-index: 1;
+            }
+
+            .form-input::placeholder {
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 14px;
+            }
+
+            .form-input:focus {
+                outline: none;
+                border-color: #4cc9f0;
+                background: rgba(255, 255, 255, 0.15); /* 焦点时背景稍亮 */
+                box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.15),
+                inset 0 1px 3px rgba(255, 255, 255, 0.1);
+            }
+
+            /* 输入框有内容时的样式 */
+            .form-input.has-content {
+                border-color: rgba(255, 255, 255, 0.4);
+                background: rgba(255, 255, 255, 0.12);
+            }
+
+            /* 验证码区域 - 保持原有优化 */
+            .captcha-group {
+                margin-bottom: 30px;
+                position: relative;
+            }
+
+            .captcha-label {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 8px;
+            }
+
+            .captcha-label-text {
+                font-size: 14px;
+                font-weight: 500;
+                color: rgba(255, 255, 255, 0.95);
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            }
+
+            .captcha-refresh-tip {
+                font-size: 12px;
+                color: #4cc9f0;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                opacity: 0.9;
+                transition: all 0.3s ease;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            }
+
+            .captcha-refresh-tip:hover {
+                opacity: 1;
+                color: #fff;
+            }
+
+            .captcha-container {
+                display: flex;
+                gap: 12px;
+                align-items: center;
+            }
+
+            .captcha-input-wrapper {
+                flex: 1;
+                position: relative;
+            }
+
+            .captcha-input {
+                width: 100%;
+                height: 50px;
+                padding: 0 16px;
+                border: 1.5px solid rgba(255, 255, 255, 0.25);
+                border-radius: 12px;
+                font-size: 18px;
+                letter-spacing: 3px;
+                text-transform: uppercase;
+                text-align: center;
+                font-weight: 600;
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+                transition: all 0.3s ease;
+            }
+
+            .captcha-input::placeholder {
+                letter-spacing: normal;
+                font-size: 14px;
+                font-weight: normal;
+                opacity: 0.6;
+            }
+
+            .captcha-input:focus {
+                outline: none;
+                border-color: #4cc9f0;
+                background: rgba(255, 255, 255, 0.15);
+                box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.15);
+            }
+
+            /* 验证码图片容器 - 透明深色背景 */
+            .captcha-image-container {
+                width: 140px;
+                height: 50px;
+                border-radius: 12px;
+                overflow: hidden;
+                position: relative;
+                cursor: pointer;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                border: 1.5px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .captcha-image-container:hover {
+                background: rgba(0, 0, 0, 0.6);
+                border-color: #4cc9f0;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            }
+
+            /* 验证码图片样式 - 使用滤镜增强对比度 */
+            .captcha-image {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                display: block;
+                filter: contrast(1.3) brightness(1.2); /* 进一步增强对比度和亮度 */
+                image-rendering: crisp-edges;
+            }
+
+            .captcha-loading {
+                color: rgba(255, 255, 255, 0.9);
+                font-size: 12px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            }
+
+            .captcha-loading i {
+                animation: spin 1s linear infinite;
+            }
+
+            @keyframes spin {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .captcha-refresh-btn {
+                width: 50px;
+                height: 50px;
+                border-radius: 12px;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1.5px solid rgba(255, 255, 255, 0.25);
+                color: #4cc9f0;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                backdrop-filter: blur(5px);
+            }
+
+            .captcha-refresh-btn:hover {
+                background: rgba(76, 201, 240, 0.2);
+                color: white;
+                border-color: #4cc9f0;
+                transform: rotate(90deg);
+            }
+
+            .captcha-refresh-btn i {
+                font-size: 18px;
+            }
+
+            /* 错误提示 */
+            .captcha-error {
+                color: #ff6b6b;
+                font-size: 12px;
+                margin-top: 6px;
+                padding-left: 5px;
+                display: none;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            }
+
+            .captcha-error.show {
+                display: block;
+                animation: fadeIn 0.3s ease;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            /* 提交按钮 */
+            .submit-btn {
+                width: 100%;
+                height: 52px;
+                background: linear-gradient(135deg, #26d0ce, #1a2980);
+                color: white;
+                border: none;
+                border-radius: 12px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .submit-btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.7s;
+            }
+
+            .submit-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px rgba(67, 97, 238, 0.4);
+            }
+
+
+            .submit-btn:hover::before {
+                left: 100%;
+            }
+
+            .submit-btn:active {
+                transform: translateY(0);
+            }
+
+            .submit-btn i {
+                transition: transform 0.3s ease;
+            }
+
+            .submit-btn:hover i {
+                transform: translateX(5px);
+            }
+
+            /* 底部链接 */
+            .login-footer {
+                text-align: center;
+                padding-top: 25px;
+                margin-top: 25px;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            /* 从 login背景提取.html 提取的样式 */
+            .forgot-password {
+                margin-top: 10px;
+                color: #4cc9f0;
+                text-decoration: none;
+            }
+
+            .forgot-password:hover,
+            .forgot-password:active,
+            .forgot-password:focus {
+                color: #fff;
+                text-decoration: underline;
+            }
+
+            /* 隐藏字段 */
+            .hidden-field {
+                display: none;
+            }
+
+            /* 响应式调整 */
+            @media (max-width: 480px) {
+                .login-container {
+                    max-width: 90%;
+                    padding: 30px 20px;
+                    margin: 20px auto;
+                }
+
+                .captcha-container {
+                    flex-wrap: wrap;
+                }
+
+                .captcha-input-wrapper {
+                    flex: 1 0 100%;
+                    margin-bottom: 12px;
+                }
+
+                .captcha-image-container {
+                    width: 120px;
+                }
+
+                .input-icon {
+                    font-size: 16px; /* 移动端稍微减小图标 */
+                }
+            }
+
+            /* 成功和错误状态 */
+            .input-success {
+                border-color: #4cd964 !important;
+                box-shadow: 0 0 0 2px rgba(76, 217, 100, 0.2) !important;
+            }
+
+            .input-error {
+                border-color: #ff6b6b !important;
+                box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2) !important;
+            }
+
+            /* 键盘提示 */
+            .keyboard-hint {
+                font-size: 12px;
+                color: rgba(255, 255, 255, 0.7);
+                margin-top: 6px;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                margin-left: 5px;
+                text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+            }
+
+            /* 主容器 */
+            .main-wrapper {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                padding: 20px;
+                position: relative;
+            }
+
+            /* 新增：输入框内容检测类 */
+            .has-content {
+                border-color: rgba(255, 255, 255, 0.4);
+            }
+        </style>
+    {% endblock %}
+
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+<!-- 动态背景容器 -->
+<div id="dynamic-bg"></div>
+
+<!-- Particles.js 容器 -->
+<div id="particles-js"></div>
+
+<div class="main-wrapper">
+    <div class="login-container">
+        <div class="login-header">
+            <div class="login-logo">
+                <i class="fas fa-cogs"></i>
+            </div>
+            <h1 class="login-title">奇奇管理平台</h1>
+            <p class="login-subtitle">{% trans "安全登录 · 智慧管理" %}</p>
+        </div>
+
+        {% if form.non_field_errors %}
+            <div style="background: rgba(255, 107, 107, 0.1); color: #ff6b6b; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; border: 1px solid rgba(255, 107, 107, 0.3);">
+                {% for error in form.non_field_errors %}
+                    <i class="fas fa-exclamation-circle"></i> {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" action="{{ app_path }}" id="login-form">
+            {% csrf_token %}
+
+            <div class="input-group">
+                <label class="input-label">{% trans "用户名" %}</label>
+                <div class="input-wrapper" id="username-wrapper">
+                    <div class="input-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <input type="text" name="username" class="form-input"
+                           placeholder="{% trans '请输入用户名' %}"
+                           required autofocus id="username-input">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">{% trans "密码" %}</label>
+                <div class="input-wrapper" id="password-wrapper">
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <input type="password" name="password" class="form-input"
+                           placeholder="{% trans '请输入密码' %}"
+                           required id="password-input">
+                </div>
+                <div class="keyboard-hint">
+                    <i class="fas fa-keyboard"></i>
+                    {% trans "按Enter键快速提交" %}
+                </div>
+            </div>
+
+            <!-- 优化后的验证码区域 -->
+            <div class="captcha-group">
+                <div class="captcha-label">
+                    <span class="captcha-label-text">{% trans "验证码" %}</span>
+                    <span class="captcha-refresh-tip" id="refresh-tip">
+                            <i class="fas fa-sync-alt"></i>
+                            {% trans "点击刷新" %}
+                        </span>
+                </div>
+
+                <div class="captcha-container">
+                    <div class="captcha-input-wrapper">
+                        <input type="text" name="captcha_1" id="id_captcha_1"
+                               class="captcha-input"
+                               placeholder="{% trans '输入验证码' %}"
+                               autocomplete="off"
+                               maxlength="8"
+                               pattern="[A-Za-z0-9]+"
+                               title="{% trans '请输入验证码' %}">
+                    </div>
+
+                    <div class="captcha-image-container" id="captcha-image-container"
+                         title="{% trans '点击刷新验证码' %}">
+                        <div class="captcha-loading" id="captcha-loading">
+                            <i class="fas fa-spinner"></i>
+                            <span>{% trans "加载中..." %}</span>
+                        </div>
+                        <img id="captcha-image" class="captcha-image" style="display: none;">
+                    </div>
+
+                    <button type="button" class="captcha-refresh-btn" id="captcha-refresh-btn"
+                            title="{% trans '刷新验证码' %}">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                </div>
+
+                <div id="captcha-error" class="captcha-error"></div>
+                <input type="hidden" name="captcha_0" id="id_captcha_0" class="hidden-field">
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <span>{% trans "登录系统" %}</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+
+            <input type="hidden" name="next" value="{{ next }}">
+        </form>
+
+        {% if password_reset_url %}
+            <div class="login-footer">
+                <a href="{{ password_reset_url }}" class="forgot-password">
+                    <i class="fas fa-question-circle"></i>
+                    {% trans "忘记密码？" %}
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% block js %}
+    <!-- 引入jQuery -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Particles.js 脚本 -->
+    <script type="text/javascript" src="{% static 'admin/simpleui-x/particles/particles.js' %}"></script>
+    <script type="text/javascript" src="{% static 'admin/simpleui-x/particles/app.js' %}"></script>
+
+    <script>
+        $(document).ready(function () {
+            console.log('奇奇管理平台登录页面加载');
+
+            // 初始化动态背景
+            initDynamicBackground();
+
+            // 初始化验证码
+            loadCaptcha();
+
+            // 点击验证码图片刷新
+            $('#captcha-image-container').click(function (e) {
+                e.preventDefault();
+                loadCaptcha();
+            });
+
+            // 点击刷新按钮刷新
+            $('#captcha-refresh-btn, #refresh-tip').click(function (e) {
+                e.preventDefault();
+                loadCaptcha();
+            });
+
+            // 验证码输入框事件
+            $('#id_captcha_1').on('input', function () {
+                validateCaptchaInput();
+            });
+
+            // 用户名和密码输入框事件 - 检测内容变化
+            $('#username-input, #password-input').on('input', function () {
+                var $input = $(this);
+                var $wrapper = $input.closest('.input-wrapper');
+
+                if ($input.val().trim().length > 0) {
+                    $wrapper.addClass('has-content');
+                    $input.addClass('has-content');
+                } else {
+                    $wrapper.removeClass('has-content');
+                    $input.removeClass('has-content');
+                }
+            });
+
+            // 初始化检查用户名和密码输入框
+            $('#username-input, #password-input').each(function () {
+                var $input = $(this);
+                var $wrapper = $input.closest('.input-wrapper');
+
+                if ($input.val().trim().length > 0) {
+                    $wrapper.addClass('has-content');
+                    $input.addClass('has-content');
+                }
+            });
+
+            // 动态背景初始化
+            function initDynamicBackground() {
+                const bgContainer = $('#dynamic-bg');
+                const colors = [
+                    'linear-gradient(135deg, #1a2980, #26d0ce)',
+                    'linear-gradient(135deg, #0f2027, #203a43, #2c5364)',
+                    'linear-gradient(135deg, #1e3c72, #2a5298)',
+                    'linear-gradient(135deg, #16222a, #3a6073)'
+                ];
+
+                // 设置初始背景
+                bgContainer.css('background', colors[0]);
+
+                // 创建浮动粒子
+                createFloatingParticles();
+            }
+
+            // 创建浮动粒子效果
+            function createFloatingParticles() {
+                const container = $('#dynamic-bg');
+
+                for (let i = 0; i < 15; i++) {
+                    const particle = $('<div class="particle"></div>');
+                    particle.css({
+                        position: 'absolute',
+                        width: Math.random() * 100 + 50 + 'px',
+                        height: Math.random() * 100 + 50 + 'px',
+                        background: `radial-gradient(circle, rgba(255, 255, 255, ${Math.random() * 0.05}), transparent 70%)`,
+                        borderRadius: '50%',
+                        left: Math.random() * 100 + '%',
+                        top: Math.random() * 100 + '%',
+                        opacity: Math.random() * 0.3 + 0.1,
+                        zIndex: -1
+                    });
+
+                    container.append(particle);
+
+                    // 添加浮动动画
+                    animateParticle(particle);
+                }
+            }
+
+            // 粒子浮动动画
+            function animateParticle(element) {
+                const duration = Math.random() * 20000 + 20000; // 20-40秒
+                const xDistance = Math.random() * 100 - 50;
+                const yDistance = Math.random() * 100 - 50;
+
+                element.animate({
+                    left: '+=' + xDistance + '%',
+                    top: '+=' + yDistance + '%',
+                    opacity: Math.random() * 0.3 + 0.1
+                }, duration, 'linear', function () {
+                    // 反向动画
+                    element.animate({
+                        left: '-=' + xDistance + '%',
+                        top: '-=' + yDistance + '%',
+                        opacity: Math.random() * 0.3 + 0.1
+                    }, duration, 'linear', function () {
+                        // 循环
+                        animateParticle(element);
+                    });
+                });
+            }
+
+            // 加载验证码函数
+            function loadCaptcha() {
+                console.log('加载验证码...');
+
+                // 显示加载状态
+                $('#captcha-loading').show();
+                $('#captcha-image').hide();
+
+                // 添加加载动画
+                $('#captcha-refresh-btn i').addClass('fa-spin');
+
+                // 清除错误提示
+                clearCaptchaError();
+
+                // 使用django-simple-captcha的刷新端点
+                $.ajax({
+                    url: '/captcha/refresh/',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (result) {
+                        console.log('验证码响应:', result);
+
+                        if (result && result.image_url) {
+                            // 预加载图片
+                            var img = new Image();
+                            img.onload = function () {
+                                // 图片加载完成后显示
+                                $('#captcha-image').attr('src', result.image_url).show();
+                                $('#captcha-loading').hide();
+                                $('#captcha-refresh-btn i').removeClass('fa-spin');
+
+                                // 添加显示动画
+                                $('#captcha-image').css({
+                                    'opacity': '0',
+                                    'transform': 'scale(0.9)'
+                                }).animate({
+                                    'opacity': '1',
+                                    'transform': 'scale(1)'
+                                }, 300);
+
+                                // 容器动画
+                                $('#captcha-image-container').css({
+                                    'transform': 'scale(1.02)'
+                                });
+                                setTimeout(function () {
+                                    $('#captcha-image-container').css('transform', 'scale(1)');
+                                }, 300);
+                            };
+                            img.onerror = function () {
+                                // 图片加载失败
+                                $('#captcha-loading').html('<i class="fas fa-exclamation-triangle"></i> {% trans "加载失败" %}');
+                                $('#captcha-refresh-btn i').removeClass('fa-spin');
+                                showCaptchaError('{% trans "验证码图片加载失败" %}');
+                            };
+                            img.src = result.image_url;
+
+                            // 更新隐藏的key字段
+                            $('#id_captcha_0').val(result.key);
+
+                            // 清空验证码输入框并聚焦
+                            $('#id_captcha_1').val('').removeClass('input-success input-error').focus();
+                        } else {
+                            console.error('无效的验证码响应:', result);
+                            $('#captcha-loading').html('<i class="fas fa-exclamation-triangle"></i> {% trans "错误" %}');
+                            $('#captcha-refresh-btn i').removeClass('fa-spin');
+                            showCaptchaError('{% trans "获取验证码失败" %}');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX错误:', error);
+                        $('#captcha-loading').html('<i class="fas fa-unlink"></i> {% trans "网络错误" %}');
+                        $('#captcha-refresh-btn i').removeClass('fa-spin');
+                        showCaptchaError('{% trans "网络错误，请重试" %}');
+                    }
+                });
+            }
+
+            // 验证验证码输入
+            function validateCaptchaInput() {
+                var input = $('#id_captcha_1');
+                var value = input.val().trim();
+
+                input.removeClass('input-success input-error');
+
+                if (value.length === 0) {
+                    clearCaptchaError();
+                    return;
+                }
+
+                // 验证输入格式（只允许字母和数字）
+                if (!/^[A-Za-z0-9]+$/.test(value)) {
+                    input.addClass('input-error');
+                    showCaptchaError('{% trans "只允许输入字母和数字" %}');
+                    return;
+                }
+
+                // 验证长度
+                if (value.length < 4) {
+                    input.addClass('input-error');
+                    showCaptchaError('{% trans "验证码至少需要4个字符" %}');
+                    return;
+                }
+
+                // 输入有效
+                input.addClass('input-success');
+                clearCaptchaError();
+            }
+
+            // 显示验证码错误
+            function showCaptchaError(message) {
+                $('#captcha-error').text(message).addClass('show');
+            }
+
+            // 清除验证码错误
+            function clearCaptchaError() {
+                $('#captcha-error').removeClass('show').text('');
+            }
+
+            // 表单提交验证
+            $('#login-form').submit(function (e) {
+                var captchaInput = $('#id_captcha_1').val().trim();
+                var captchaKey = $('#id_captcha_0').val();
+
+                // 验证用户名
+                var username = $('input[name="username"]').val().trim();
+                if (!username) {
+                    e.preventDefault();
+                    showCaptchaError('{% trans "请输入用户名" %}');
+                    $('input[name="username"]').focus().addClass('input-error');
+                    return false;
+                }
+
+                // 验证密码
+                var password = $('input[name="password"]').val().trim();
+                if (!password) {
+                    e.preventDefault();
+                    showCaptchaError('{% trans "请输入密码" %}');
+                    $('input[name="password"]').focus().addClass('input-error');
+                    return false;
+                }
+
+                // 验证验证码
+                if (!captchaInput) {
+                    e.preventDefault();
+                    showCaptchaError('{% trans "请输入验证码" %}');
+                    $('#id_captcha_1').focus().addClass('input-error');
+                    return false;
+                }
+
+                if (!captchaKey) {
+                    e.preventDefault();
+                    loadCaptcha();
+                    showCaptchaError('{% trans "验证码已过期，正在刷新..." %}');
+                    return false;
+                }
+
+                // 验证输入格式
+                if (!/^[A-Za-z0-9]+$/.test(captchaInput)) {
+                    e.preventDefault();
+                    showCaptchaError('{% trans "验证码格式错误" %}');
+                    $('#id_captcha_1').focus().addClass('input-error');
+                    return false;
+                }
+
+                // 验证长度
+                if (captchaInput.length < 4) {
+                    e.preventDefault();
+                    showCaptchaError('{% trans "验证码太短" %}');
+                    $('#id_captcha_1').focus().addClass('input-error');
+                    return false;
+                }
+
+                // 表单验证通过
+                $('.submit-btn').attr('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> {% trans "登录中..." %}');
+                return true;
+            });
+
+            // 回车键提交表单
+            $(document).on('keypress', function (e) {
+                if (e.which === 13) {
+                    // 检查焦点是否在输入框中
+                    if ($(e.target).is('input')) {
+                        e.preventDefault();
+                        $('#login-form').submit();
+                    }
+                }
+            });
+
+            // 自动获取验证码
+            setTimeout(function () {
+                if (!$('#id_captcha_0').val()) {
+                    loadCaptcha();
+                }
+            }, 500);
+
+            // 页面加载动画
+            setTimeout(function () {
+                $('.login-container').css({
+                    'opacity': '1',
+                    'transform': 'translateY(0)'
+                });
+            }, 100);
+        });
+
+        // 页面初始动画
+        $(window).on('load', function () {
+            $('.login-container').css({
+                'opacity': '0',
+                'transform': 'translateY(20px)',
+                'transition': 'opacity 0.6s, transform 0.6s'
+            });
+        });
+    </script>
+{% endblock %}
+</body>
+</html>
