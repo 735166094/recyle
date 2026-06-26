@@ -1,0 +1,8 @@
+{
+  "usingComponents": {},
+  "navigationBarTitleText": "识别历史",
+  "backgroundTextStyle": "light",
+  "navigationBarBackgroundColor": "#09BB07",
+  "navigationBarTextStyle": "white",
+  "enablePullDownRefresh": true
+}

@@ -1,0 +1,121 @@
+<!-- pages/ocr/settings/settings.wxml -->
+<view class="setting-container">
+  <!-- 拍照设置 -->
+  <view class="setting-item">
+    <view class="setting-label">
+      <text class="label-text">拍照后预览确认</text>
+      <text class="label-desc">开启后，拍照完成会显示预览并询问是否保存</text>
+    </view>
+    <switch 
+      class="setting-switch"
+      checked="{{previewAfterCapture}}"
+      bindchange="onPreviewSettingChange"
+    />
+  </view>
+  
+  <view class="setting-hint" wx:if="{{!previewAfterCapture}}">
+    <text class="hint-icon">⚠️</text>
+    <text class="hint-text">关闭后将进入连续拍摄模式，所有照片将自动保存</text>
+  </view>
+
+  <!-- 清除缓存 -->
+  <view class="setting-item" bindtap="showClearCacheModal">
+    <view class="setting-label">
+      <text class="label-text">清除缓存</text>
+      <text class="label-desc">清除识别历史、临时图片和本地数据</text>
+    </view>
+    <view class="cache-info">
+      <text class="cache-size">{{cacheSize}}</text>
+      <text class="iconfont icon-arrow-right"></text>
+    </view>
+  </view>
+
+  <!-- 用户协议 -->
+  <view class="setting-item" bindtap="navigateToAgreement">
+    <view class="setting-label">
+      <text class="label-text">用户协议</text>
+      <text class="label-desc">应用使用条款和服务协议</text>
+    </view>
+    <text class="iconfont icon-arrow-right"></text>
+  </view>
+
+  <!-- 隐私政策 -->
+  <view class="setting-item" bindtap="navigateToPrivacy">
+    <view class="setting-label">
+      <text class="label-text">隐私政策</text>
+      <text class="label-desc">查看应用隐私权限及数据处理说明</text>
+    </view>
+    <text class="iconfont icon-arrow-right"></text>
+  </view>
+
+  <!-- 关于我们 -->
+  <view class="setting-item" bindtap="navigateToAbout">
+    <view class="setting-label">
+      <text class="label-text">关于我们</text>
+      <text class="label-desc">应用介绍及联系方式</text>
+    </view>
+    <text class="iconfont icon-arrow-right"></text>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="setting-item">
+    <view class="setting-label">
+      <text class="label-text">版本信息</text>
+      <text class="label-desc">当前版本 {{version}}</text>
+    </view>
+    <text class="version-text">{{version}}</text>
+  </view>
+
+  <!-- 清除缓存确认弹窗 -->
+  <view class="modal-mask" wx:if="{{showClearCacheModal}}">
+    <view class="modal-container">
+      <view class="modal-header">
+        <text class="modal-title">清除缓存</text>
+      </view>
+      <view class="modal-content">
+        <text class="modal-text">确定要清除所有缓存数据吗？</text>
+        <text class="modal-subtext">这将删除以下数据：</text>
+        <view class="clear-list">
+          <view class="clear-item">
+            <text class="iconfont icon-yes"></text>
+            <text class="clear-text">识别历史记录</text>
+          </view>
+          <view class="clear-item">
+            <text class="iconfont icon-yes"></text>
+            <text class="clear-text">临时图片文件</text>
+          </view>
+          <view class="clear-item">
+            <text class="iconfont icon-yes"></text>
+            <text class="clear-text">本地设置缓存</text>
+          </view>
+          <view class="clear-item">
+            <text class="iconfont icon-warning" style="color: #999;"></text>
+            <text class="clear-text" style="color: #999;">用户登录信息（将保留）</text>
+          </view>
+        </view>
+      </view>
+      <view class="modal-actions">
+        <button class="modal-btn modal-btn-cancel" bindtap="hideClearCacheModal">取消</button>
+        <button class="modal-btn modal-btn-confirm" bindtap="confirmClearCache">确定清除</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 清除进度弹窗 -->
+  <view class="modal-mask" wx:if="{{showProgressModal}}">
+    <view class="modal-container">
+      <view class="modal-header">
+        <text class="modal-title">清除缓存</text>
+      </view>
+      <view class="modal-content">
+        <view class="progress-container">
+          <view class="progress-bar">
+            <view class="progress-inner" style="width: {{clearProgress}}+'%'"></view>
+          </view>
+          <text class="progress-text">{{clearProgress}}%</text>
+        </view>
+        <text class="progress-status">{{clearStatus}}</text>
+      </view>
+    </view>
+  </view>
+</view>

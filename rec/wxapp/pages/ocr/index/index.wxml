@@ -1,0 +1,391 @@
+<view class="containers">
+  <!-- 顶部导航 -->
+  <view class="navigation">
+    <text class="navigation-title">OCR识别</text>
+    <view class="spaceline" />
+
+    <view class="nav-buttons">
+      <view class="left-buttons">
+        <view class="nav-btn" bindtap="goToBack">
+          <text class="iconfont icon-back"></text>
+        </view>
+        <view class="nav-btn" bindtap="goToHome">
+          <text class="iconfont icon-home"></text>
+        </view>
+      </view>
+      <view class="right-buttons">
+        <view class="nav-btn" bindtap="goToSetting">
+          <text class="iconfont icon-setting"></text>
+        </view>
+        <view class="nav-btn" bindtap="goToHistory">
+          <text class="iconfont icon-history"></text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 标题介绍 -->
+  <view class="head-title">
+    <text class="iconfont icon-OCR" />
+    <text class="head-text">OCR识别工具</text>
+    <text class="head-desc">可识别证件类工具，支持车辆VIN码查询，行驶证、身份证、营业执照等证件识别</text>
+  </view>
+
+
+  <!-- VIN码查询区域 -->
+  <view class="vin-search-section">
+    <view class="section-title">
+      <text class="iconfont icon-car"></text>
+      <text class="section-title-text">VIN码查询</text>
+    </view>
+
+    <view class="vin-search-row">
+      <view class="input-item">
+        <text class="iconfont icon-vin"></text>
+        <input class="input-field" type="text" placeholder="请输入17位VIN码" maxlength="17" value="{{vinCode}}" bindinput="onVinInput" bindconfirm="handleVinSearch" confirm-type="search" />
+      </view>
+      <view class="search-btn" bindtap="searchVin" hover-class="btn-hover" loading="{{isSearchingVin}}" disabled="{{isSearchingVin || !vinCode || vinCode.length !== 17}}">
+        <text class="iconfont icon-search"></text>
+        <text class="btn-text">{{isSearchingVin ? '查询中...' : '查询'}}</text>
+      </view>
+    </view>
+
+    <!-- VIN码提示 -->
+    <view class="vin-tips" wx:if="{{vinCode && vinCode.length !== 17}}">
+      <text class="tip-text">VIN码应为17位字符，当前{{vinCode.length}}位</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-section" wx:if="{{isSearchingVin}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">VIN码查询中...</text>
+  </view>
+
+  <!-- VIN码查询结果 -->
+  <view class="vin-result-section" wx:if="{{vinResult && vinResult.success}}">
+    <view class="result-header">
+      <text class="result-title">VIN码查询结果</text>
+      <view class="result-meta">
+        <view class="result-status success">查询成功</view>
+        <text class="result-time">处理时间: {{vinResult.processing_time}}秒</text>
+      </view>
+    </view>
+    <!-- 添加复制按钮 -->
+    <view class="copy-actions">
+      <view class="copy-btn" bindtap="copyVinResult">
+        <text class="iconfont icon-copy"></text>
+        <!-- <text>复制</text> -->
+      </view>
+      <view class="copy-btn" bindtap="clearVinResult" style="background: #ff4d4f; margin-left: 10rpx;">
+        <text class="iconfont icon-clear"></text>
+        <!-- <text>清空</text> -->
+      </view>
+    </view>
+
+    <!-- 基本信息 -->
+    <view class="result-card">
+      <view class="card-header">
+        <text class="iconfont icon-info"></text>
+        <text class="card-title">基本信息</text>
+      </view>
+      <view class="card-content">
+        <view class="info-item" wx:if="{{vinResult.basic_info.brand}}">
+          <text class="info-label">品牌:</text>
+          <text class="info-value">{{vinResult.basic_info.brand}}</text>
+          <view class="copy-btn" bindtap="copyToClipboard" data-text="{{vinResult.basic_info.brand}}">
+            <text class="iconfont icon-copy"></text>
+          </view>
+        </view>
+        <view class="info-item" wx:if="{{vinResult.basic_info.model_year}}">
+          <text class="info-label">生产年份:</text>
+          <text class="info-value">{{vinResult.basic_info.model_year}}</text>
+          <view class="copy-btn" bindtap="copyToClipboard" data-text="{{vinResult.basic_info.model_year}}">
+            <text class="iconfont icon-copy"></text>
+          </view>
+        </view>
+        <view class="info-item" wx:if="{{vinResult.basic_info.build_date}}">
+          <text class="info-label">生产日期:</text>
+          <text class="info-value">{{vinResult.basic_info.build_date}}</text>
+          <view class="copy-btn" bindtap="copyToClipboard" data-text="{{vinResult.basic_info.build_date}}">
+            <text class="iconfont icon-copy"></text>
+          </view>
+        </view>
+        <view class="info-item" wx:if="{{vinResult.basic_info.epc_cn}}">
+          <text class="info-label">品牌中文:</text>
+          <text class="info-value">{{vinResult.basic_info.epc_cn}}</text>
+          <view class="copy-btn" bindtap="copyToClipboard" data-text="{{vinResult.basic_info.epc_cn}}">
+            <text class="iconfont icon-copy"></text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 车型信息 -->
+    <view class="result-card" wx:if="{{vinResult.models && vinResult.models.length > 0}}">
+      <view class="card-header">
+        <text class="iconfont icon-car"></text>
+        <text class="card-title">车型信息 ({{vinResult.model_count}}个)</text>
+      </view>
+      <view class="card-content">
+        <view class="model-list">
+          <view class="model-item" wx:for="{{vinResult.models}}" wx:key="index" wx:for-index="modelIndex">
+            <view class="model-header">
+              <text class="model-title">车型 {{modelIndex + 1}}</text>
+              <view class="copy-btn" bindtap="copyModelInfo" data-modelindex="{{modelIndex}}">
+                <text class="iconfont icon-copy"></text>
+                <!-- <text>复制</text> -->
+              </view>
+            </view>
+            <view class="model-details">
+              <view class="info-item" wx:if="{{item.model_detail}}">
+                <text class="info-label">车型:</text>
+                <text class="info-value">{{item.model_detail}}</text>
+                <view class="copy-btn" bindtap="copyToClipboard" data-text="{{item.model_detail}}">
+                  <text class="iconfont icon-copy"></text>
+                </view>
+              </view>
+              <view class="info-item" wx:if="{{item.factory}}">
+                <text class="info-label">厂家:</text>
+                <text class="info-value">{{item.factory}}</text>
+              </view>
+              <view class="info-item" wx:if="{{item.series}}">
+                <text class="info-label">车系:</text>
+                <text class="info-value">{{item.series}}</text>
+              </view>
+              <view class="info-item" wx:if="{{item.sales_version}}">
+                <text class="info-label">销售版本:</text>
+                <text class="info-value">{{item.sales_version}}</text>
+              </view>
+              <view class="info-item" wx:if="{{item.cc}}">
+                <text class="info-label">排量:</text>
+                <text class="info-value">{{item.cc}}cc</text>
+              </view>
+              <view class="info-item" wx:if="{{item.engine_no}}">
+                <text class="info-label">发动机:</text>
+                <text class="info-value">{{item.engine_no}}</text>
+              </view>
+              <view class="info-item" wx:if="{{item.price}}">
+                <text class="info-label">参考价格:</text>
+                <text class="info-value">{{item.price}}元</text>
+              </view>
+            </view>
+
+            <!-- 车型图片 -->
+            <view class="model-images" wx:if="{{item.images && item.images.length > 0}}">
+              <view class="images-title">
+                <text class="iconfont icon-image"></text>
+                <text class="images-title-text">车型图片</text>
+              </view>
+              <scroll-view class="images-scroll" scroll-x="true">
+                <view class="images-container">
+                  <view class="image-wrapper" wx:for="{{item.images}}" wx:key="*this" wx:for-item="imageUrl" wx:for-index="imgIndex">
+                    <image class="model-image" src="{{imageUrl}}" mode="aspectFill" bindtap="previewModelImage" data-modelindex="{{modelIndex}}" data-imageindex="{{imgIndex}}"></image>
+                  </view>
+                </view>
+              </scroll-view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 主要属性 -->
+    <view class="result-card" wx:if="{{vinResult.main_attributes && vinResult.main_attributes.length > 0}}">
+      <view class="card-header">
+        <text class="iconfont icon-attribute"></text>
+        <text class="card-title">主要属性</text>
+      </view>
+      <view class="card-content">
+        <view class="attributes-grid">
+          <view class="attribute-item" wx:for="{{vinResult.main_attributes}}" wx:key="name">
+            <text class="attribute-label">{{item.name}}:</text>
+            <text class="attribute-value">{{item.value}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+  </view>
+
+  <!-- 查询失败提示 -->
+  <view class="error-card" wx:if="{{vinError}}">
+    <view class="error-header">
+      <text class="iconfont icon-error"></text>
+      <text class="error-title">查询失败</text>
+    </view>
+    <view class="error-content">
+      <text class="error-message">{{vinError}}</text>
+
+    </view>
+  </view>
+
+
+
+  <!-- 功能区 -->
+  <view class="mode-section">
+    <!-- 拍照识别功能按钮 -->
+    <view class="mode-btn" bindtap="takePhoto">
+      <text class="iconfont icon-camera" />
+      <text class="mode-btn_text">拍照识别</text>
+    </view>
+
+    <!-- 上传照片功能按钮 -->
+    <view class="mode-btn mode-btn--secondary" bindtap="chooseImage">
+      <text class="iconfont icon-album" />
+      <text class="mode-btn_text">上传识别</text>
+    </view>
+  </view>
+
+  <!-- 识别类型选择 -->
+  <view class="ocr-type-selector" wx:if="{{certificateTypeNames.length > 0}}">
+    <picker bindchange="bindTypeChange" value="{{selectedTypeIndex}}" range="{{certificateTypeNames}}">
+      <view class="picker-view">
+        <text class="picker-label">识别类型：</text>
+        <text class="picker-value">{{certificateTypeNames[selectedTypeIndex]}}</text>
+        <text class="iconfont icon-down picker-arrow"></text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 如果没有证件类型数据，显示提示 -->
+  <view class="ocr-type-selector" wx:if="{{certificateTypeNames.length === 0 && !isLoading}}">
+    <view class="picker-view picker-error">
+      <text>暂无识别类型可用</text>
+    </view>
+  </view>
+
+  <!-- 全屏相机界面 -->
+  <view class="camera-container" wx:if="{{showCamera}}">
+    <camera class="camera" device-position="{{isBackCamera ? 'back' : 'front'}}" flash="off" binderror="cameraError"></camera>
+
+    <!-- 相机控制区域 -->
+    <view class="camera-controls">
+      <!-- 翻转相机 -->
+      <view class="camera-btn switch-camera" bindtap="switchCamera">
+        <text class="iconfont icon-switchcreame"></text>
+      </view>
+
+      <!-- 拍照 -->
+      <view class="camera-btn take-photo" bindtap="capturePhoto">
+        <view class="btn-inner"></view>
+      </view>
+
+      <!-- 关闭相机 -->
+      <view class="camera-btn close-camera" bindtap="closeCamera">
+        <text class="iconfont icon-close"></text>
+      </view>
+    </view>
+
+    <!-- 拍照后预览确认界面 -->
+    <view class="photo-preview" wx:if="{{showPhotoPreview}}">
+      <image class="preview-img" src="{{currentPreviewImage}}" mode="aspectFit"></image>
+      <view class="preview-actions">
+        <view class="preview-btn cancel" bindtap="discardPhoto">
+          <text class="iconfont icon-close"></text>
+        </view>
+        <view class="preview-btn confirm" bindtap="savePhoto">
+          <text class="iconfont icon-yes"></text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 图片预览区域 -->
+  <view class="preview-area" wx:if="{{tempImagePaths.length > 0}}">
+    <view class="preview-title">
+      <text>已选择 {{tempImagePaths.length}} 张照片</text>
+      <text class="clear-all" bindtap="clearAllImages">清空全部</text>
+    </view>
+
+    <!-- 多图网格展示 -->
+    <view class="preview-grid">
+      <view class="preview-item" wx:for="{{tempImagePaths}}" wx:key="*this">
+        <view class="image-wrapper">
+          <image class="preview-image" src="{{item}}" mode="aspectFill" bindtap="previewFullImage" data-index="{{index}}"></image>
+          <view class="delete-btn" bindtap="deleteImage" data-index="{{index}}">
+            <text class="iconfont icon-close"></text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 开始识别按钮 -->
+    <view class="upload-action-section">
+      <button class="upload-btn primary" bindtap="uploadImage" loading="{{isLoading}}" disabled="{{isLoading || tempImagePaths.length === 0}}">
+        {{isLoading ? '识别中...' : '开始识别'}}({{tempImagePaths.length}}张)
+      </button>
+    </view>
+  </view>
+
+  <!-- 上传进度提示 -->
+  <view class="upload-progress" wx:if="{{isLoading}}">
+    <view class="progress-bar">
+      <view class="progress" style="width: {{uploadProgress + '%'}}"></view>
+    </view>
+    <text class="progress-text">正在处理第{{currentUploadIndex+1}}/{{tempImagePaths.length}}张...</text>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-section" wx:if="{{isLoading && certificateTypeNames.length === 0}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载识别类型中...</text>
+  </view>
+
+  <!-- 识别结果区域 -->
+  <view class="result-area" wx:if="{{batchResult}}">
+    <view class="result-header">
+      <text class="result-title">识别完成</text>
+      <view class="result-meta">
+        <view class="result-status {{batchResult.failCount === 0 ? 'success' : 'error'}}">
+          {{batchResult.failCount === 0 ? '全部成功' : '识别失败'}}
+        </view>
+      </view>
+    </view>
+
+    <view class="result-content">
+      <!-- 识别统计信息 -->
+      <view class="result-header-item">
+        <text class="result-label">识别结果统计</text>
+        <text class="result-value">成功: {{batchResult.successCount}}/{{batchResult.totalCount}}张</text>
+        <text class="result-value" wx:if="{{batchResult.failCount > 0}}">失败: {{batchResult.failCount}}/{{batchResult.totalCount}}张</text>
+      </view>
+
+      <!-- 失败图片列表 -->
+      <view wx:if="{{batchResult.failImagePaths && batchResult.failImagePaths.length > 0}}">
+        <view class="result-header-item">
+          <text class="result-label">识别失败的图片</text>
+          <text class="result-value">以下{{batchResult.failImagePaths.length}}张图片识别失败：</text>
+        </view>
+
+        <view class="preview-grid">
+          <view class="preview-item" wx:for="{{batchResult.failImagePaths}}" wx:key="*this">
+            <view class="image-wrapper">
+              <image class="preview-image" src="{{item}}" mode="aspectFill" bindtap="previewFullImage" data-index="{{index}}"></image>
+              <view class="delete-btn" style="background-color: rgba(255, 77, 79, 0.9);">
+                <text class="iconfont icon-close"></text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 成功提示 -->
+      <view wx:if="{{batchResult.failCount === 0}}" class="result-header-item">
+        <text class="result-value" style="color: #52c41a; text-align: center;">所有图片识别完成！</text>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="result-actions">
+      <button class="btn primary" bindtap="goToHistory">
+        <text class="iconfont icon-detail"></text> 查看详情
+      </button>
+    </view>
+  </view>
+
+  <!-- 错误提示 -->
+  <view class="error-message" wx:if="{{errorMessage}}">
+    <text>{{errorMessage}}</text>
+  </view>
+</view>

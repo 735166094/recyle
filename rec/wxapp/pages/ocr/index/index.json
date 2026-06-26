@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "OCR识别",
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": false,
+  "usingComponents": {}
+}

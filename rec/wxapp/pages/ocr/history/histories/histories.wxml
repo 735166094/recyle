@@ -1,0 +1,137 @@
+<!-- pages/history/histories/histories.wxml -->
+<view class="history-container">
+  <!-- 筛选工具栏 -->
+  <view class="filter-toolbar">
+    <!-- 证件类型筛选 -->
+    <view class="filter-item">
+      <view class="filter-label">证件类型：</view>
+      <picker class="filter-picker" range="{{certificateTypeNames}}" value="{{selectedCertificateTypeIndex}}" bindchange="bindCertificateTypeChange">
+        <view class="picker-view">
+          <text class="picker-text">{{certificateTypeNames[selectedCertificateTypeIndex]}}</text>
+          <text class="iconfont icon-down picker-arrow"></text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 时间筛选 -->
+    <view class="filter-item">
+      <view class="filter-label">时间范围：</view>
+      <picker class="filter-picker" range="{{dateRange}}" value="{{selectedDateIndex}}" bindchange="bindDateRangeChange">
+        <view class="picker-view">
+          <text class="picker-text">{{dateRange[selectedDateIndex]}}</text>
+          <text class="iconfont icon-down picker-arrow"></text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 自定义日期选择 -->
+    <view class="filter-item custom-date" wx:if="{{showCustomDatePicker}}">
+      <view class="filter-label">自定义：</view>
+      <view class="date-inputs">
+        <view class="date-input">
+          <text class="date-label">从</text>
+          <picker mode="date" value="{{customStartDate}}" bindchange="bindCustomStartDateChange">
+            <view class="date-picker">{{customStartDate || '开始日期'}}</view>
+          </picker>
+        </view>
+        <view class="date-input">
+          <text class="date-label">至</text>
+          <picker mode="date" value="{{customEndDate}}" bindchange="bindCustomEndDateChange">
+            <view class="date-picker">{{customEndDate || '结束日期'}}</view>
+          </picker>
+        </view>
+      </view>
+    </view>
+
+    <!-- 筛选操作 -->
+    <view class="filter-actions">
+      <button class="filter-btn reset" bindtap="resetFilters">重置</button>
+      <button class="filter-btn apply" bindtap="applyFilters">应用筛选</button>
+    </view>
+  </view>
+
+  <!-- 当前筛选条件显示 -->
+  <view class="active-filters" wx:if="{{hasActiveFilters}}">
+    <view class="active-filter-tags">
+      <view class="filter-tag" wx:if="{{selectedCertificateTypeName}}">
+        <text>{{selectedCertificateTypeName}}</text>
+        <text class="iconfont icon-close" bindtap="removeCertificateTypeFilter"></text>
+      </view>
+      <view class="filter-tag" wx:if="{{selectedDateIndex > 0 && selectedDateIndex !== 4}}">
+        <text>{{dateRange[selectedDateIndex]}}</text>
+        <text class="iconfont icon-close" bindtap="removeDateFilter"></text>
+      </view>
+      <view class="filter-tag" wx:if="{{showCustomDatePicker && customStartDate && customEndDate}}">
+        <text>{{customStartDate}} 至 {{customEndDate}}</text>
+        <text class="iconfont icon-close" bindtap="removeCustomDateFilter"></text>
+      </view>
+    </view>
+    <!-- <view class="clear-all-filters" bindtap="resetFilters">清除所有</view> -->
+  </view>
+
+  <!-- 统计信息 -->
+  <view class="stats-info" wx:if="{{totalCount > 0}}">
+    <text>共找到 {{totalCount}} 条记录</text>
+    <text class="stats-time" wx:if="{{lastUpdateTime}}">更新时间: {{lastUpdateTime}}</text>
+  </view>
+
+  <!-- 历史记录列表 -->
+  <view class="history-list">
+    <view class="history-item" wx:for="{{historyRecords}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+      <view class="history-image">
+        <view class="status-badge {{item.recognition_status ? 'success' : 'error'}}">
+          {{item.recognition_status ? '成功' : '失败'}}
+        </view>
+      </view>
+      <view class="history-info">
+        <view class="history-type">
+          <text class="type-text">{{item.certificate_type_name || '未知类型'}}</text>
+          <text class="history-time">{{formatDateTime(item.created_at)}}</text>
+        </view>
+        <view class="history-desc">
+          <text>{{getRecordDescription(item)}}</text>
+        </view>
+        <view class="history-meta">
+          <text class="meta-item" wx:if="{{item.interface_used_name}}">
+            <text class="iconfont icon-api"></text>
+            {{item.interface_used_name}}
+          </text>
+        </view>
+      </view>
+      <view class="history-arrow">
+        <text class="iconfont icon-arrow-right"></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{hasMore && !isLoading}}">
+    <text bindtap="loadMoreRecords">加载更多</text>
+  </view>
+
+  <view class="load-more no-more" wx:if="{{!hasMore && historyRecords.length > 0}}">
+    <text>--- 没有更多记录了 ---</text>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{isLoading && historyRecords.length === 0}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!isLoading && historyRecords.length === 0}}">
+    <text class="empty-icon">📝</text>
+    <text class="empty-text" wx:if="{{hasActiveFilters}}">没有找到符合条件的记录</text>
+    <text class="empty-text" wx:else>暂无识别记录</text>
+    <text class="empty-tip" wx:if="{{hasActiveFilters}}">尝试调整筛选条件或<text class="reset-link" bindtap="resetFilters">重置筛选</text></text>
+    <button class="empty-btn" bindtap="goToHome">开始识别</button>
+  </view>
+
+  <!-- 错误状态 -->
+  <!-- <view class="error-state" wx:if="{{errorMessage}}">
+    <text class="error-icon">⚠️</text>
+    <text class="error-text">{{errorMessage}}</text>
+    <button class="retry-btn" bindtap="loadHistoryRecords">重新加载</button>
+  </view> -->
+</view>

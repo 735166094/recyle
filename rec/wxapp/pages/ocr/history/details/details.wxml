@@ -1,0 +1,109 @@
+<!-- pages/history/details/details.wxml -->
+<view class="detail-container">
+
+
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{isLoading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="error-state" wx:if="{{errorMessage && !isLoading}}">
+    <text class="error-icon">⚠️</text>
+    <text class="error-text">{{errorMessage}}</text>
+    <button class="retry-btn" bindtap="loadRecordDetail">重新加载</button>
+  </view>
+
+  <!-- 主要内容 -->
+  <view class="detail-content" wx:if="{{!isLoading && !errorMessage && recordDetail}}">
+    <!-- 识别信息头部 -->
+    <view class="detail-card detail-header">
+      <view class="detail-type">
+        <text class="type-icon" wx:if="{{recordDetail.certificate_type_name}}">
+          {{getTypeIcon(recordDetail.certificate_type_name)}}
+        </text>
+        <text>{{recordDetail.certificate_type_name || '未知类型'}}</text>
+      </view>
+      <view class="detail-time">
+        <text class="iconfont icon-time"></text>
+        <text>{{formatDateTime(recordDetail.created_at)}}</text>
+      </view>
+      <view class="detail-status {{recordDetail.recognition_status ? 'success' : 'error'}}">
+        {{recordDetail.recognition_status ? '识别成功' : '识别失败'}}
+      </view>
+    </view>
+
+    <!-- 图片预览区 -->
+    <view class="detail-card" wx:if="{{recordDetail.image_url}}">
+      <view class="result-title">
+        <text class="iconfont icon-image"></text>
+        <text>证件图片</text>
+      </view>
+      <view class="detail-image">
+        <image src="{{recordDetail.image_url}}" mode="widthFix" bindtap="previewImage"></image>
+      </view>
+    </view>
+
+    <!-- 识别结果 -->
+    <view class="detail-card">
+      <view class="result-title">
+        <text class="iconfont icon-result"></text>
+        <text>识别结果</text>
+      </view>
+      <view class="result-content">
+        <view class="result-item" wx:for="{{formattedResult}}" wx:key="key">
+          <view class="result-label">{{item.label}}</view>
+          <view class="result-value">{{item.value}}</view>
+        </view>
+
+        <!-- 空结果提示 -->
+        <view class="empty-result" wx:if="{{formattedResult.length <= 4}}">
+          <text class="iconfont icon-info"></text>
+          <text class="empty-text">未识别到有效信息，请确保图片清晰且包含完整的证件信息</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 接口信息 -->
+    <view class="detail-card" wx:if="{{recordDetail.interface_used_name}}">
+      <view class="result-title">
+        <text class="iconfont icon-api"></text>
+        <text>识别信息</text>
+      </view>
+      <view class="api-info">
+        <view class="info-item">
+          <text class="info-label">识别接口：</text>
+          <text class="info-value">{{recordDetail.interface_used_name}}</text>
+        </view>
+        <view class="info-item" wx:if="{{recordDetail.recognition_time}}">
+          <text class="info-label">处理时间：</text>
+          <text class="info-value">{{formatDateTime(recordDetail.recognition_time)}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮区 -->
+    <view class="detail-actions">
+      <button class="action-btn outline" bindtap="copyResult">
+        <text class="iconfont icon-copy"></text>
+        <text>复制结果</text>
+      </button>
+      <button class="action-btn primary" bindtap="reRecognize" wx:if="{{!recordDetail.recognition_status}}">
+        <text class="iconfont icon-refresh"></text>
+        <text>重新识别</text>
+      </button>
+      <button class="action-btn delete" bindtap="deleteRecord">
+        <text class="iconfont icon-delete"></text>
+        <text>删除记录</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!isLoading && !errorMessage && !recordDetail}}">
+    <text class="empty-icon">📄</text>
+    <text class="empty-text">记录不存在</text>
+    <button class="empty-btn" bindtap="navBack">返回列表</button>
+  </view>
+</view>
