@@ -1,0 +1,217 @@
+<!-- pages/recycle/cardetail/detail.wxml -->
+<view class="container">
+  <!-- 加载状态 -->
+  <view wx:if="{{isLoading}}" class="loading-state">
+    <text class="iconfont icon-loading">⟳</text>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 错误状态 -->
+  <view wx:if="{{hasError && !isLoading}}" class="error-state">
+    <text class="iconfont icon-error">!</text>
+    <text class="error-text">{{errorMessage}}</text>
+    <button class="btn btn-primary" bindtap="retryLoad">重试</button>
+    <button class="btn btn-secondary" bindtap="goBack">返回</button>
+  </view>
+
+  <!-- 详情内容 -->
+  <view wx:if="{{!isLoading && !hasError && carDetail}}" class="detail-content">
+    <!-- 顶部信息卡片 -->
+    <view class="info-card">
+      <!-- 车辆图片 -->
+      <view class="car-image-section">
+        <image class="car-image" src="{{carDetail.car_image_url || '/statics/img/default-car.png'}}" mode="aspectFill" binderror="onImageError"></image>
+        <view class="car-status {{carDetail.status_class}}">
+          {{carDetail.status_display}}
+        </view>
+      </view>
+
+      <!-- 基本信息 -->
+      <view class="basic-info">
+        <view class="car-model">{{carDetail.car_model}}</view>
+        <view class="contact-info">
+          <text class="iconfont icon-user"></text>
+          <text class="contact-name">{{carDetail.contact_name}}</text>
+          <text class="separator">|</text>
+          <text class="iconfont icon-phone"></text>
+          <text class="contact-phone">{{carDetail.contact_phone}}</text>
+        </view>
+        <view class="region-info">
+          <text class="iconfont icon-location"></text>
+          <text class="region">{{carDetail.region}}</text>
+        </view>
+        <view wx:if="{{carDetail.address}}" class="address-info">
+          <text class="iconfont icon-address"></text>
+          <text class="address">{{carDetail.address}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 价格信息 -->
+    <view class="price-card">
+      <view class="card-title">
+        <text class="iconfont icon-price"></text>
+        <text class="title-text">价格信息</text>
+      </view>
+      <view class="price-content">
+        <!-- 预估价格 - 使用格式化后的字段 -->
+        <view wx:if="{{carDetail.estimated_price_formatted}}" class="price-item">
+          <text class="price-label">预估价格</text>
+          <text class="price-value">{{carDetail.estimated_price_formatted}}</text>
+          <text class="price-unit">元/辆</text>
+        </view>
+
+        <!-- 最终价格 - 使用格式化后的字段 -->
+        <view wx:if="{{carDetail.final_price_formatted}}" class="price-item">
+          <text class="price-label">最终价格</text>
+          <text class="price-value">{{carDetail.final_price_formatted}}</text>
+          <text class="price-unit">元/辆</text>
+        </view>
+
+        <!-- 没有价格信息时显示 -->
+        <view wx:if="{{!carDetail.estimated_price_formatted && !carDetail.final_price_formatted}}" class="price-item">
+          <text class="price-label">价格状态</text>
+          <text class="price-value">待评估</text>
+          <text class="price-unit">元/辆</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 车辆详情 -->
+    <view class="detail-card">
+      <view class="card-title">
+        <text class="iconfont icon-car"></text>
+        <text class="title-text">车辆详情</text>
+      </view>
+      <view class="detail-grid">
+        <view class="detail-item">
+          <text class="item-label">车辆数量</text>
+          <text class="item-value">{{carDetail.car_count}}辆</text>
+        </view>
+        <view class="detail-item">
+          <text class="item-label">整备质量</text>
+          <text class="item-value">{{carDetail.weight ? carDetail.weight + 'kg' : '未填写'}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="item-label">能否启动</text>
+          <text class="item-value {{carDetail.can_start ? 'value-success' : 'value-danger'}}">
+            {{carDetail.can_start_display}}
+          </text>
+        </view>
+        <view class="detail-item">
+          <text class="item-label">轮毂类型</text>
+          <text class="item-value">{{carDetail.wheel_type || '未填写'}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="item-label">轮毂数量</text>
+          <text class="item-value">{{carDetail.wheel_count}}个</text>
+        </view>
+        <view class="detail-item">
+          <text class="item-label">三元催化器</text>
+          <text class="item-value">{{carDetail.ternary_count}}个</text>
+        </view>
+        <view class="detail-item">
+          <text class="item-label">铅蓄电池</text>
+          <text class="item-value">{{carDetail.battery_count}}个</text>
+        </view>
+        <view class="detail-item">
+          <text class="item-label">电池包</text>
+          <text class="item-value">{{carDetail.battery_pack_count}}个</text>
+        </view>
+        <view class="detail-item">
+          <text class="item-label">发动机</text>
+          <text class="item-value">{{carDetail.engine_count}}个</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 提交信息 -->
+    <view class="info-card">
+      <view class="card-title">
+        <text class="iconfont icon-time"></text>
+        <text class="title-text">提交信息</text>
+      </view>
+      <view class="info-content">
+        <view class="info-item">
+          <text class="info-label">提交时间</text>
+          <text class="info-value">{{carDetail.submit_time_formatted}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">更新时间</text>
+          <text class="info-value">{{carDetail.update_time_formatted}}</text>
+        </view>
+        <view wx:if="{{carDetail.user_info}}" class="info-item">
+          <text class="info-label">提交用户</text>
+          <text class="info-value">{{carDetail.user_info.nickname || carDetail.user_info.username}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 状态历史 -->
+    <view wx:if="{{carDetail.status_history && carDetail.status_history.length > 0}}" class="history-card">
+      <view class="card-title">
+        <text class="iconfont icon-history"></text>
+        <text class="title-text">状态变更历史</text>
+      </view>
+      <view class="history-list">
+        <block wx:for="{{carDetail.status_history}}" wx:key="timestamp">
+          <view class="history-item {{index === 0 ? 'history-item-current' : ''}}">
+            <view class="history-timeline">
+              <view class="history-dot"></view>
+              <view wx:if="{{index !== carDetail.status_history.length - 1}}" class="history-line"></view>
+            </view>
+            <view class="history-content">
+              <view class="history-status">
+                <text class="status-change">{{item.old_status_display || '初始'}} → {{item.new_status_display}}</text>
+                <text class="history-time">{{formatHistoryTime(item.timestamp)}}</text>
+              </view>
+              <view wx:if="{{item.reason}}" class="history-reason">
+                <text class="reason-label">原因：</text>
+                <text class="reason-text">{{item.reason}}</text>
+              </view>
+              <view wx:if="{{item.changed_by}}" class="history-operator">
+                <text class="operator-label">操作人：</text>
+                <text class="operator-text">{{item.changed_by}}</text>
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 备注信息 -->
+    <view wx:if="{{carDetail.remark}}" class="remark-card">
+      <view class="card-title">
+        <text class="iconfont icon-remark"></text>
+        <text class="title-text">备注信息</text>
+      </view>
+      <view class="remark-content">
+        <text class="remark-text">{{carDetail.remark}}</text>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view wx:if="{{showActions}}" class="action-buttons">
+      <!-- 详情按钮已注释掉，因为当前页面就是详情页面 -->
+      <!-- <button class="btn btn-secondary btn-large" bindtap="viewDetails" data-id="{{carDetail.id}}">详情</button> -->
+
+      <block wx:if="{{carDetail.status === 'pending'}}">
+        <button class="btn btn-danger btn-large" bindtap="cancelRecord">取消记录</button>
+      </block>
+
+      <block wx:if="{{carDetail.status === 'priced'}}">
+        <button class="btn btn-danger btn-large" bindtap="rejectPrice">拒绝价格</button>
+        <button class="btn btn-primary btn-large" bindtap="acceptPrice">同意价格</button>
+      </block>
+
+      <block wx:if="{{carDetail.status === 'confirmed'}}">
+        <!-- 查看订单按钮已注释掉，功能尚未开发 -->
+        <!-- <button class="btn btn-primary btn-large" bindtap="viewOrder">查看订单</button> -->
+      </block>
+
+      <block wx:if="{{carDetail.status === 'cancelled'}}">
+        <button class="btn btn-primary btn-large" bindtap="resubmitRecord">重新提交</button>
+      </block>
+    </view>
+  </view>
+</view>

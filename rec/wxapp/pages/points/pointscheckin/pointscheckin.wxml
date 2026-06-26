@@ -1,0 +1,126 @@
+<view class="checkin-container" animation="{{animationData}}">
+  <view wx:if="{{loading}}" class="loading-wrapper">
+    <view class="loading-content">
+      <view class="loading-spinner" />
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+
+  <view wx:else class="content-wrapper">
+    <view class="header-section">
+      <view class="header-title">
+        <text class="title-text">每日签到</text>
+        <text class="subtitle-text">DAILY CHECK-IN</text>
+      </view>
+      <view class="header-actions">
+        <view class="action-btn" bindtap="viewRules">
+          <text class="action-icon">?</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="stats-card">
+      <view class="stats-grid">
+        <view class="stat-item">
+          <text class="stat-value">{{totalPoints}}</text>
+          <text class="stat-label">总积分</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{signStatus.continuous_days || 0}}  <text class="stat-label">天</text></text>
+          <text class="stat-label">连续签到</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{todayEarnedPoints}}</text>
+          <text class="stat-label">今日签到获得</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="checkin-section">
+      <view wx:if="{{signStatus.today_checked}}" class="checkin-button checked disabled">
+        <view class="button-content">
+          <view class="button-icon">
+            <view class="icon-circle checked"></view>
+          </view>
+          <text class="button-text checked-text">今天已经签到过了~</text>
+          <text class="button-desc">明天再来哦！</text>
+
+          <view wx:if="{{signStatus.points_earned > 0}}" class="points-earned">
+            <text>今日获得：</text>
+            <text class="points-number">+{{signStatus.points_earned}}积分</text>
+          </view>
+        </view>
+      </view>
+
+      <view wx:else class="checkin-button {{signing ? 'signing' : ''}}" bindtap="{{signing ? '' : 'checkIn'}}">
+        <view class="button-content">
+          <view class="button-icon">
+            <view class="icon-circle"></view>
+          </view>
+          <text class="button-text">{{signing ? '签到中...' : '立即签到'}}</text>
+          <text class="button-desc">连续签到奖励更多</text>
+
+          <view wx:if="{{!signing && signStatus.today_points > 0}}" class="points-preview">
+            <text>即将获得：</text>
+            <text class="points-number">+{{signStatus.today_points}}积分</text>
+            <text wx:if="{{signStatus.extra_points > 0}}" class="extra-points">+{{signStatus.extra_points}}连续奖励</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{signStatus.continuous_days > 0}}" class="continuous-days-badge">
+      <text>已连续签到 {{signStatus.continuous_days}} 天</text>
+      <text wx:if="{{signStatus.continuous_days < 7}}">，再签到 {{7 - signStatus.continuous_days}} 天可获得额外奖励</text>
+      <text wx:if="{{signStatus.continuous_days >= 7}}" class="max-badge">已达最高连续奖励</text>
+    </view>
+
+    <view class="rules-section">
+      <view class="section-header">
+        <text class="section-title">连续签到奖励更多</text>
+        <text class="section-subtitle">CHECK-IN RULES</text>
+      </view>
+
+      <view class="rules-grid">
+        <view wx:for="{{rules}}" wx:key="day" class="rule-item {{item.bonus ? 'bonus' : ''}}">
+          <view class="rule-day">
+            <text class="day-number">第{{item.day}}天</text>
+            <view wx:if="{{item.bonus}}" class="bonus-badge">奖励</view>
+          </view>
+          <text class="rule-points">+{{item.points}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="calendar-section">
+      <view class="section-header">
+        <text class="section-title">{{checkinInfo.currentYear}}年{{checkinInfo.currentMonth}}月</text>
+        <text class="section-subtitle">CALENDAR</text>
+      </view>
+
+      <view class="calendar-wrapper">
+        <view class="weekdays">
+          <text wx:for="{{['日', '一', '二', '三', '四', '五', '六']}}" wx:key="*this" class="weekday">{{item}}</text>
+        </view>
+
+        <view class="calendar-grid">
+          <view wx:for="{{calendar}}" wx:key="index" class="calendar-day {{item.checked ? 'checked' : ''}} {{item.today ? 'today' : ''}}">
+            <text wx:if="{{item.day}}" class="day-text">{{item.day}}</text>
+            <view wx:if="{{item.checked}}" class="check-mark">✓</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{showPointsPopup}}" class="points-popup">
+    <view class="popup-content">
+      <view class="popup-icon">
+        <icon type="success" />
+      </view>
+      <text class="popup-title">签到成功</text>
+      <text class="popup-points">+{{earnedPoints}}积分</text>
+      <text class="popup-desc">已添加到您的账户</text>
+    </view>
+  </view>
+</view>

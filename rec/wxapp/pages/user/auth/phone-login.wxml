@@ -1,0 +1,107 @@
+<view class="auth-container">
+  <!-- 顶部标题 -->
+  <view class="title-header">
+    <view class="title-title">
+      <view class="title-titlespace" />
+      <view class="title-titlename">账号中心</view>
+    </view>
+  </view>
+
+  <!-- 功能切换tab -->
+  <view class="tabs">
+    <view class="tab {{currentTab === 'login' ? 'active' : ''}}" bindtap="switchTab" data-tab="login">登录</view>
+    <view class="tab {{currentTab === 'register' ? 'active' : ''}}" bindtap="switchTab" data-tab="register">注册</view>
+    <view class="tab {{currentTab === 'forget' ? 'active' : ''}}" bindtap="switchTab" data-tab="forget">忘记密码</view>
+  </view>
+
+  <!-- 登录表单 -->
+  <view class="form-section" wx:if="{{currentTab === 'login'}}">
+    <view class="input-group">
+      <text class="label">手机号</text>
+      <input class="input" type="number" placeholder="请输入手机号码" bindinput="onPhoneInput" value="{{phone}}" maxlength="11" />
+    </view>
+
+    <view class="input-group">
+      <text class="label">验证码</text>
+      <view class="code-input-group">
+        <input class="input code-input" type="number" placeholder="请输入验证码" bindinput="onCodeInput" value="{{code}}" maxlength="6" />
+        <view class="get-code-btn {{canGetCode ? '' : 'disabled'}}" bindtap="getVerifyCode" disabled="{{!canGetCode}}">
+          {{codeText}}
+        </view>
+      </view>
+    </view>
+
+    <button class="btn btn-primary {{canLogin ? '' : 'disabled'}}" bindtap="handlePhoneLogin" disabled="{{!canLogin}}">
+      登录
+    </button>
+
+  </view>
+
+  <!-- 注册表单 -->
+  <view class="form-section" wx:if="{{currentTab === 'register'}}">
+    <view class="input-group">
+      <text class="label">手机号</text>
+      <input class="input" type="number" placeholder="请输入手机号码" bindinput="onPhoneInput" value="{{phone}}" maxlength="11" />
+    </view>
+
+    <view class="input-group">
+      <text class="label">验证码</text>
+      <view class="code-input-group">
+        <input class="input code-input" type="number" placeholder="请输入验证码" bindinput="onCodeInput" value="{{code}}" maxlength="6" />
+        <view class="get-code-btn {{canGetCode ? '' : 'disabled'}}" bindtap="getVerifyCode" disabled="{{!canGetCode}}">
+          {{codeText}}
+        </view>
+      </view>
+    </view>
+
+    <view class="input-group">
+      <text class="label">设置密码</text>
+      <input class="input" type="password" placeholder="请输入密码(6-20位)" bindinput="onPasswordInput" value="{{password}}" maxlength="20" />
+    </view>
+
+    <view class="input-group">
+      <text class="label">确认密码</text>
+      <input class="input" type="password" placeholder="请再次输入密码" bindinput="onConfirmPasswordInput" value="{{confirmPassword}}" maxlength="20" />
+    </view>
+
+    <button class="btn btn-primary {{canRegister ? '' : 'disabled'}}" bindtap="handleRegister" disabled="{{!canRegister}}">
+      注册
+    </button>
+  </view>
+
+  <!-- 忘记密码表单 -->
+  <view class="form-section" wx:if="{{currentTab === 'forget'}}">
+    <view class="input-group">
+      <text class="label">手机号</text>
+      <input class="input" type="number" placeholder="请输入手机号码" bindinput="onPhoneInput" value="{{phone}}" maxlength="11" />
+    </view>
+
+    <view class="input-group">
+      <text class="label">验证码</text>
+      <view class="code-input-group">
+        <input class="input code-input" type="number" placeholder="请输入验证码" bindinput="onCodeInput" value="{{code}}" maxlength="6" />
+        <view class="get-code-btn {{canGetCode ? '' : 'disabled'}}" bindtap="getVerifyCode" disabled="{{!canGetCode}}">
+          {{codeText}}
+        </view>
+      </view>
+    </view>
+
+    <view class="input-group">
+      <text class="label">新密码</text>
+      <input class="input" type="password" placeholder="请输入新密码(6-20位)" bindinput="onNewPasswordInput" value="{{newPassword}}" maxlength="20" />
+    </view>
+
+    <view class="input-group">
+      <text class="label">确认新密码</text>
+      <input class="input" type="password" placeholder="请再次输入新密码" bindinput="onConfirmNewPasswordInput" value="{{confirmNewPassword}}" maxlength="20" />
+    </view>
+
+    <button class="btn btn-primary {{canReset ? '' : 'disabled'}}" bindtap="handleResetPassword" disabled="{{!canReset}}">
+      重置密码
+    </button>
+  </view>
+  <button class="other-options">
+    <text class="iconfont icon-phone btn-icon"></text>
+    <text class="option-text" bindtap="switchToWechatLogin">手机号一键登录</text>
+  </button>
+</view>

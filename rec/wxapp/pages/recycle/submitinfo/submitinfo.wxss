@@ -1,0 +1,549 @@
+/* pages/recycle/submitinfo/submitinfo.wxss */
+/* 基础样式 */
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  font-size: 28rpx;
+  color: #333;
+}
+
+/* 导航栏样式 */
+.nav-bar {
+  height: 100rpx;
+  background-color: #0a0f1d;
+  display: flex;
+  align-items: center;
+  padding: 0 30rpx;
+  position: relative;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.nav-title {
+  color: #fff;
+  font-size: 34rpx;
+  font-weight: 600;
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+/* 重新提交提示 */
+.resubmit-notice {
+  background-color: #e6f7ff;
+  border: 1rpx solid #91d5ff;
+  border-radius: 16rpx;
+  padding: 20rpx 30rpx;
+  margin: 20rpx 30rpx 0rpx;
+  display: flex;
+  align-items: center;
+  gap: 15rpx;
+}
+
+.resubmit-notice .iconfont {
+  color: #1890ff;
+  font-size: 28rpx;
+}
+
+.resubmit-text {
+  color: #1890ff;
+  font-size: 26rpx;
+  flex: 1;
+}
+
+/* 表单容器 */
+.form-container {
+  padding: 10rpx;
+}
+
+/* 表单区块 */
+.form-section {
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 10rpx 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+/* 区块标题 */
+.section-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.section-title text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #0a0f1d;
+  padding-right: 15rpx;
+}
+
+.section-line {
+  flex: 1;
+  height: 1rpx;
+  background-color: #eee;
+}
+
+/* 表单组 */
+.form-group {
+  display: flex;
+  align-items: flex-start;
+  padding: 25rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.form-group:last-child {
+  border-bottom: none;
+}
+
+.form-group.focused {
+  background-color: rgba(255, 68, 0, 0.03);
+  padding-left: 10rpx;
+  border-radius: 10rpx;
+}
+
+.form-label {
+  width: 220rpx;
+  color: #333;
+  font-size: 28rpx;
+  padding-top: 15rpx;
+  box-sizing: border-box;
+}
+
+.required {
+  color: #ff4400;
+  margin-left: 5rpx;
+}
+
+.form-input {
+  flex: 1;
+  height: 60rpx;
+  line-height: 60rpx;
+  color: #333;
+  padding-right: 10rpx;
+  padding-top: 10rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+}
+
+.form-input::placeholder {
+  color: #b0b6be;
+  font-size: 26rpx;
+}
+
+/* 地区选择容器 */
+.region-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* 整备质量输入容器 */
+.weight-input-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.weight-input {
+  padding-right: 70rpx !important;
+  flex: 1;
+}
+
+.weight-unit {
+  position: absolute;
+  right: 20rpx;
+  color: #666;
+  font-size: 28rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* 地区选择定位按钮 */
+.location-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 60rpx;
+  line-height: 60rpx;
+  font-size: 24rpx;
+  padding: 0 20rpx;
+  background-color: #2a4365;
+  color: #fff;
+  border-radius: 30rpx;
+  border: none;
+  display: flex;
+  align-items: center;
+}
+
+.location-btn:active {
+  background-color: #e03d00;
+  transform: translateY(-50%) scale(0.98);
+}
+
+.location-btn[disabled] {
+  background-color: #ffb399;
+  color: #fff;
+  box-shadow: none;
+}
+
+.location-btn .iconfont {
+  font-size: 36rpx;
+  margin: 0;
+}
+
+/* 行内表单 */
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.half-width {
+  width: 48%;
+}
+
+/* 单选框组 */
+.radioselect {
+  flex: 1;
+  display: flex;
+  padding-top: 10rpx;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  margin-right: 40rpx;
+  cursor: pointer;
+}
+
+.radio-item radio {
+  margin-right: 10rpx;
+  transform: scale(0.8);
+}
+
+.radio-item radio:checked {
+  color: #ff4400;
+}
+
+.radio-item text {
+  color: #333;
+}
+
+/* 图片上传区域 */
+.upload-area {
+  flex: 1;
+}
+
+.upload-tips {
+  color: #666;
+  font-size: 24rpx;
+  margin-bottom: 20rpx;
+  line-height: 1.5;
+}
+
+.upload-btn {
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  border-color: #ff4400;
+  color: #ff4400;
+  font-size: 28rpx;
+  border-radius: 10rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+}
+
+.upload-btn:active {
+  background-color: rgba(255, 68, 0, 0.1);
+}
+
+.image-preview {
+  position: relative;
+  width: 100%;
+  border-radius: 10rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  margin-bottom: 20rpx;
+}
+
+.image-preview:active {
+  transform: scale(0.99);
+}
+
+.image-preview image {
+  width: 100%;
+  height: 300rpx;
+  border-radius: 10rpx;
+}
+
+.delete-img {
+  position: absolute;
+  top: 10rpx;
+  right: 10rpx;
+  width: 60rpx;
+  height: 60rpx;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.delete-img::after {
+  border: none;
+}
+
+.delete-img .iconfont {
+  font-size: 30rpx;
+  color: #000;
+}
+
+/* 文本域样式 */
+.form-textarea {
+  flex: 1;
+  min-height: 120rpx;
+  color: #333;
+  padding-right: 10rpx;
+  padding-top: 10rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+  line-height: 1.6;
+}
+
+.form-textarea::placeholder {
+  color: #b0b6be;
+  font-size: 26rpx;
+}
+
+/* 选择器样式 */
+.form-picker {
+  flex: 1;
+  padding-top: 10rpx;
+  padding-right: 180rpx;
+  /* 为定位按钮留出空间 */
+}
+
+.picker-view {
+  height: 60rpx;
+  line-height: 60rpx;
+  color: #333;
+  /* 添加颜色定义，确保在全局样式下也能显示 */
+  font-size: 28rpx;
+}
+
+.picker-view::after {
+  content: "";
+  display: inline-block;
+  width: 24rpx;
+  height: 24rpx;
+  border-right: 3rpx solid #999;
+  border-bottom: 3rpx solid #999;
+  transform: rotate(45deg) translateY(-50%);
+  position: relative;
+  top: 5rpx;
+  left: 10rpx;
+}
+
+/* 按钮组 */
+.button-group {
+  display: flex;
+  gap: 20rpx;
+  padding: 20rpx 0 40rpx;
+}
+
+.submit-btn {
+  flex: 1;
+  height: 90rpx;
+  line-height: 90rpx;
+  background-color: #ff4400;
+  color: #fff;
+  font-size: 32rpx;
+  border-radius: 45rpx;
+  padding: 0;
+  box-shadow: 0 4rpx 15rpx rgba(255, 68, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.submit-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 8rpx rgba(255, 68, 0, 0.2);
+}
+
+.submit-btn[disabled] {
+  background-color: #ffb399;
+  color: #fff;
+  box-shadow: none;
+}
+
+.reset-btn {
+  flex: 1;
+  height: 90rpx;
+  line-height: 90rpx;
+  background-color: #fff;
+  color: #333;
+  border: 1rpx solid #ddd;
+  font-size: 32rpx;
+  border-radius: 45rpx;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.reset-btn:active {
+  transform: scale(0.98);
+  background-color: #f5f5f5;
+}
+
+.reset-btn[disabled] {
+  color: #999;
+  background-color: #f5f5f5;
+}
+
+.submit-btn::after,
+.reset-btn::after {
+  border: none;
+}
+
+/* 自定义弹窗样式 */
+.custom-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.modal-content {
+  position: relative;
+  width: 600rpx;
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 50rpx 40rpx;
+  text-align: center;
+  box-shadow: 0 10rpx 40rpx rgba(0, 0, 0, 0.3);
+  animation: modalShow 0.3s ease;
+}
+
+@keyframes modalShow {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(-50rpx);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-icon {
+  width: 120rpx;
+  height: 120rpx;
+  background-color: #07c160;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 30rpx;
+}
+
+.modal-icon .iconfont {
+  color: #fff;
+  font-size: 60rpx;
+  font-weight: bold;
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.modal-message {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 40rpx;
+  padding: 0 20rpx;
+}
+
+.modal-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  background-color: #ff4400;
+  color: #fff;
+  border-radius: 40rpx;
+  font-size: 30rpx;
+  border: none;
+}
+
+.modal-confirm:active {
+  background-color: #e03d00;
+}
+
+/* 响应式调整 */
+@media (max-width: 375rpx) {
+  .form-label {
+    width: 180rpx;
+    font-size: 26rpx;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .half-width {
+    width: 100%;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  .modal-content {
+    width: 90%;
+    padding: 40rpx 30rpx;
+  }
+
+  .form-picker {
+    padding-right: 160rpx;
+  }
+
+  .location-btn {
+    font-size: 22rpx;
+    padding: 0 15rpx;
+  }
+}

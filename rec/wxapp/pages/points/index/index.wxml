@@ -1,0 +1,114 @@
+<view class="pointcenter-container" animation="{{animationData}}">
+
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-wrapper">
+    <view class="loading-content">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+
+  <view wx:else class="content-wrapper">
+    <!-- 头部区域 -->
+    <view class="header-section">
+      <view class="header-title">
+        <text class="title-text">积分中心</text>
+        <text class="subtitle-text">POINTS CENTER</text>
+      </view>
+      <view class="header-actions">
+        <view class="action-btn" bindtap="viewRules">
+          <text class="action-icon">?</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 积分概览 -->
+    <view class="points-overview">
+      <view class="overview-header">
+        <text class="overview-title">积分概览</text>
+        <text class="overview-subtitle">POINTS OVERVIEW</text>
+      </view>
+
+      <view class="points-cards">
+        <view wx:for="{{pointsCards}}" wx:key="id" class="point-card" bindtap="onCardTap" data-id="{{item.id}}">
+          <view class="card-header">
+            <text class="card-title">{{item.title}}</text>
+            <view class="trend-indicator {{item.trendType}}">
+              <text class="trend-text">{{item.trend}}</text>
+            </view>
+          </view>
+          <view class="card-value">
+            <text class="value-number">{{item.value}}</text>
+            <text class="value-unit">{{item.unit}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 快捷任务 -->
+    <view class="tasks-section">
+      <view class="section-header">
+        <text class="section-title">每日任务</text>
+        <text class="section-subtitle">DAILY TASKS</text>
+      </view>
+
+      <view class="tasks-grid">
+        <view wx:for="{{quickActions}}" wx:key="id" class="task-item {{item.status}}" bindtap="onActionTap" data-path="{{item.path}}" data-status="{{item.status}}">
+          <view class="task-icon-wrapper">
+            <view class="task-icon {{item.icon}}"></view>
+            <view wx:if="{{item.status === 'completed'}}" class="completed-mark">✓</view>
+          </view>
+          <view class="task-content">
+            <text class="task-name">{{item.name}}</text>
+            <text class="task-desc">{{item.desc}}</text>
+            <text class="task-points">+{{item.points}}积分</text>
+          </view>
+          <view class="task-status">
+            <text class="status-text">{{item.status === 'completed' ? '已完成' : '去完成'}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 交易记录 -->
+    <view class="transactions-section">
+      <view class="section-header">
+        <text class="section-title">最近记录</text>
+        <view class="view-all-btn" bindtap="viewAllRecords">
+          <text class="view-all-text">查看全部</text>
+          <text class="view-all-arrow">›</text>
+        </view>
+      </view>
+
+      <view class="transactions-list">
+        <view wx:for="{{recentTransactions}}" wx:key="id" class="transaction-item">
+          <view class="transaction-icon {{item.icon}}"></view>
+          <view class="transaction-content">
+            <text class="transaction-title">{{item.title}}</text>
+            <text class="transaction-time">{{item.time}}</text>
+          </view>
+          <view class="transaction-amount">
+            <text class="amount-text {{item.type === 'earn' ? 'earn' : 'spend'}}">
+              {{item.amount > 0 ? '+' : ''}}{{item.amount}}
+            </text>
+            <text class="amount-status">{{item.status}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view wx:if="{{recentTransactions.length === 0}}" class="empty-state">
+        <view class="empty-icon">
+          <text class="iconfont icon-pagelist" />
+        </view>
+        <text class="empty-text">暂无积分记录</text>
+      </view>
+    </view>
+
+    <!-- 底部操作 -->
+    <view class="bottom-section">
+      <view class="exchange-button" bindtap="exchangePoints">
+        <text class="exchange-text">积分兑换</text>
+      </view>
+    </view>
+  </view>
+</view>

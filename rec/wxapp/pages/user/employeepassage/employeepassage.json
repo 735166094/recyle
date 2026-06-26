@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "员工通道",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "backgroundColor": "#0a0f1d",
+  "usingComponents": {}
+}

@@ -1,0 +1,153 @@
+<!-- 登录页面 -->
+<view class="login-container">
+  <!-- 背景装饰 -->
+  <view class="login-bg-decoration"></view>
+
+  <!-- 欢迎动画 -->
+  <view class="welcome-overlay" wx:if="{{showWelcome}}">
+    <view class="welcome-content">
+      <image class="welcome-logo" src="/static/img/logo.png" mode="aspectFit"></image>
+      <view class="welcome-title">奇奇回收</view>
+      <view class="welcome-subtitle">环保回收 · 变废为宝</view>
+    </view>
+  </view>
+
+  <!-- 顶部区域 -->
+  <view class="login-header" animation="{{animationData}}">
+    <view class="logo-section">
+      <image class="logo" src="/static/img/logo.png" mode="aspectFit"></image>
+      <text class="app-name">奇奇回收</text>
+      <text class="app-slogan">环保回收 · 变废为宝</text>
+    </view>
+  </view>
+
+  <!-- 登录内容 -->
+  <view class="login-content" animation="{{animationData}}">
+    <!-- 登录进度指示器 -->
+    <view class="login-progress" wx:if="{{isLoggingIn}}">
+      <view class="progress-step {{loginStep >= 1 ? 'active' : 'inactive'}}">1</view>
+      <view class="progress-step {{loginStep >= 2 ? 'active' : 'inactive'}}">2</view>
+      <view class="progress-step {{loginStep >= 3 ? 'active' : 'inactive'}}">3</view>
+    </view>
+
+    <!-- 微信一键登录 -->
+    <view class="login-section" wx:if="{{showLoginMethods}}">
+      <view class="section-title">
+        <text class="title-text">一键登录</text>
+        <text class="title-desc">快速开始使用服务</text>
+      </view>
+
+      <!-- 微信登录按钮 -->
+      <button class="login-btn wechat-btn" bindtap="handleWechatLogin" disabled="{{isLoggingIn}}">
+        <view class="btn-content">
+          <text class="iconfont icon-weixin btn-icon"></text>
+          <text class="btn-text">{{isLoggingIn ? '登录中...' : '微信一键登录'}}</text>
+        </view>
+      </button>
+
+      <!-- 手机号一键登录按钮 -->
+      <button class="login-btn wechat-btn" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber" disabled="{{isLoggingIn}}">
+        <view class="btn-content">
+          <text class="iconfont icon-phone btn-icon"></text>
+          <text class="btn-text">{{isLoggingIn ? '登录中...' : '手机号一键登录'}}</text>
+        </view>
+      </button>
+    </view>
+
+    <!-- 协议说明 -->
+    <view class="agreement-section" wx:if="{{showLoginMethods}}">
+      <checkbox class="agreement-checkbox" checked="{{agreementChecked}}" bindtap="toggleAgreement" />
+      <view class="agreement-text">
+        <text>我已阅读并同意</text>
+        <text class="link-text" bindtap="showUserAgreement">《用户协议》</text>
+        <text>和</text>
+        <text class="link-text" bindtap="showPrivacyPolicy">《隐私政策》</text>
+        <text>。</text>
+      </view>
+    </view>
+
+    <!-- 其他登录方式 -->
+    <view class="other-login-section" wx:if="{{showLoginMethods}}">
+      <view class="divider">
+        <view class="divider-line"></view>
+        <text class="divider-text">其他登录方式</text>
+        <view class="divider-line"></view>
+      </view>
+
+      <view class="other-methods">
+        <button class="method-btn" bindtap="handlePhoneLogin">
+          <text class="iconfont icon-phone"></text>
+          <text class="method-text">手机号登录</text>
+        </button>
+        <button class="method-btn" bindtap="handleEmployeeLogin">
+          <text class="iconfont icon-ours"></text>
+          <text class="method-text">工号登录</text>
+        </button>
+        <button class="method-btn" bindtap="handleVisitorLogin">
+          <text class="iconfont icon-default"></text>
+          <text class="method-text">游客登录</text>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 协议弹窗 -->
+  <view class="agreement-detail-modal" wx:if="{{showAgreementModal}}">
+    <view class="modal-mask" bindtap="hideAgreementModal"></view>
+    <view class="modal-content  detail-content">
+      <view class="modal-header">
+        <text class="modal-title">{{agreementTitle}}</text>
+        <text class="iconfont icon-close modal-close" bindtap="hideAgreementModal"></text>
+      </view>
+      <scroll-view class="modal-body" scroll-y>
+        <text class="agreement-content">{{agreementContent}}</text>
+      </scroll-view>
+      <view class="modal-footer">
+        <button class="modal-btn  confirm-btn" bindtap="hideAgreementModal">我知道了</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 温馨提示弹窗 -->
+  <view class="unified-alert-modal" wx:if="{{showAgreementAlert}}">
+    <view class="modal-mask" bindtap="hideAgreementAlert"></view>
+    <view class="modal-content alert-content">
+      <view class="modal-header">
+        <text class="modal-title">温馨提示</text>
+      </view>
+      <view class="modal-body">
+        <text class="alert-text">
+          <text>请先阅读并同意</text>
+          <text class="link-text-inline" bindtap="showUserAgreementFromAlert">《用户协议》</text>
+          <text>和</text>
+          <text class="link-text-inline" bindtap="showPrivacyPolicyFromAlert">《隐私政策》</text>
+          <text>。</text>
+        </text>
+      </view>
+      <view class="modal-footer alert-footer">
+        <button class="modal-btn cancel-btn" bindtap="hideAgreementAlert">取消</button>
+        <button class="modal-btn confirm-btn" bindtap="agreeAndLogin">同意并登录</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 统一提示弹窗 -->
+  <view class="unified-alert-modal" wx:if="{{showUnifiedAlert}}">
+    <view class="modal-mask" bindtap="hideUnifiedAlert"></view>
+    <view class="modal-content alert-content">
+      <view class="modal-header">
+        <text class="modal-title">{{unifiedAlertTitle}}</text>
+      </view>
+      <view class="modal-body">
+        <text class="alert-text">{{unifiedAlertContent}}</text>
+      </view>
+      <view class="modal-footer alert-footer">
+        <block wx:for="{{unifiedAlertActions}}" wx:key="index">
+          <view class="modal-btn {{item.type === 'primary' ? 'confirm-btn' : item.type === 'confirm' ? 'confirm-btn' : 'cancel-btn'}}" bindtap="handleUnifiedAlertAction" data-index="{{index}}">
+            {{item.text}}
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+</view>

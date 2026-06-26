@@ -1,0 +1,192 @@
+<view class="spacecontainer">
+  <view class="top-nav">
+    <scroll-view class="nav-scroll" scroll-x>
+      <view class="nav-items">
+        <view class="nav-item {{currentTab === 0 ? 'active' : ''}}" bindtap="switchTab" data-tab="0">首页</view>
+        <view class="nav-item {{currentTab === 1 ? 'active' : ''}}" bindtap="switchTab" data-tab="1">服务介绍</view>
+        <view class="nav-item {{currentTab === 2 ? 'active' : ''}}" bindtap="switchTab" data-tab="2">回收流程</view>
+        <view class="nav-item {{currentTab === 3 ? 'active' : ''}}" bindtap="switchTab" data-tab="3">我们的优势</view>
+        <!-- <view class="nav-item {{currentTab === 4 ? 'active' : ''}}" bindtap="switchTab" data-tab="4">价格查询</view> -->
+      </view>
+    </scroll-view>
+    <view class="nav-indicator" style="left: {{indicatorLeft}}px; width: {{indicatorWidth}}px;"></view>
+  </view>
+
+  <!-- 内容区域 -->
+  <scroll-view class="content-scroll" scroll-y="true" style="height: calc(100vh - 120rpx);">
+    <!-- 报废车回收 -->
+    <view class="tab-content" wx:if="{{currentTab === 0 }}">
+      <view class="hero-section">
+        <image class="hero-image" src="/static/img/lanyue.png" mode="aspectFill" alt="报废车回收服务主视觉图" />
+        <view class="hero-content">
+          <text class="hero-title">专业回收报废车</text>
+          <text class="hero-subtitle">合规处理 · 专业服务 · 便捷服务</text>
+          <view class="hero-actions">
+            <button class="primary-but" bind:tap="onBookNow">车辆评估</button>
+            <button class="secondary-but" bindtap="switchTab" data-tab="2">了解更多</button>
+          </view>
+        </view>
+      </view>
+
+      <view class="tab-content">
+        <view class="section contact-section">
+          <text class="section-title">联系我们</text>
+          <view class="contact-info">
+            <view class="contact-item">
+              <text class="contact-text" bindtap="onCallNow">联系人：鲍经理 联系电话：18656208787</text>
+            </view>
+            <view class="contact-item">
+              <text class="contact-text" bindtap="onCallNow2">联系人：王经理 联系电话：13665530519</text>
+            </view>
+            <view class="contact-item">
+              <text class="contact-text" bindtap="onCallNow3">联系人：丁经理 联系电话：13695675280</text>
+            </view>
+            <view class="contact-item">
+              <text class="contact-text">地址：安徽省芜湖市奇瑞资源技术有限公司</text>
+            </view>
+            <view class="contact-item">
+              <text class="contact-text">详细地址：安徽省芜湖市鸠江区凤鸣湖北路2号(龙山路地铁站1号口旁)</text>
+            </view>
+          </view>
+          <button class="btn" bindtap="onCallNow">立即拨打</button>
+        </view>
+      </view>
+
+    </view>
+
+    <!-- 服务介绍 -->
+    <view class="tab-content" wx:if="{{currentTab === 1}}">
+      <view class="section service-section">
+        <text class="section-title">我们的服务</text>
+        <view class="service-grid">
+          <view class="service-card">
+            <text class="service-name">车辆报废</text>
+            <text class="service-desc">专业办理各类车辆报废手续，合法合规</text>
+          </view>
+          <view class="service-card">
+            <text class="service-name">旧车回收</text>
+            <text class="service-desc">高价回收各类旧机动车，价格透明公道</text>
+          </view>
+          <view class="service-card">
+            <text class="service-name">手续代办</text>
+            <text class="service-desc">全程代办报废手续，无需客户跑腿</text>
+          </view>
+          <view class="service-card">
+            <text class="service-name">免费拖车</text>
+            <text class="service-desc">提供专业拖车服务，全程免费</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 回收流程 -->
+    <view class="tab-content" wx:if="{{currentTab === 2}}">
+      <view class="section process-section">
+        <text class="section-title">回收流程</text>
+        <view class="process-container">
+          <view class="process-step">
+            <view class="step-number">1</view>
+            <text class="step-name">电话预约</text>
+            <text class="step-desc">拨打服务热线预约回收服务</text>
+          </view>
+          <view class="process-line"></view>
+          <view class="process-step">
+            <view class="step-number">2</view>
+            <text class="step-name">车辆评估</text>
+            <text class="step-desc">专业人员评估车辆价值</text>
+          </view>
+          <view class="process-line"></view>
+          <view class="process-step">
+            <view class="step-number">3</view>
+            <text class="step-name">签订协议</text>
+            <text class="step-desc">确认回收价格，签订回收协议</text>
+          </view>
+          <view class="process-line"></view>
+          <view class="process-step">
+            <view class="step-number">4</view>
+            <text class="step-name">拖车处理</text>
+            <text class="step-desc">安排拖车，拖至专业场地</text>
+          </view>
+          <view class="process-line"></view>
+          <view class="process-step">
+            <view class="step-number">5</view>
+            <text class="step-name">办理手续</text>
+            <text class="step-desc">代办车辆注销等全部手续</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="section price-section">
+        <view class="price-card">
+          <text class="price-title">想知道您的车辆值多少钱？</text>
+          <text class="price-subtitle">输入车辆信息，获取即时估价</text>
+          <button class="btn" bind:tap="onBookNow">立即估价</button>
+        </view>
+
+        <view class="price-tips">
+          <text class="tips-title">估价说明</text>
+          <view class="tips-list">
+            <view class="tips-item">• 车辆估价基于车辆品牌、型号、年份及车况</view>
+            <view class="tips-item">• 最终回收价格以实际检测为准</view>
+            <view class="tips-item">• 报废车辆价格受金属市场行情影响</view>
+            <view class="tips-item">• 完整手续车辆回收价格更高</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 我们的优势 -->
+    <view class="tab-content" wx:if="{{currentTab === 3}}">
+      <view class="section advantages-section">
+        <text class="section-title">我们的优势</text>
+        <view class="advantages-grid">
+          <view class="advantage-item">
+            <text class="advantage-text">正规资质，合法合规</text>
+          </view>
+          <view class="advantage-item">
+            <text class="advantage-text">价格透明，高于市场价</text>
+          </view>
+          <view class="advantage-item">
+            <text class="advantage-text">全程代办，无需跑腿</text>
+          </view>
+          <view class="advantage-item">
+            <text class="advantage-text">24小时响应，快速上门</text>
+          </view>
+          <view class="advantage-item">
+            <text class="advantage-text">专业团队，服务贴心</text>
+          </view>
+          <view class="advantage-item">
+            <text class="advantage-text">环保处理，绿色回收</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- 价格查询 -->
+    <!-- <view class="tab-content" wx:if="{{currentTab === 4}}">
+      <view class="section price-section">
+        <view class="price-card">
+          <text class="price-title">想知道您的车辆值多少钱？</text>
+          <text class="price-subtitle">输入车辆信息，获取即时估价</text>
+          <button class="btn" bind:tap="onBookNow">立即估价</button>
+        </view>
+
+        <view class="price-tips">
+          <text class="tips-title">估价说明</text>
+          <view class="tips-list">
+            <view class="tips-item">• 车辆估价基于车辆品牌、型号、年份及车况</view>
+            <view class="tips-item">• 最终回收价格以实际检测为准</view>
+            <view class="tips-item">• 报废车辆价格受金属市场行情影响</view>
+            <view class="tips-item">• 完整手续车辆回收价格更高</view>
+          </view>
+        </view>
+      </view>
+    </view> -->
+
+    <!-- 底部 -->
+    <view class="footer">
+      <text class="footer-text">© 2023 奇奇回收 版权所有</text>
+      <text class="footer-text">正规资质 · 专业服务 · 环保处理</text>
+    </view>
+  </scroll-view>
+
+</view>

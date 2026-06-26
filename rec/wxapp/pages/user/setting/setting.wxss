@@ -1,0 +1,126 @@
+.settings-page {
+  min-height: 100vh;
+  padding-bottom: 60rpx;
+}
+
+/* 设置区域 */
+.settings-section {
+  background: linear-gradient(135deg, #1b263b, #1a2538);
+  margin-top: 20rpx;
+}
+
+.section-title {
+  font-size: 26rpx;
+  padding: 25rpx 30rpx;
+  border-bottom: 1rpx solid #1a2538;
+}
+
+/* 设置项样式 */
+.setting-item {
+  display: flex;
+  align-items: center;
+  padding: 25rpx 30rpx;
+  border-bottom: 1rpx solid #1a2538;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-item .iconfont {
+  font-size: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0rpx 10rpx;
+}
+
+.setting-info {
+  flex: 1;
+  margin: 0 30rpx;
+}
+
+.setting-name {
+  font-size: 30rpx;
+  display: block;
+}
+
+.setting-desc {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 5rpx;
+}
+
+.arrow-icon {
+  color: #ccc;
+}
+
+/* 带开关的设置项 */
+.toggle-item {
+  justify-content: space-between;
+}
+
+/* 退出登录按钮 */
+.logout-btn {
+  width: 90%;
+  height: 90rpx;
+  background: linear-gradient(135deg, #1b263b, #1a2538);
+  color: #ffffff;
+  border: 2rpx solid #1a2538;
+  border-radius: 45rpx;
+  font-size: 32rpx;
+  margin: 50rpx auto 0;
+  display: block;
+}
+
+.logout-btn:active {
+  background-color: #fff8f879;
+}
+
+/* 加载提示 */
+.loading-toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 25rpx 40rpx;
+  border-radius: 10rpx;
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 36rpx;
+  height: 36rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  border-top: 4rpx solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 15rpx;
+}
+
+.loading-text {
+  font-size: 28rpx;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 针对关闭状态的switch样式调整 */
+switch:not([checked]) {
+  /* 关闭时的背景色（浅灰色，与深色背景对比明显） */
+  background-color: #949292 !important;
+  /* 关闭时的边框色（进一步增强轮廓） */
+  border-color: #718096 !important;
+  border-radius: 50rpx;
+}

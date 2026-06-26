@@ -1,0 +1,139 @@
+<view class="profile-container">
+
+  <!-- 头部区域 -->
+  <view class="header">
+    <image class="avatar" src="{{userInfo.avatar_url || '/static/tabbar/my-active.png'}}" mode="aspectFill" />
+    <view class="user-info">
+      <view class="username">{{username}}</view>
+      <view class="user-phone" wx:if="{{phone}}">{{phone}}</view>
+      <view class="user-phone" wx:else bindtap="bindPhoneNumber">点击绑定手机号</view>
+      <view class="user-tag {{isGuest ? 'guest-tag' : 'member-tag'}}">
+        {{isGuest ? '体验用户' : (isLogin ? '正式用户' : '未登录')}}
+      </view>
+    </view>
+    <view class="logout-btn" bindtap="logout" wx:if="{{isLogin}}">
+      <text class="iconfont icon-logout"></text>
+    </view>
+  </view>
+
+  <!-- 数据展示 -->
+  <view class="card">
+    <view class="card-item" bindtap="gotoMyRecycle">
+      <text class="card-number">{{pendingRecycleCount}}</text>
+      <text class="star-label">待评估</text>
+    </view>
+    <view class="card-item" bindtap="gotoMyOrders">
+      <text class="card-number">0</text>
+      <text class="card-label">订单</text>
+    </view>
+    <view class="card-item" bindtap="gotoPoints">
+      <text class="card-number">{{userInfo.points || 0}}</text>
+      <text class="card-label">积分</text>
+    </view>
+  </view>
+
+  <!-- 功能区 -->
+  <view class="feature-sction">
+    <view class="feature-grid">
+      <view class="feature-item" bindtap="gotoEmployeePassage">
+        <text class="iconfont icon-categories" />
+        <text class="feature-text">员工通道</text>
+      </view>
+      <view class="feature-item" bindtap="gotoRecycleRecords">
+        <text class="iconfont icon-reclist" />
+        <text class="feature-text">回收记录</text>
+      </view>
+      <view class="feature-item" bindtap="gotoMyOrders">
+        <text class="iconfont icon-list" />
+        <text class="feature-text">我的订单</text>
+      </view>
+
+      <view class="feature-item" bind:tap="gotoFavorites">
+        <text class="iconfont icon-star" />
+        <text class="feature-text">我的收藏</text>
+      </view>
+      <view class="feature-item" bind:tap="gotoPoints">
+        <text class="iconfont icon-points" />
+        <text class="feature-text">积分中心</text>
+      </view>
+      <view class="feature-item" bind:tap="gotoCoupon">
+        <text class="iconfont icon-coupon" />
+        <text class="feature-text">优惠卷</text>
+      </view>
+      <view class="feature-item" bind:tap="gotoAddress">
+        <text class="iconfont icon-address" />
+        <text class="feature-text">地址管理</text>
+      </view>
+      <view class="feature-item" bind:tap="gotoSysSettings">
+        <text class="iconfont icon-setting" />
+        <text class="feature-text">系统设置</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 常用工具 -->
+  <view class="feature-title">
+    <view class="feature-titlespace"></view>
+    <text class="feature-titlename">常用工具</text>
+  </view>
+
+  <view class="feature-section">
+    <view class="feature-grid">
+      <view class="feature-item" bindtap="goToCustomerService">
+        <text class="iconfont icon-lianxiwomen" />
+        <text class="feature-text">客服中心</text>
+      </view>
+      <view class="feature-item" bindtap="goToHelpCenter">
+        <text class="iconfont icon-help" />
+        <text class="feature-text">帮助中心</text>
+      </view>
+      <view class="feature-item" bindtap="showShareCard">
+        <text class="iconfont icon-share" />
+        <text class="feature-text">分享应用</text>
+      </view>
+      <view class="feature-item" bind:tap="gotoAboutOurs">
+        <text class="iconfont icon-ours" />
+        <text class="feature-text">关于我们</text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 分享卡片弹窗 -->
+<view>
+  <view class="share-mask" wx:if="{{showShare}}" bindtap="hideShareCard"></view>
+  <view class="share-card" wx:if="{{showShare}}" style="{{shareCardStyle}}">
+    <view class="share-title">分享应用给好友</view>
+
+    <!-- 分享预览 -->
+    <view class="share-preview">
+      <text class="iconfont icon-recylelist" />
+      <view class="preview-desc">
+        <text class="preview-title">废品回收</text>
+        <text class="preview-subtitle">环保回收，变废为宝</text>
+      </view>
+    </view>
+
+    <!-- 分享渠道 -->
+    <view class="share-channels">
+      <view class="channel-item" bindtap="shareToFriend">
+        <text class="iconfont icon-weixin" />
+        <text class="channel-name">微信好友</text>
+      </view>
+      <view class="channel-item" bindtap="shareToTimeline">
+        <text class="iconfont icon-pengyouquan" />
+        <text class="channel-name">朋友圈</text>
+      </view>
+      <view class="channel-item" bindtap="saveShareImage">
+        <text class="iconfont icon-save" />
+        <text class="channel-name">保存图片</text>
+      </view>
+      <view class="channel-item" bindtap="shareToQQ">
+        <text class="iconfont icon-qq" />
+        <text class="channel-name">QQ好友</text>
+      </view>
+    </view>
+
+    <button class="btn" bindtap="hideShareCard">取消</button>
+  </view>
+</view>

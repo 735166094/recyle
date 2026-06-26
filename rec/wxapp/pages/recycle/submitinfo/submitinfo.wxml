@@ -1,0 +1,177 @@
+<!-- pages/recycle/submitinfo/submitinfo.wxml -->
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar">
+    <text class="nav-title">报废车信息登记</text>
+  </view>
+
+  <!-- 重新提交提示 -->
+  <view wx:if="{{isResubmit}}" class="resubmit-notice">
+    <text class="iconfont icon-info"></text>
+    <text class="resubmit-text">正在重新编辑原记录，修改后将以新记录提交</text>
+  </view>
+
+  <!-- 表单容器 -->
+  <form bindsubmit="formSubmit" bindreset="formReset" class="form-container">
+    <!-- 联系人信息区域 -->
+    <view class="form-section">
+      <view class="section-title">
+        <text>联系人信息</text>
+        <view class="section-line"></view>
+      </view>
+
+      <view class="form-group">
+        <label class="form-label"> 联系人姓名 <text class="required">*</text>
+        </label>
+        <input class="form-input" name="contactName" placeholder="请输入联系人真实姓名" value="{{formData.contactName}}" data-field="contactName" bindinput="onInputChange" required bindfocus="onInputFocus" bindblur="onInputBlur"></input>
+      </view>
+
+      <view class="form-group">
+        <label class="form-label"> 联系电话 <text class="required">*</text>
+        </label>
+        <input class="form-input" name="contactPhone" placeholder="请输入11位手机号码" type="number" required maxlength="11" value="{{formData.contactPhone}}" data-field="contactPhone" bindinput="formatPhone" bindfocus="onInputFocus" bindblur="onInputBlur"></input>
+      </view>
+
+      <view class="form-group">
+        <label class="form-label"> 所在地区 <text class="required">*</text>
+        </label>
+        <view class="region-container">
+          <picker mode="region" name="region" value="{{region}}" bindchange="onRegionChange" class="form-picker">
+            <view class="picker-view">
+              {{region && region.length === 3 ? region[0] + ' ' + region[1] + ' ' + region[2] : '请选择省/市/区'}}
+            </view>
+          </picker>
+          <view class="location-btn" bindtap="chooseLocation" type="default" size="mini" disabled="{{choosingLocation}}">
+            <text class="iconfont icon-address"></text>
+          </view>
+        </view>
+      </view>
+
+      <view class="form-group">
+        <label class="form-label">详细地址</label>
+        <input class="form-input" name="address" placeholder="请输入详细地址（方便上门回收）" value="{{formData.address}}" data-field="address" bindinput="onInputChange" bindfocus="onInputFocus" bindblur="onInputBlur"></input>
+      </view>
+    </view>
+
+    <!-- 车辆信息区域 -->
+    <view class="form-section">
+      <view class="section-title">
+        <text>车辆信息</text>
+        <view class="section-line"></view>
+      </view>
+
+      <view class="form-group">
+        <label class="form-label"> 车型 <text class="required">*</text>
+        </label>
+        <input class="form-input" name="carModel" placeholder="请输入具体车型(如:大众朗逸 2019款)" value="{{formData.carModel}}" data-field="carModel" bindinput="onInputChange" required bindfocus="onInputFocus" bindblur="onInputBlur"></input>
+      </view>
+
+      <view class="form-group">
+        <label class="form-label">车辆数量</label>
+        <input class="form-input" name="carCount" type="number" value="{{formData.carCount}}" min="1" data-field="carCount" bindinput="onInputChange"></input>
+      </view>
+
+      <view class="form-row">
+        <view class="form-group">
+          <label class="form-label">轮毂类型</label>
+          <input class="form-input" name="wheelType" placeholder="如：铝合金/镁合金" value="{{formData.wheelType}}" data-field="wheelType" bindinput="onInputChange" bindfocus="onInputFocus" bindblur="onInputBlur"></input>
+        </view>
+      </view>
+
+      <view class="form-row">
+        <view class="form-group half-width">
+          <label class="form-label">轮毂数量</label>
+          <input class="form-input" name="wheelCount" type="number" min="0" placeholder="数量" value="{{formData.wheelCount}}" data-field="wheelCount" bindinput="onInputChange"></input>
+        </view>
+      </view>
+
+      <view class="form-row">
+        <view class="form-group half-width">
+          <label class="form-label">三元催化器</label>
+          <input class="form-input" name="ternaryCount" type="number" min="0" placeholder="数量" value="{{formData.ternaryCount}}" data-field="ternaryCount" bindinput="onInputChange"></input>
+        </view>
+        <view class="form-group half-width">
+          <label class="form-label">铅蓄电池</label>
+          <input class="form-input" name="batteryCount" type="number" min="0" placeholder="数量" value="{{formData.batteryCount}}" data-field="batteryCount" bindinput="onInputChange"></input>
+        </view>
+      </view>
+
+      <view class="form-row">
+        <view class="form-group half-width">
+          <label class="form-label">电池包数量</label>
+          <input class="form-input" name="batteryPackCount" type="number" min="0" placeholder="数量" value="{{formData.batteryPackCount}}" data-field="batteryPackCount" bindinput="onInputChange"></input>
+        </view>
+        <view class="form-group half-width">
+          <label class="form-label">发动机数量</label>
+          <input class="form-input" name="engineCount" type="number" min="0" placeholder="数量" value="{{formData.engineCount}}" data-field="engineCount" bindinput="onInputChange"></input>
+        </view>
+      </view>
+
+      <view class="form-group">
+        <label class="form-label">整备质量</label>
+        <view class="weight-input-container">
+          <input class="form-input weight-input" name="weight" type="number" placeholder="如：1500" maxlength="4" value="{{formData.weight}}" data-field="weight" bindinput="onInputChange"></input>
+          <text class="weight-unit">kg</text>
+        </view>
+      </view>
+
+      <view class="form-group">
+        <label class="form-label">能否正常启动</label>
+        <radio-group name="canStart" class="radioselect" data-field="canStart" bindchange="onInputChange">
+          <label class="radio-item">
+            <radio value="true" checked="{{formData.canStart}}"></radio>
+            <text>能</text>
+          </label>
+          <label class="radio-item">
+            <radio value="false" checked="{{!formData.canStart}}"></radio>
+            <text>不能</text>
+          </label>
+        </radio-group>
+      </view>
+
+      <view class="form-group">
+        <label class="form-label"> 车辆照片 <text class="required">*</text>
+        </label>
+        <view class="upload-area">
+          <view class="upload-tips">请上传车辆左前方45度拍摄的清晰照片（需包含完整车身）</view>
+
+          <view class="image-preview" wx:if="{{imageUrl}}">
+            <image src="{{imageUrl}}" mode="widthFix" lazy-load bindtap="previewImage" data-src="{{imageUrl}}"></image>
+            <button class="delete-img" bindtap="deleteImage" size="mini" type="warn" disabled="{{uploading}}">
+              <text class="iconfont icon-close" />
+            </button>
+          </view>
+          <button class="upload-btn" bindtap="showUploadAction" type="primary" plain disabled="{{uploading}}">
+            <text class="iconfont icon-upload" /> {{uploading ? '上传中...' : '选择照片'}}
+          </button>
+        </view>
+      </view>
+
+      <view class="form-group">
+        <label class="form-label">备注信息</label>
+        <textarea class="form-textarea" name="remark" placeholder="请填写其他需要说明的信息（如车辆损伤情况等）" value="{{formData.remark}}" data-field="remark" bindinput="onInputChange" maxlength="200" auto-height></textarea>
+      </view>
+    </view>
+
+    <!-- 提交按钮区域 -->
+    <view class="button-group">
+      <button formType="submit" class="submit-btn" disabled="{{!imageUrl || submitting}}">
+        {{submitting ? '提交中...' : '提交信息'}}
+      </button>
+      <button formType="reset" class="reset-btn" type="default" disabled="{{submitting}}"> 重置 </button>
+    </view>
+  </form>
+
+  <!-- 自定义成功弹窗 -->
+  <view class="custom-modal" wx:if="{{showSuccessModal}}">
+    <view class="modal-mask"></view>
+    <view class="modal-content">
+      <view class="modal-icon">
+        <text class="iconfont icon-success">✓</text>
+      </view>
+      <view class="modal-title">提交成功</view>
+      <view class="modal-message">我们将尽快与您联系，请保持手机畅通</view>
+      <button class="modal-confirm" bindtap="hideSuccessModal">确定</button>
+    </view>
+  </view>
+</view>

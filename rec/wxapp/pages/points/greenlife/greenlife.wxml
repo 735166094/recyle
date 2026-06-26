@@ -1,0 +1,127 @@
+<!-- pages/points/greenlife/greenlife.wxml -->
+<view class="greenlife-page">
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading">
+    <view class="loading-content">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+
+  <view wx:else class="page-content">
+    <!-- 头部 -->
+    <view class="header">
+      <view class="title-section">
+        <text class="main-title">绿色生活</text>
+        <text class="sub-title">GREEN LIFE</text>
+      </view>
+    </view>
+
+    <!-- 类型选择 -->
+    <view class="type-section">
+      <text class="section-title">选择类型</text>
+      <view class="type-grid">
+        <view wx:for="{{greenTypes}}" wx:key="value" class="type-item {{selectedType === item.value ? 'active' : ''}}" bindtap="onTypeSelect" data-type="{{item.value}}">
+          <view class="type-icon-wrapper">
+            <view class="type-icon {{item.icon}}"></view>
+          </view>
+          <text class="type-name">{{item.name}}</text>
+          <text class="type-desc">{{item.desc}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 今日提交状态 -->
+    <view wx:if="{{todaySubmitted}}" class="status-card">
+      <view class="status-content">
+        <view class="status-icon">✓</view>
+        <view class="status-info">
+          <text class="status-title">今日已提交</text>
+          <text class="status-desc">获得 {{todayPoints}} 积分</text>
+        </view>
+      </view>
+      <view class="view-records" bindtap="viewTodayRecords">
+        <text>查看记录</text>
+      </view>
+    </view>
+
+    <!-- 规则信息 -->
+    <view wx:if="{{ruleInfo}}" class="rule-card">
+      <view class="rule-header">
+        <text class="rule-title">{{selectedTypeInfo.name}}</text>
+        <text class="rule-points">+{{ruleInfo.points_value || 0}} 积分</text>
+      </view>
+      <text class="rule-desc">{{ruleInfo.description || '暂无说明'}}</text>
+      <view class="rule-footer">
+        <text class="rule-limit">每日限制: {{ruleInfo.daily_limit || '无'}} 次</text>
+        <view class="rule-detail" bindtap="viewRuleDetail">
+          <text>规则详情</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 表单区域 -->
+    <view wx:if="{{!todaySubmitted}}" class="form-section">
+      <!-- 步数输入（仅低碳行走） -->
+      <view wx:if="{{selectedType === 'walk'}}" class="form-item">
+        <text class="form-label">今日步数</text>
+        <input type="number" placeholder="请输入步数（1000步以上）" value="{{formData.steps_count}}" bindinput="onStepsInput" class="form-input" />
+        <text class="form-hint">每1000步可获得1积分，最高100积分</text>
+      </view>
+
+      <!-- 连续天数 -->
+      <view class="form-item">
+        <text class="form-label">连续天数</text>
+        <input type="number" placeholder="1" value="{{formData.days_count}}" bindinput="onDaysInput" class="form-input" />
+      </view>
+
+      <!-- 上传凭证（绿色出行/光盘行动） -->
+      <view wx:if="{{selectedType === 'transport' || selectedType === 'food'}}" class="form-item">
+        <text class="form-label">上传凭证</text>
+        <view class="upload-area" bindtap="chooseImage" data-field="upload_image">
+          <view wx:if="{{!formData.upload_image}}" class="upload-placeholder">
+            <view class="upload-icon">+</view>
+            <text class="upload-text">点击上传图片</text>
+            <text class="upload-hint">请上传相关凭证照片</text>
+          </view>
+          <image wx:else src="{{formData.upload_image}}" class="uploaded-image" mode="aspectFill"></image>
+        </view>
+      </view>
+
+      <!-- 上传证书（低碳学习） -->
+      <view wx:if="{{selectedType === 'learning'}}" class="form-item">
+        <text class="form-label">上传证书</text>
+        <view class="upload-area" bindtap="chooseImage" data-field="certificate_image">
+          <view wx:if="{{!formData.certificate_image}}" class="upload-placeholder">
+            <view class="upload-icon">+</view>
+            <text class="upload-text">点击上传证书图片</text>
+            <text class="upload-hint">请上传学习证书照片</text>
+          </view>
+          <image wx:else src="{{formData.certificate_image}}" class="uploaded-image" mode="aspectFill"></image>
+        </view>
+      </view>
+
+      <!-- 描述 -->
+      <view class="form-item">
+        <text class="form-label">描述说明</text>
+        <textarea placeholder="请描述您的绿色生活行为（选填）" value="{{formData.description}}" bindinput="onDescriptionInput" class="form-textarea" maxlength="500"></textarea>
+        <text class="form-hint">限500字以内</text>
+      </view>
+
+      <!-- 提交按钮 -->
+      <view class="submit-section">
+        <button class="submit-btn {{submitting ? 'disabled' : ''}}" bindtap="submitGreenLife" loading="{{submitting}}" disabled="{{submitting || todaySubmitted}}">
+          {{submitting ? '提交中...' : '提交绿色生活'}}
+        </button>
+      </view>
+    </view>
+
+    <!-- 已提交提示 -->
+    <view wx:else class="submitted-tips">
+      <view class="tips-icon">✓</view>
+      <text class="tips-text">今日已提交该类型</text>
+      <text class="tips-subtext">明天再来，继续为环保贡献力量！</text>
+      <button class="back-btn" bindtap="goBack">返回</button>
+    </view>
+  </view>
+</view>

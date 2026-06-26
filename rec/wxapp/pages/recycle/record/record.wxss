@@ -1,0 +1,567 @@
+/* pages/user/record/record.wxss */
+/* 页面容器 */
+.container {
+  min-height: 100vh;
+  background-color: var(--bg);
+  color: var(--text);
+  font-size: 28rpx;
+}
+
+/* 顶部导航 */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx 30rpx 20rpx;
+  border-bottom: 1rpx solid var(--border);
+}
+
+.page-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.add-btn {
+  width: 60rpx;
+  height: 60rpx;
+  background-color: var(--primary);
+  border-radius: 50rpx;
+  color: #e0e7ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+}
+
+.add-btn .iconfont {
+  font-size: 30rpx;
+}
+
+.add-btn::after {
+  border: none;
+}
+
+/* 未登录状态 */
+.login-prompt {
+  padding: 100rpx 30rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--highlight);
+  background-color: var(--card-bg);
+  margin: 20rpx;
+  border-radius: var(--radius);
+}
+
+.login-prompt .iconfont {
+  font-size: 150rpx;
+  margin-bottom: 30rpx;
+  color: var(--accent);
+  opacity: 0.6;
+  animation: float 3s ease-in-out infinite;
+}
+
+.login-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  margin-bottom: 15rpx;
+  color: var(--text);
+}
+
+.login-desc {
+  font-size: 26rpx;
+  margin-bottom: 40rpx;
+  color: var(--highlight);
+  max-width: 400rpx;
+}
+
+/* 错误状态 */
+.error-state {
+  padding: 80rpx 30rpx;
+  text-align: center;
+  color: var(--highlight);
+  background-color: var(--card-bg);
+  margin: 20rpx;
+  border-radius: var(--radius);
+}
+
+.error-state .iconfont {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+  color: var(--danger);
+  display: block;
+}
+
+.error-text {
+  font-size: 28rpx;
+  margin-bottom: 30rpx;
+  display: block;
+  color: var(--text);
+}
+
+/* 状态统计卡片容器 */
+.stats-scroll {
+  background-color: var(--card-bg);
+  padding: 20rpx 0;
+}
+
+/* 横向滚动容器 */
+.stats-scroll-view {
+  white-space: nowrap;
+  width: 100%;
+}
+
+/* 状态统计网格 - 改为横向排列 */
+.stats-grid {
+  display: inline-flex;
+  gap: 15rpx;
+  padding: 20rpx 30rpx;
+}
+
+/* 统计卡片样式 */
+.stat-card {
+  background-color: var(--secondary);
+  border-radius: var(--radius);
+  padding: 20rpx 32rpx;
+  text-align: center;
+  transition: var(--transition);
+  min-width: 120rpx;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.stat-card:active {
+  transform: scale(0.98);
+}
+
+.stat-number {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 5rpx;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: var(--light);
+}
+
+/* 激活状态的统计卡片 */
+.stat-card.active {
+  background-color: var(--accent);
+}
+
+.stat-card.active .stat-number {
+  color: white;
+}
+
+.stat-card.active .stat-label {
+  color: white;
+}
+
+/* 筛选标签 */
+.filter-tags {
+  display: flex;
+  padding: 15rpx 30rpx;
+  gap: 15rpx;
+  overflow-x: auto;
+  background-color: var(--card-bg);
+  border-bottom: 1rpx solid var(--border);
+}
+
+.tag {
+  padding: 8rpx 20rpx;
+  background-color: var(--secondary);
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  color: var(--light);
+  white-space: nowrap;
+  transition: var(--transition);
+}
+
+.tag-active {
+  background-color: var(--accent);
+  color: #fff;
+  box-shadow: var(--shadow);
+}
+
+/* 加载状态 */
+.loading-state {
+  padding: 60rpx 30rpx;
+  text-align: center;
+  color: var(--highlight);
+}
+
+.loading-state .iconfont {
+  font-size: 60rpx;
+  display: block;
+  margin-bottom: 20rpx;
+  animation: spin 1.5s linear infinite;
+  color: var(--light);
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: var(--light);
+}
+
+/* 记录列表容器 */
+.records-container {
+  padding: 20rpx 30rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+/* 记录卡片 */
+.record-card {
+  background-color: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 25rpx;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.card-hover {
+  transform: translateY(-2rpx);
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.3);
+}
+
+/* 记录头部 */
+.record-header {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20rpx;
+}
+
+.car-thumbnail {
+  width: 140rpx;
+  height: 100rpx;
+  border-radius: 10rpx;
+  overflow: hidden;
+  flex-shrink: 0;
+  background-color: var(--secondary);
+}
+
+.car-thumbnail image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.car-status {
+  padding: 5rpx 15rpx;
+  border-radius: 15rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+  color: #fff;
+  margin-left: 15rpx;
+  margin-top: 5rpx;
+}
+
+.status-pending {
+  background-color: var(--warning);
+}
+
+.status-priced {
+  background-color: var(--accent);
+}
+
+.status-confirmed {
+  background-color: var(--success);
+}
+
+.status-cancelled {
+  background-color: var(--danger);
+}
+
+.car-time {
+  margin-left: auto;
+  font-size: 22rpx;
+  color: var(--light);
+  display: flex;
+  align-items: center;
+}
+
+.car-time .iconfont {
+  font-size: 22rpx;
+  margin-right: 5rpx;
+  color: var(--light);
+}
+
+/* 车辆基本信息 */
+.car-basic {
+  margin-bottom: 20rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx dashed var(--border);
+}
+
+.car-model {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 10rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.car-contact {
+  font-size: 24rpx;
+  color: var(--highlight);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 12rpx;
+}
+
+.car-contact .iconfont {
+  font-size: 24rpx;
+  margin-right: 5rpx;
+  color: var(--highlight);
+}
+
+.separator {
+  margin: 0 10rpx;
+  color: var(--border);
+}
+
+.car-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+}
+
+.detail-item {
+  font-size: 22rpx;
+  color: var(--light);
+  background-color: var(--secondary);
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+/* 价格信息 */
+.price-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx dashed var(--border);
+}
+
+.price-label {
+  font-size: 24rpx;
+  color: var(--light);
+}
+
+.price-value {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--success);
+  margin: 0 10rpx;
+}
+
+.price-note {
+  font-size: 22rpx;
+  color: var(--light);
+}
+
+/* 操作按钮区 */
+.action-buttons {
+  display: flex;
+  gap: 15rpx;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 0 20rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  font-size: 26rpx;
+  border-radius: 30rpx;
+  transition: var(--transition);
+  border: none;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+.btn-secondary {
+  background-color: var(--secondary);
+  color: var(--text);
+}
+
+.btn-danger {
+  background-color: var(--danger);
+  color: #fff;
+}
+
+.btn::after {
+  border: none;
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+/* 空结果状态 */
+.empty-result {
+  padding: 80rpx 30rpx;
+  text-align: center;
+  color: var(--highlight);
+  background-color: var(--card-bg);
+  margin: 20rpx;
+  border-radius: var(--radius);
+}
+
+.empty-result .iconfont {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+  color: var(--secondary);
+  display: block;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  margin-bottom: 30rpx;
+  display: block;
+  color: var(--text);
+}
+
+/* 空状态 */
+.empty-state {
+  padding: 100rpx 30rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--highlight);
+  text-align: center;
+  background-color: var(--card-bg);
+  margin: 20rpx;
+  border-radius: var(--radius);
+}
+
+.empty-state .iconfont {
+  font-size: 150rpx;
+  margin-bottom: 30rpx;
+  color: var(--accent);
+  opacity: 0.6;
+  animation: float 3s ease-in-out infinite;
+}
+
+.empty-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  margin-bottom: 15rpx;
+  color: var(--text);
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  margin-bottom: 40rpx;
+  max-width: 400rpx;
+  color: var(--highlight);
+}
+
+/* 加载更多 */
+.load-more {
+  padding: 30rpx 0;
+  text-align: center;
+  font-size: 26rpx;
+  color: var(--light);
+}
+
+.load-more-text {
+  padding: 20rpx 40rpx;
+  background-color: var(--card-bg);
+  border-radius: 30rpx;
+  display: inline-block;
+  color: var(--accent);
+}
+
+.loading-more {
+  padding: 30rpx 0;
+  text-align: center;
+  font-size: 26rpx;
+  color: var(--light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+}
+
+.loading-more .iconfont {
+  animation: spin 1.5s linear infinite;
+  color: var(--light);
+}
+
+/* 动画定义 */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-20rpx);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 响应式调整 */
+@media (max-width: 375rpx) {
+  .stats-grid {
+    gap: 10rpx;
+  }
+
+  .stat-number {
+    font-size: 30rpx;
+  }
+
+  .action-buttons {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn {
+    flex: 1;
+    min-width: 120rpx;
+  }
+}
+
+/* CSS 变量定义 */
+:root {
+  --bg: #f5f5f5;
+  --text: #333;
+  --border: #e0e0e0;
+  --card-bg: #fff;
+  --primary: #007AFF;
+  --secondary: #f8f9fa;
+  --accent: #007AFF;
+  --light: #666;
+  --highlight: #666;
+  --warning: #FF9500;
+  --success: #34C759;
+  --danger: #FF3B30;
+  --radius: 16rpx;
+  --shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  --transition: all 0.3s ease;
+}

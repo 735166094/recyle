@@ -1,0 +1,372 @@
+.containers {
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  width: 100%;
+  box-sizing: border-box;
+  padding-top: 20rpx;
+}
+
+/* 地址卡片容器 */
+.addr-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  padding: 0 20rpx;
+}
+
+/* 地址为空时 */
+.empty-address {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 20rpx;
+  text-align: center;
+}
+
+.empty-address .iconfont {
+  font-size: 100rpx;
+  color: #778da9;
+  margin-bottom: 30rpx;
+}
+
+.empty-text {
+  font-size: 34rpx;
+  font-weight: 500;
+  margin-bottom: 15rpx;
+}
+
+.empty-desc {
+  font-size: 28rpx;
+  color: #778da9;
+}
+
+
+/* 地址卡片样式 */
+.addr-card {
+  background: linear-gradient(135deg, #1b263b, #1a2538);
+  margin: 0;
+  border-radius: 24rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s;
+}
+
+.addr-card:hover {
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+/* 姓名电话区 */
+.addr-header {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.addr-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  flex: 1;
+}
+
+.addr-tag {
+  font-size: 24rpx;
+  color: #1677ff;
+  background-color: #e8f3ff;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  margin-right: 10rpx;
+}
+
+.addr-phone {
+  font-size: 28rpx;
+  white-space: nowrap;
+}
+
+/* 地址信息区 */
+.addr-addrinfo {
+  font-size: 28rpx;
+  line-height: 1.5;
+  margin-bottom: 24rpx;
+  padding-left: 2rpx;
+}
+
+.addr-detail {
+  font-size: 26rpx;
+  margin-top: 8rpx;
+}
+
+/* 操作按钮区 */
+.addr-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16rpx;
+  border-top: 2px solid #778da9;
+}
+
+.addr-action-group {
+  display: flex;
+  gap: 24rpx;
+}
+
+.addr-action-btn {
+  font-size: 26rpx;
+  padding: 8rpx 12rpx;
+  border-radius: 8rpx;
+  transition: all 0.2s;
+}
+
+.addr-action-btn:active {
+  background-color: #f5f5f5;
+}
+
+.addr-action-btn:nth-child(1) {
+  color: #ff4d4f;
+}
+
+.default-btn {
+  color: #1677ff;
+}
+
+/* 底部按钮 */
+.btn {
+  position: fixed;
+  bottom: 30rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  height: 90rpx;
+  line-height: 90rpx;
+  background-color: #f5f5f5;
+  color: black;
+  font-size: 32rpx;
+  text-align: center;
+  border-radius: 45rpx;
+  box-shadow: 0 4rpx 16rpx rgba(22, 119, 255, 0.3);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconfont {
+  font-size: 40rpx;
+  color: #1a2538;
+}
+
+
+
+.btn:active {
+  background-color: #778da9;
+  transform: translateX(-50%) scale(0.98);
+}
+
+
+/* 对话框样式 */
+.dialog-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+}
+
+.add-dialog {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #1b263b, #1a2538);
+  border-top-left-radius: 30rpx;
+  border-top-right-radius: 30rpx;
+  padding: 30rpx;
+  z-index: 101;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.dialog-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 30rpx;
+  color: #fff;
+  padding-bottom: 20rpx;
+  border-bottom: 1px solid #778da9;
+}
+
+/* 表单样式 */
+.dialog-form {
+  margin-bottom: 30rpx;
+}
+
+.form-item {
+  display: flex;
+  margin-bottom: 30rpx;
+  align-items: flex-start;
+}
+
+.form-label {
+  width: 140rpx;
+  font-size: 28rpx;
+  /* color: #e0e1dd; */
+  padding-top: 15rpx;
+}
+
+.form-input,
+.form-picker {
+  flex: 1;
+  height: 70rpx;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10rpx;
+  padding: 0 20rpx;
+  color: #fff;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+/* 地区选择器容器 */
+/* 地区选择器容器 */
+.picker-container {
+  flex: 1;
+  position: relative;
+}
+
+.form-picker {
+  width: 100%;
+  height: 70rpx;
+  background: rgba(119, 141, 169, 0.1);
+  border: 1px solid rgba(119, 141, 169, 0.3);
+  border-radius: 10rpx;
+  padding: 20rpx;
+  color: #FFFFFF;
+  font-size: 28rpx;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.picker-view {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  color: #e0e7ff;
+}
+
+.picker-text {
+  min-height: 40rpx;
+  line-height: 1.5;
+}
+
+/* 地图按钮样式 */
+.map-btn-after-picker {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #1677ff;
+  margin-left: 20rpx;
+}
+
+.map-btn-after-picker .iconfont {
+  font-size: 36rpx;
+  color: #fff;
+}
+
+.form-input-group {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10rpx;
+  padding-right: 20rpx;
+}
+
+.form-textarea {
+  flex: 1;
+  min-height: 120rpx;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 20rpx;
+  color: #fff;
+  font-size: 28rpx;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 10rpx;
+}
+
+.map-btn {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #1677ff;
+  margin-left: 10rpx;
+}
+
+.map-btn .iconfont {
+  font-size: 36rpx;
+  color: #fff;
+}
+
+/* 标签样式 */
+.tag-group {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+}
+
+.tag-item {
+  padding: 10rpx 20rpx;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 20rpx;
+  font-size: 26rpx;
+  color: #e0e1dd;
+}
+
+.tag-active {
+  background-color: #1677ff;
+  color: #fff;
+}
+
+/* 复选框样式 */
+.checkbox-item {
+  align-items: center;
+  margin-top: 10rpx;
+}
+
+.checkbox-text {
+  margin-left: 15rpx;
+  font-size: 28rpx;
+  color: #e0e1dd;
+}
+
+/* 按钮样式 */
+.dialog-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 20rpx;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.btns {
+  background-color: #f5f5f5;
+  border-radius: 60rpx;
+  padding: 20rpx;
+}
+
+.btn-primary {
+  border-radius: 60rpx;
+}
+

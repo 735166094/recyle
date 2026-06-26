@@ -1,0 +1,116 @@
+<!-- 关于我们页面结构 -->
+<view class="about-page">
+  <!-- 头部横幅 -->
+  <view class="banner">
+    <image class="banner-image" src="https://picsum.photos/id/1071/1200/600" mode="aspectFill"></image>
+    <view class="banner-overlay">
+      <text class="banner-title">奇瑞资源</text>
+      <text class="banner-subtitle">专注再生资源的回收利用，引领绿色出行新时代</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loader" wx:if="{{loading}}">
+    <view class="spinner"></view>
+    <text class="loading-text">正在获取最新信息...</text>
+  </view>
+
+  <!-- 内容区域 -->
+  <view class="content" wx:if="{{!loading}}">
+    <!-- 公司简介 -->
+    <view class="section">
+      <view class="section-title">
+        <text class="iconfont icon-building" />
+        <text>公司简介</text>
+      </view>
+      <text class="intro-text">
+        {{dynamicData ? dynamicData.companyIntro : staticData.companyIntro}}
+      </text>
+
+      <view class="stats-container">
+        <view class="stat-item">
+          <text class="stat-value">{{dynamicData ? dynamicData.stats.established : staticData.stats.established}}</text>
+          <text class="stat-label">成立年份</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{dynamicData ? dynamicData.stats.models : staticData.stats.models}}</text>
+          <text class="stat-label">在售车型</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{dynamicData ? dynamicData.stats.export : staticData.stats.export}}</text>
+          <text class="stat-label">出口国家</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{dynamicData ? dynamicData.stats.patents : staticData.stats.patents}}</text>
+          <text class="stat-label">专利技术</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 发展历程 -->
+    <view class="section">
+      <view class="section-title">
+        <text class="iconfont icon-history"></text>
+        <text>发展历程</text>
+      </view>
+      <view class="timeline">
+        <view class="timeline-line"></view>
+        <view class="timeline-item" wx:for="{{dynamicData ? dynamicData.history : staticData.history}}" wx:key="year">
+          <view class="timeline-dot"></view>
+          <view class="timeline-content">
+            <text class="timeline-year">{{item.year}}</text>
+            <text class="timeline-event">{{item.event}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 企业理念 -->
+    <view class="section">
+      <view class="section-title">
+        <text class="iconfont icon-lightbulb" />
+        <text>企业理念</text>
+      </view>
+      <view class="principles-grid">
+        <view class="principle-item" wx:for="{{dynamicData ? dynamicData.principles : staticData.principles}}" wx:key="id">
+          <view class="principle-icon">
+            <text class="iconfont {{item.icon}}" />
+          </view>
+          <text class="principle-title">{{item.title}}</text>
+          <text class="principle-desc">{{item.desc}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 联系我们 -->
+    <view class="section">
+      <view class="section-title">
+        <text class="iconfont icon-lianxiwomen" />
+        <text>联系我们</text>
+      </view>
+      <view class="contact-info">
+        <view class="contact-item">
+          <text class="iconfont icon-address contact-icon" />
+          <text class="contact-text">{{dynamicData ? dynamicData.contact.address : staticData.contact.address}}</text>
+        </view>
+        <view class="contact-item" bindtap="makePhoneCall">
+          <text class="iconfont icon-phone contact-icon" />
+          <text class="contact-text">{{dynamicData ? dynamicData.contact.phone : staticData.contact.phone}}</text>
+        </view>
+        <view class="contact-item">
+          <text class="iconfont icon-mail contact-icon" />
+          <text class="contact-text">{{dynamicData ? dynamicData.contact.email : staticData.contact.email}}</text>
+        </view>
+        <view class="contact-item" bindtap="openWebsite">
+          <text class="iconfont icon-globe contact-icon" />
+          <text class="contact-text">{{dynamicData ? dynamicData.contact.website : staticData.contact.website}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 返回顶部按钮 -->
+  <view class="back-to-top" bindtap="scrollToTop" wx:if="{{showBackToTop}}">
+    <text class="iconfont icon-up up-icon" />
+  </view>
+</view>

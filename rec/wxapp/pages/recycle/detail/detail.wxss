@@ -1,0 +1,475 @@
+/* pages/recycle/cardetail/detail.wxss */
+.container {
+  min-height: 100vh;
+  background-color: var(--bg);
+  color: var(--text);
+  font-size: 28rpx;
+  padding-bottom: 40rpx;
+}
+
+/* 加载状态 */
+.loading-state {
+  padding: 200rpx 30rpx;
+  text-align: center;
+  color: var(--highlight);
+}
+
+.loading-state .iconfont {
+  font-size: 60rpx;
+  display: block;
+  margin-bottom: 20rpx;
+  animation: spin 1.5s linear infinite;
+  color: var(--light);
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: var(--light);
+}
+
+/* 错误状态 */
+.error-state {
+  padding: 200rpx 30rpx;
+  text-align: center;
+  color: var(--highlight);
+}
+
+.error-state .iconfont {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+  color: var(--danger);
+  display: block;
+}
+
+.error-text {
+  font-size: 28rpx;
+  margin-bottom: 30rpx;
+  display: block;
+  color: var(--text);
+}
+
+/* 详情内容 */
+.detail-content {
+  padding: 0 30rpx;
+}
+
+/* 信息卡片通用样式 */
+.info-card,
+.price-card,
+.detail-card,
+.history-card,
+.remark-card {
+  background-color: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: var(--shadow);
+}
+
+/* 车辆图片区域 */
+.car-image-section {
+  position: relative;
+  margin-bottom: 30rpx;
+}
+
+.car-image {
+  width: 100%;
+  height: 400rpx;
+  border-radius: 16rpx;
+  background-color: var(--secondary);
+}
+
+.car-status {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+  color: #fff;
+}
+
+.status-pending {
+  background-color: var(--warning);
+}
+
+.status-priced {
+  background-color: var(--accent);
+}
+
+.status-confirmed {
+  background-color: var(--success);
+}
+
+.status-cancelled {
+  background-color: var(--danger);
+}
+
+/* 基本信息 */
+.basic-info {
+  padding: 0 10rpx;
+}
+
+.car-model {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 20rpx;
+  line-height: 1.4;
+}
+
+.contact-info,
+.region-info,
+.address-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15rpx;
+  font-size: 26rpx;
+  color: var(--highlight);
+}
+
+.contact-info .iconfont,
+.region-info .iconfont,
+.address-info .iconfont {
+  font-size: 26rpx;
+  margin-right: 10rpx;
+  color: var(--light);
+}
+
+.separator {
+  margin: 0 15rpx;
+  color: var(--border);
+}
+
+/* 卡片标题 */
+.card-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid var(--border);
+}
+
+.card-title .iconfont {
+  font-size: 28rpx;
+  margin-right: 15rpx;
+  color: var(--accent);
+}
+
+.title-text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* 价格信息 */
+.price-content {
+  padding: 0 10rpx;
+}
+
+.price-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding: 15rpx 0;
+}
+
+.price-item:not(:last-child) {
+  border-bottom: 1rpx dashed var(--border);
+}
+
+.price-label {
+  font-size: 26rpx;
+  color: var(--light);
+  width: 180rpx;
+}
+
+.price-value {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--success);
+  margin: 0 15rpx;
+  flex: 1;
+}
+
+.price-unit {
+  font-size: 24rpx;
+  color: var(--light);
+}
+
+/* 详情网格 */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15rpx 0;
+}
+
+.detail-item:nth-child(odd) {
+  border-right: 1rpx dashed var(--border);
+  padding-right: 20rpx;
+}
+
+.detail-item:nth-child(even) {
+  padding-left: 20rpx;
+}
+
+.item-label {
+  font-size: 26rpx;
+  color: var(--light);
+}
+
+.item-value {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.value-success {
+  color: var(--success);
+}
+
+.value-danger {
+  color: var(--danger);
+}
+
+/* 信息内容 */
+.info-content {
+  padding: 0 10rpx;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15rpx 0;
+}
+
+.info-item:not(:last-child) {
+  border-bottom: 1rpx dashed var(--border);
+}
+
+.info-label {
+  font-size: 26rpx;
+  color: var(--light);
+}
+
+.info-value {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* 状态历史 */
+.history-list {
+  position: relative;
+  padding-left: 40rpx;
+}
+
+.history-item {
+  position: relative;
+  padding: 25rpx 0;
+}
+
+.history-item-current {
+  background-color: rgba(0, 122, 255, 0.05);
+  margin: 0 -30rpx;
+  padding: 25rpx 30rpx;
+  border-radius: 12rpx;
+}
+
+.history-timeline {
+  position: absolute;
+  left: -40rpx;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.history-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background-color: var(--accent);
+  border: 3rpx solid var(--card-bg);
+  z-index: 2;
+}
+
+.history-item-current .history-dot {
+  background-color: var(--success);
+  border-color: var(--success);
+  box-shadow: 0 0 0 3rpx rgba(52, 199, 89, 0.2);
+}
+
+.history-line {
+  flex: 1;
+  width: 2rpx;
+  background-color: var(--border);
+  margin: 8rpx 0;
+}
+
+.history-content {
+  margin-left: 20rpx;
+}
+
+.history-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.status-change {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.history-time {
+  font-size: 22rpx;
+  color: var(--light);
+}
+
+.history-reason,
+.history-operator {
+  font-size: 24rpx;
+  color: var(--highlight);
+  margin-bottom: 5rpx;
+}
+
+.reason-label,
+.operator-label {
+  color: var(--light);
+}
+
+.reason-text,
+.operator-text {
+  color: var(--text);
+}
+
+/* 备注信息 */
+.remark-content {
+  padding: 20rpx;
+  background-color: var(--secondary);
+  border-radius: 12rpx;
+  border-left: 4rpx solid var(--accent);
+}
+
+.remark-text {
+  font-size: 26rpx;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+/* 操作按钮 */
+.action-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--card-bg);
+  padding: 20rpx 30rpx;
+  border-top: 1rpx solid var(--border);
+  display: flex;
+  gap: 20rpx;
+}
+
+.btn {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  font-size: 28rpx;
+  border-radius: 40rpx;
+  transition: var(--transition);
+  border: none;
+}
+
+.btn-large {
+  height: 80rpx;
+  line-height: 80rpx;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+.btn-secondary {
+  background-color: var(--secondary);
+  color: var(--text);
+}
+
+.btn-danger {
+  background-color: var(--danger);
+  color: #fff;
+}
+
+.btn::after {
+  border: none;
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+/* 动画定义 */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* CSS 变量定义 */
+:root {
+  --bg: #f5f5f5;
+  --text: #333;
+  --border: #e0e0e0;
+  --card-bg: #fff;
+  --primary: #007AFF;
+  --secondary: #f8f9fa;
+  --accent: #007AFF;
+  --light: #666;
+  --highlight: #666;
+  --warning: #FF9500;
+  --success: #34C759;
+  --danger: #FF3B30;
+  --radius: 16rpx;
+  --shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  --transition: all 0.3s ease;
+}
+
+/* 响应式调整 */
+@media (max-width: 375rpx) {
+  .detail-content {
+    padding: 0 20rpx;
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+    gap: 15rpx;
+  }
+
+  .detail-item:nth-child(odd),
+  .detail-item:nth-child(even) {
+    border-right: none;
+    padding: 10rpx 0;
+    border-bottom: 1rpx dashed var(--border);
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+}

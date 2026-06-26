@@ -1,0 +1,47 @@
+<view class="detail-container" wx:if="{{showDetail}}">
+  <!-- 遮罩层（点击关闭） -->
+  <view class="mask" bindtap="closeDetail"></view>
+
+  <!-- 详情内容（带弹跳动画） -->
+  <view class="detail-content" style="{{detailStyle}}">
+
+
+    <!-- 新闻/政策内容 -->
+    <view class="news-content">
+      <!-- 标题 -->
+      <view class="news-title">{{currentNews.title}}</view>
+
+      <!-- 元数据（来源、时间、分类） -->
+      <view class="news-meta">
+        <view class="news-source">{{currentNews.source}}</view>
+        <view class="news-time"> {{ currentNews.publish_date ? currentNews.publish_date : '' }} </view>
+        <view class="news-category {{currentNews.category.id}}"> {{categoryMap[currentNews.category.id] || currentNews.category.name}} </view>
+        <view class="news-view-count"> 浏览量：{{ currentNews.view_count || 0 }} 次 </view>
+      </view>
+
+      <!-- 封面图 -->
+      <view class="news-image-container" wx:if="{{currentNews.image}}" bindtap="previewImage" data-image="{{currentNews.image}}">
+        <image src="{{currentNews.image}}" mode="widthFix" class="news-image"></image>
+      </view>
+
+      <!-- 正文（支持换行） -->
+      <view class="news-body">
+        <text>{{currentNews.content}}</text>
+      </view>
+
+      <!-- 相关新闻/政策 -->
+      <view class="related-news" wx:if="{{relatedNews.length > 0}}">
+        <view class="related-title">相关推荐</view>
+        <view class="related-list">
+          <view class="related-item" wx:for="{{relatedNews}}" wx:key="id" bindtap="navigateToRelated" data-id="{{item.id}}">
+            <image src="{{item.image}}" mode="widthFix" class="related-image"></image>
+            <view class="related-info">
+              <view class="related-item-title">{{item.title}}</view>
+              <view class="related-item-meta">{{item.source}} · {{item.time}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,92 @@
+<!-- pages/user/agreement/agreement.wxml -->
+<view class="agreement-page">
+  <!-- 内容区域 -->
+  <scroll-view class="content" scroll-y>
+    <view class="agreement-content">
+      <text class="agreement-title">奇瑞资源用户服务协议</text>
+
+      <view class="agreement-section">
+        <text class="section-title">一、总则</text>
+        <text class="section-content">
+          1.1 本协议是您与芜湖奇瑞资源技术有限公司（以下简称"奇瑞资源"）之间关于使用奇瑞资源提供的各项服务所订立的协议。
+          请您在使用奇瑞资源服务前仔细阅读本协议，您使用奇瑞资源服务即视为您已阅读并同意本协议的全部内容。
+        </text>
+        <text class="section-content">
+          1.2 奇瑞资源有权根据业务发展需要不时更新本协议，更新后的协议将在奇瑞资源平台公布，您继续使用奇瑞资源服务即视为同意更新后的协议。
+        </text>
+      </view>
+
+      <view class="agreement-section">
+        <text class="section-title">二、服务内容</text>
+        <text class="section-content">
+          2.1 奇瑞资源为您提供再生资源回收、汽车零部件再制造、动力电池综合利用等相关服务（以下简称"服务"）。
+        </text>
+        <text class="section-content">
+          2.2 您理解并同意，奇瑞资源有权根据实际情况调整服务内容，无需事先通知您。
+        </text>
+      </view>
+
+      <view class="agreement-section">
+        <text class="section-title">三、用户权利与义务</text>
+        <text class="section-content">
+          3.1 您有权按照本协议约定使用奇瑞资源提供的服务，有权对服务提出建议和意见。
+        </text>
+        <text class="section-content">
+          3.2 您应提供真实、准确的个人信息，如信息发生变更，应及时更新。
+        </text>
+        <text class="section-content">
+          3.3 您应妥善保管您的账号和密码，对使用您的账号所进行的一切操作承担责任。
+        </text>
+      </view>
+
+      <view class="agreement-section">
+        <text class="section-title">四、隐私保护</text>
+        <text class="section-content">
+          4.1 奇瑞资源重视对您隐私的保护，将按照《隐私政策》保护您的个人信息。
+        </text>
+        <text class="section-content">
+          4.2 未经您的许可，奇瑞资源不会向第三方披露您的个人信息，法律法规另有规定的除外。
+        </text>
+      </view>
+
+      <view class="agreement-section">
+        <text class="section-title">五、免责声明</text>
+        <text class="section-content">
+          5.1 您理解并同意，奇瑞资源仅提供服务平台，对您因使用服务而产生的任何直接或间接损失不承担责任。
+        </text>
+        <text class="section-content">
+          5.2 因不可抗力或奇瑞资源无法控制的原因导致服务中断的，奇瑞资源不承担责任。
+        </text>
+      </view>
+
+      <view class="agreement-section">
+        <text class="section-title">六、法律适用与争议解决</text>
+        <text class="section-content">
+          6.1 本协议的订立、效力、解释、履行及争议解决均适用中华人民共和国法律。
+        </text>
+        <text class="section-content">
+          6.2 因本协议引起的或与本协议有关的任何争议，双方应首先通过友好协商解决；协商不成的，任何一方均有权向芜湖市有管辖权的人民法院提起诉讼。
+        </text>
+      </view>
+
+      <view class="agreement-section">
+        <text class="section-title">七、其他</text>
+        <text class="section-content">
+          7.1 本协议构成双方对本协议之约定事项及其他有关事宜的完整协议，除本协议外，不存在其他任何口头或书面协议。
+        </text>
+        <text class="section-content">
+          7.2 本协议自您使用奇瑞资源服务之日起生效。
+        </text>
+      </view>
+
+      <view class="agreement-date">
+        <text>生效日期：2023年1月1日</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 底部确认按钮 -->
+  <view class="confirm-bar">
+    <button class="confirm-btn" bindtap="confirmAgreement">我已阅读并同意</button>
+  </view>
+</view>

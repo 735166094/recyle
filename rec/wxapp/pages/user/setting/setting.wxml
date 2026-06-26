@@ -1,0 +1,121 @@
+<view class="settings-page">
+  <!-- 账号设置区域 -->
+  <view class="settings-section">
+    <view class="section-title">账号管理</view>
+
+    <view class="setting-item" bindtap="navigateToProfile">
+      <text class="iconfont icon-user" />
+      <view class="setting-info">
+        <text class="setting-name">个人资料</text>
+        <text class="setting-desc">修改头像、昵称等信息</text>
+      </view>
+      <icon type="right" size="24" class="arrow-icon"></icon>
+    </view>
+
+    <view class="setting-item" bindtap="navigateToSecurity">
+      <text class="iconfont icon-safe" />
+      <view class="setting-info">
+        <text class="setting-name">账号安全</text>
+        <text class="setting-desc">修改密码、绑定手机</text>
+      </view>
+      <icon type="right" size="24" class="arrow-icon"></icon>
+    </view>
+  </view>
+
+  <!-- 通知设置区域 -->
+  <view class="settings-section">
+    <view class="section-title">通知设置</view>
+
+    <view class="setting-item toggle-item">
+      <text class="iconfont icon-notice" />
+      <view class="setting-info">
+        <text class="setting-name">消息通知</text>
+        <text class="setting-desc">接收新消息提醒</text>
+      </view>
+      <switch checked="{{notifyEnabled}}" bindchange="toggleNotify" color="#778da9"></switch>
+    </view>
+
+    <view class="setting-item toggle-item">
+      <text class="iconfont icon-user" />
+      <view class="setting-info">
+        <text class="setting-name">营销推送</text>
+        <text class="setting-desc">接收优惠活动信息</text>
+      </view>
+      <switch checked="{{marketingEnabled}}" bindchange="toggleMarketing" color="#778da9"></switch>
+    </view>
+
+    <view class="setting-item toggle-item">
+      <text class="iconfont icon-sound" />
+      <view class="setting-info">
+        <text class="setting-name">声音提醒</text>
+        <text class="setting-desc">通知时播放提示音</text>
+      </view>
+      <switch checked="{{soundEnabled}}" bindchange="toggleSound" color="#778da9"></switch>
+    </view>
+  </view>
+
+  <!-- 通用设置区域 -->
+  <view class="settings-section">
+    <view class="section-title">通用设置</view>
+
+    <view class="setting-item" bindtap="clearCache">
+      <text class="iconfont icon-clean" />
+      <view class="setting-info">
+        <text class="setting-name">清除缓存</text>
+        <text class="setting-desc">{{cacheSize}} MB</text>
+      </view>
+      <icon type="right" size="24" class="arrow-icon"></icon>
+    </view>
+
+
+    <view class="setting-item" bindtap="changeLanguage">
+      <text class="iconfont icon-language" />
+      <view class="setting-info">
+        <text class="setting-name">语言设置</text>
+        <text class="setting-desc">{{currentLanguage}}</text>
+      </view>
+      <icon type="right" size="24" class="arrow-icon"></icon>
+    </view>
+  </view>
+
+  <!-- 关于区域 -->
+  <view class="settings-section">
+    <view class="section-title">关于</view>
+
+    <view class="setting-item" bindtap="navigateToAbout">
+      <text class="iconfont icon-ours" />
+      <view class="setting-info">
+        <text class="setting-name">关于我们</text>
+        <text class="setting-desc">公司信息与联系方式</text>
+      </view>
+      <icon type="right" size="24" class="arrow-icon"></icon>
+    </view>
+
+    <view class="setting-item" bindtap="checkUpdate">
+      <text class="iconfont icon-update" />
+      <view class="setting-info">
+        <text class="setting-name">版本更新</text>
+        <text class="setting-desc">当前版本 {{appVersion}}</text>
+      </view>
+      <icon type="right" size="24" class="arrow-icon"></icon>
+    </view>
+
+    <view class="setting-item" bindtap="showAgreement">
+      <text class="iconfont icon-agreement" />
+      <view class="setting-info">
+        <text class="setting-name">用户协议</text>
+        <text class="setting-desc">服务条款与用户协议</text>
+      </view>
+      <icon type="right" size="24" class="arrow-icon"></icon>
+    </view>
+  </view>
+
+  <!-- 退出登录按钮 -->
+  <button class="logout-btn" bindtap="confirmLogout">退出登录</button>
+
+  <!-- 加载提示 -->
+  <view class="loading-toast" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">{{loadingText}}</text>
+  </view>
+</view>

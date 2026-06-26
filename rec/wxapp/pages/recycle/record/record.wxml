@@ -1,0 +1,170 @@
+<!-- pages/recycle/record/record.wxml -->
+<view class="container">
+  <!-- 顶部导航与操作区 -->
+  <view class="page-header">
+    <text class="page-title">我的车辆</text>
+    <button class="add-btn" bindtap="navigateToSubmit">
+      <text class="iconfont icon-add" />
+    </button>
+  </view>
+
+  <!-- 未登录状态 -->
+  <view wx:if="{{!isLoggedIn}}" class="login-prompt">
+    <text class="iconfont icon-user" />
+    <text class="login-title">请先登录</text>
+    <text class="login-desc">登录后查看您的车辆记录</text>
+    <button class="btn btn-primary" bindtap="navigateToLogin">立即登录</button>
+  </view>
+
+  <!-- 错误状态 -->
+  <view wx:if="{{hasError && isLoggedIn}}" class="error-state">
+    <text class="iconfont icon-error"/>
+    <text class="error-text">{{errorMessage}}</text>
+    <button class="btn btn-primary" bindtap="retryLoad">重试</button>
+  </view>
+
+  <!-- 已登录状态下的内容 -->
+  <view wx:if="{{isLoggedIn && !hasError}}">
+    <!-- 状态统计卡片 -->
+    <view class="stats-scroll">
+      <scroll-view class="stats-scroll-view" scroll-x="true" show-scrollbar="false">
+        <view class="stats-grid">
+          <view class="stat-card {{currentFilter === 'all' ? 'active' : ''}}" bindtap="filterByStatus" data-status="all">
+            <text class="stat-number">{{totalCount}}</text>
+            <text class="stat-label">全部记录</text>
+          </view>
+          <view class="stat-card {{currentFilter === 'pending' ? 'active' : ''}}" bindtap="filterByStatus" data-status="pending">
+            <text class="stat-number">{{pendingCount}}</text>
+            <text class="stat-label">待评估</text>
+          </view>
+          <view class="stat-card {{currentFilter === 'priced' ? 'active' : ''}}" bindtap="filterByStatus" data-status="priced">
+            <text class="stat-number">{{pricedCount}}</text>
+            <text class="stat-label">已报价</text>
+          </view>
+          <view class="stat-card {{currentFilter === 'confirmed' ? 'active' : ''}}" bindtap="filterByStatus" data-status="confirmed">
+            <text class="stat-number">{{confirmedCount}}</text>
+            <text class="stat-label">已同意</text>
+          </view>
+          <view class="stat-card {{currentFilter === 'cancelled' ? 'active' : ''}}" bindtap="filterByStatus" data-status="cancelled">
+            <text class="stat-number">{{cancelledCount}}</text>
+            <text class="stat-label">已取消</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 筛选标签 -->
+    <view class="filter-tags">
+      <view class="tag {{currentFilter === 'all' ? 'tag-active' : ''}}" bindtap="filterByStatus" data-status="all">全部</view>
+      <view class="tag {{currentFilter === 'pending' ? 'tag-active' : ''}}" bindtap="filterByStatus" data-status="pending">待评估</view>
+      <view class="tag {{currentFilter === 'priced' ? 'tag-active' : ''}}" bindtap="filterByStatus" data-status="priced">已报价</view>
+      <view class="tag {{currentFilter === 'confirmed' ? 'tag-active' : ''}}" bindtap="filterByStatus" data-status="confirmed">已同意</view>
+      <view class="tag {{currentFilter === 'cancelled' ? 'tag-active' : ''}}" bindtap="filterByStatus" data-status="cancelled">已取消</view>
+    </view>
+
+    <!-- 加载状态 -->
+    <view wx:if="{{isLoading && filteredCars.length === 0}}" class="loading-state">
+      <text class="iconfont icon-loading">⟳</text>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 车辆记录列表 -->
+    <view class="records-container">
+      <block wx:for="{{filteredCars}}" wx:key="id">
+        <view class="record-card" hover-class="card-hover">
+          <!-- 车辆图片与状态 -->
+          <view class="record-header">
+            <view class="car-thumbnail">
+              <image src="{{item.imageUrl}}" mode="aspectFill" lazy-load="true" binderror="onImageError" data-index="{{index}}"></image>
+            </view>
+            <view class="car-status {{item.statusClass}}">
+              {{item.statusText}}
+            </view>
+            <view class="car-time">
+              <text class="iconfont icon-time"></text>
+              <text>{{item.submitTime}}</text>
+            </view>
+          </view>
+
+          <!-- 车辆基本信息 -->
+          <view class="car-basic">
+            <view class="car-model">{{item.carModel}}</view>
+            <view class="car-contact">
+              <text class="iconfont icon-user"></text>
+              <text>{{item.contactName}}</text>
+              <text class="separator">|</text>
+              <text class="iconfont icon-phone"></text>
+              <text>{{item.contactPhone}}</text>
+            </view>
+            <view class="car-details">
+              <text class="detail-item">数量: {{item.carCount}}辆</text>
+              <text class="detail-item" wx:if="{{item.weight}}">重量: {{item.weight}}kg</text>
+              <text class="detail-item">启动: {{item.canStart ? '能' : '不能'}}</text>
+            </view>
+          </view>
+
+          <!-- 价格信息 -->
+          <view wx:if="{{item.status === 'priced' || item.status === 'confirmed'}}" class="price-section">
+            <view class="price-label">
+              <text wx:if="{{item.priceSource === 'final'}}">最终价格</text>
+              <text wx:elif="{{item.priceSource === 'estimated'}}">评估价格</text>
+              <text wx:else>价格</text>
+            </view>
+            <view class="price-value">{{item.formattedPrice || '待评估'}}</view>
+            <view class="price-note">元/辆</view>
+            <!-- 显示价格来源提示 -->
+            <view wx:if="{{item.priceSource === 'estimated' && item.formattedPrice !== '待评估'}}" class="price-tip">(预估)</view>
+          </view>
+
+          <!-- 操作按钮区 -->
+          <view class="action-buttons">
+            <button class="btn btn-secondary" bindtap="viewDetails" data-id="{{item.id}}">详情</button>
+
+            <block wx:if="{{item.status === 'pending'}}">
+              <button class="btn btn-danger" bindtap="cancelRecord" data-id="{{item.id}}">取消</button>
+            </block>
+
+            <block wx:if="{{item.status === 'priced'}}">
+              <button class="btn btn-danger" bindtap="rejectPrice" data-id="{{item.id}}">拒绝</button>
+              <button class="btn btn-primary" bindtap="acceptPrice" data-id="{{item.id}}">同意</button>
+            </block>
+
+            <!-- <block wx:if="{{item.status === 'confirmed'}}">
+              <button class="btn btn-primary" bindtap="viewOrder" data-id="{{item.id}}">查看订单</button>
+            </block> -->
+
+            <block wx:if="{{item.status === 'cancelled'}}">
+              <button class="btn btn-primary" bindtap="resubmitRecord" data-id="{{item.id}}">重新提交</button>
+            </block>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:if="{{!isLoading && filteredCars.length === 0 && totalCount > 0}}" class="empty-result">
+      <text class="iconfont icon-search"></text>
+      <text class="empty-text">没有找到符合条件的记录</text>
+      <button class="btn btn-secondary" bindtap="clearFilter">清除筛选</button>
+    </view>
+
+    <view wx:if="{{!isLoading && totalCount === 0}}" class="empty-state">
+      <text class="iconfont icon-car"></text>
+      <text class="empty-title">暂无车辆记录</text>
+      <text class="empty-desc">您还没有提交任何车辆信息</text>
+      <button class="btn btn-primary" bindtap="navigateToSubmit">
+        <text class="iconfont icon-add" /><text> 新增记录</text>
+      </button>
+    </view>
+
+    <!-- 加载更多 -->
+    <view wx:if="{{hasMore && !isLoading && filteredCars.length > 0}}" class="load-more" bindtap="loadMore">
+      <text class="load-more-text">点击加载更多</text>
+    </view>
+
+    <view wx:if="{{isLoading && filteredCars.length > 0}}" class="loading-more">
+      <text class="iconfont icon-loading">⟳</text>
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+</view>

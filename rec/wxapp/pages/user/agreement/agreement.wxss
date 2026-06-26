@@ -1,0 +1,71 @@
+/* 内容区域样式 */
+.content {
+  flex: 1;
+  padding: 30rpx;
+  box-sizing: border-box;
+}
+
+.agreement-content {
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 40rpx 30rpx;
+  line-height: 1.8;
+}
+
+.agreement-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  display: block;
+  text-align: center;
+  margin-bottom: 40rpx;
+  color: #0a0f1d;
+}
+
+.agreement-section {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #0a0f1d;
+  display: block;
+  margin-bottom: 15rpx;
+}
+
+.section-content {
+  font-size: 26rpx;
+  color: #333;
+  display: block;
+  margin-bottom: 15rpx;
+  text-indent: 52rpx;
+}
+
+.agreement-date {
+  margin-top: 50rpx;
+  text-align: right;
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 底部确认按钮 */
+.confirm-bar {
+  padding: 20rpx 30rpx;
+  background-color: #fff;
+  border-top: 1rpx solid #eee;
+}
+
+.confirm-btn {
+  width: 100%;
+  height: 90rpx;
+  background-color: #FF4400;
+  color: #fff;
+  border-radius: 45rpx;
+  font-size: 32rpx;
+  line-height: 90rpx;
+  padding: 0;
+}
+
+.confirm-btn::after {
+  border: none;
+}

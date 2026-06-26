@@ -1,0 +1,92 @@
+<!-- pages/user/userinfo/userinfo.wxml -->
+<view class="page-container">
+  <!-- 导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-left" bindtap="navBack">
+      <!-- <text class="iconfont icon-left"></text> -->
+    </view>
+    <view class="nav-title">编辑资料</view>
+    <view class="nav-right" bindtap="saveProfile">
+      <text>保存</text>
+    </view>
+  </view>
+
+  <scroll-view class="scroll-container" scroll-y>
+    <!-- 调试按钮 -->
+    <!-- <view class="debug-section">
+      <button class="debug-btn" bindtap="testAPIConnection">测试 API 连接</button>
+      <button class="debug-btn" bindtap="debugAuthInfo">调试认证信息</button>
+      <button class="debug-btn" bindtap="forceRefreshUserInfo">强制刷新</button>
+    </view> -->
+
+    <!-- 头像编辑 -->
+    <view class="section">
+      <view class="section-title">头像</view>
+      <view class="avatar-edit" bindtap="chooseAvatar">
+        <image class="avatar-img" src="{{userInfo.avatar}}" mode="aspectFill"></image>
+        <!-- <view class="avatar-mask">
+          <text class="iconfont icon-camera"></text>
+          <text>更换头像</text>
+        </view> -->
+      </view>
+    </view>
+
+    <!-- 基本信息 -->
+    <view class="section">
+      <view class="section-title">基本信息</view>
+      <view class="form-list">
+        <view class="form-item">
+          <view class="form-label">姓名</view>
+          <input class="form-input" value="{{userInfo.name}}" placeholder="请输入姓名" bindinput="onNameInput" />
+        </view>
+
+        <view class="form-item">
+          <view class="form-label">用户名</view>
+          <view class="form-value">{{userInfo.username}}</view>
+        </view>
+
+        <!-- <view class="form-item">
+          <view class="form-label">手机号</view>
+          <input class="form-input" value="{{userInfo.phone}}" placeholder="请输入手机号" type="number" bindinput="onPhoneInput" />
+        </view> -->
+
+        <!-- 手机号验证码区域 -->
+        <view class="form-item">
+          <view class="form-label">手机号</view>
+          <view class="phone-input-container">
+            <input class="form-input phone-input" value="{{userInfo.phone}}" placeholder="请输入手机号" type="number" bindinput="onPhoneInput" />
+            <view class="sms-btn {{smsCountdown > 0 ? 'disabled' : ''}}" bindtap="sendSmsCode" disabled="{{smsCountdown > 0 || !userInfo.phone}}">
+              {{smsCountdown > 0 ? smsCountdown + 's' : '获取验证码'}}
+            </view>
+          </view>
+        </view>
+
+        <view class="form-item">
+          <view class="form-label">验证码</view>
+          <input class="form-input" value="{{smsCode}}" placeholder="请输入验证码" type="number" bindinput="onSmsCodeInput" />
+        </view>
+
+        <view class="form-item">
+          <view class="form-label">工号</view>
+          <input class="form-input" value="{{userInfo.employeeId}}" placeholder="请输入工号" bindinput="onEmployeeIdInput" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 修改密码 -->
+    <view class="section">
+      <view class="section-title">账户安全</view>
+      <view class="action-list">
+        <view class="action-item" bindtap="changePassword">
+          <view class="action-label">
+            <text class="iconfont icon-lock"></text>
+            <text>修改密码</text>
+          </view>
+          <view class="action-arrow">
+            <text class="iconfont icon-arrow-right"></text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

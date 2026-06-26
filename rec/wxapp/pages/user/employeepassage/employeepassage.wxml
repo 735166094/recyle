@@ -1,0 +1,136 @@
+<!-- pages/user/employeepassage/employeepassage.wxml -->
+<view class="employee-container">
+  <!-- 顶部标题 -->
+  <view class="title-header">
+    <view class="title-title">
+      <view class="title-titlespace"></view>
+      <view class="title-titlename">员工通道</view>
+    </view>
+  </view>
+
+  <!-- 员工认证区域 -->
+  <view class="card employee-auth-section" wx:if="{{!isVerified}}">
+    <view class="card-title">员工身份验证</view>
+    <view class="card-content">
+      <!-- 员工工号输入 -->
+      <view class="input-item">
+        <text class="iconfont icon-user"></text>
+        <input class="input-field" type="text" placeholder="请输入员工工号" value="{{staff_id}}" bindinput="onStaffIdInput" placeholder-class="input-placeholder" bindconfirm="onStaffIdConfirm" confirm-type="go" />
+      </view>
+
+      <!-- 密码输入 -->
+      <view class="input-item">
+        <text class="iconfont icon-key"></text>
+        <input class="input-field" password placeholder="请输入员工密码" value="{{password}}" bindinput="onPasswordInput" placeholder-class="input-placeholder" bindconfirm="onPasswordConfirm" confirm-type="go" />
+      </view>
+
+      <!-- 验证码输入 -->
+      <view class="input-item">
+        <text class="iconfont icon-verify"></text>
+        <input class="input-field" type="text" placeholder="请输入验证码" value="{{captcha}}" bindinput="onCaptchaInput" bindconfirm="onCaptchaConfirm" confirm-type="go" style="flex: 1;" placeholder-class="input-placeholder" />
+        <view class="captcha-image" bindtap="refreshCaptcha">
+          <text class="captcha-text">{{captchaText}}</text>
+        </view>
+      </view>
+
+      <!-- 登录按钮 -->
+      <button class="btn btn-primary verify-btn" bindtap="verifyEmployee" loading="{{isLoading}}" disabled="{{isLoading}}" hover-class="btn-hover">
+        <text class="iconfont icon-verify" wx:if="{{!isLoading}}"></text>
+        <text class="btn-text">{{isLoading ? '验证中...' : '员工登录'}}</text>
+      </button>
+
+      <!-- 提示信息 -->
+      <view class="login-tips">
+        <text class="tip-text">温馨提示：为了那您的安全，请登陆后请尽快修改员工账号密码，谢谢！</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 员工快速入口区域 -->
+  <view class="employee-access-section" wx:if="{{isVerified}}">
+    <!-- 欢迎信息 -->
+    <view class="welcome-card card">
+      <view class="welcome-header">
+        <view class="user-avatar">
+          <text class="iconfont icon-user-circle"></text>
+        </view>
+        <view class="user-info">
+          <text class="user-name">{{employeeName || '员工用户'}}</text>
+          <text class="user-department">{{department || '企业员工'}}</text>
+        </view>
+        <view class="logout-btn" bindtap="logout">
+          <text class="iconfont icon-logout"></text>
+          <text class="logout-text">退出</text>
+        </view>
+      </view>
+      <view class="welcome-message">
+        <text class="message-text">欢迎使用企业内部系统，请选择要访问的系统！</text>
+      </view>
+    </view>
+
+    <!-- 常用系统 -->
+    <view class="section-title">
+      <text class="section-name">常用系统</text>
+    </view>
+    <view class="menu">
+      <view class="menu-item" wx:for="{{quickAccess}}" wx:key="app_id" bindtap="navigateToSystem" data-appid="{{item.app_id}}">
+        <view class="menu-backc">
+          <text class="{{item.icon_class || 'iconfont icon-app'}}"></text>
+        </view>
+        <text class="menu-text">{{item.app_name}}</text>
+        <text class="menu-desc">{{item.app_desc || '内部系统'}}</text>
+      </view>
+    </view>
+
+    <!-- 所有系统 -->
+    <view class="section-title">
+      <text class="section-name">所有系统</text>
+      <text class="section-count">{{allApps.length}} 个系统</text>
+    </view>
+    <view class="all-systems">
+      <view class="system-item card" wx:for="{{allApps}}" wx:key="app_id" bindtap="navigateToSystem" data-appid="{{item.app_id}}">
+        <view class="system-icon">
+          <text class="{{item.icon_class || 'iconfont icon-app'}}"></text>
+        </view>
+        <view class="system-info">
+          <text class="system-name">{{item.app_name}}</text>
+          <text class="system-desc">{{item.app_desc || '内部系统'}}</text>
+        </view>
+        <view class="system-arrow">
+          <text class="iconfont icon-arrow-right"></text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 联系支持 -->
+    <view class="support-section card">
+      <view class="support-title">技术支持</view>
+      <view class="support-content">
+        <view class="support-item" bindtap="makeCall" data-phone="18356998052">
+          <text class="iconfont icon-phone"></text>
+          <text class="support-text">技术支持电话：18356998052</text>
+        </view>
+        <view class="support-item">
+          <text class="iconfont icon-mail"></text>
+          <text class="support-text">邮箱：sunlimei@mychery.com</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 温馨提示弹窗 -->
+  <view class="alert-modal" wx:if="{{showAlert}}">
+    <view class="modal-mask" bindtap="hideAlert"></view>
+    <view class="modal-content card">
+      <view class="modal-header">
+        <text class="modal-title">{{alertTitle}}</text>
+      </view>
+      <view class="modal-body">
+        <text class="alert-text">{{alertMessage}}</text>
+      </view>
+      <view class="modal-footer">
+        <button class="btn confirm-btn" bindtap="hideAlert">确定</button>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,110 @@
+<view class="containers">
+  <!-- 地址列表 -->
+  <view class="addr-cards">
+    <!-- 地址为空时的提示视图 -->
+    <view class="empty-address" wx:if="{{!loading && addresses.length === 0}}">
+      <text class="iconfont icon-address" />
+      <view class="empty-text">暂无保存的地址</view>
+      <view class="empty-desc">点击下方按钮添加新地址</view>
+    </view>
+
+    <!-- 加载中 -->
+    <view class="loading" wx:if="{{loading}}">
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 地址卡片 -->
+    <view class="addr-card" wx:for="{{addresses}}" wx:key="id" wx:if="{{!loading && addresses.length > 0}}" data-id="{{item.id}}">
+      <view class="addr-header">
+        <view class="addr-name">{{item.receiver_name}}</view>
+        <view class="addr-tag" wx:if="{{item.is_default}}">默认</view>
+        <view class="addr-phone">{{item.receiver_phone}}</view>
+      </view>
+      <view class="addr-addrinfo">
+        <view>{{item.region_display}}</view>
+        <view class="addr-detail">{{item.detail_address}}</view>
+        <view class="addr-detail" wx:if="{{item.address_tag}}">
+          标签：{{item.address_tag === 'home' ? '家' : item.address_tag === 'company' ? '公司' : item.address_tag === 'school' ? '学校' : '其他'}}
+        </view>
+      </view>
+      <view class="addr-actions">
+        <view class="addr-action-btn default-btn" wx:if="{{!item.is_default}}" bindtap="setAsDefault" data-id="{{item.id}}">
+          设为默认
+        </view>
+        <view class="addr-action-group">
+          <view class="addr-action-btn" bindtap="deleteAddress" data-id="{{item.id}}">删除</view>
+          <view class="addr-action-btn" bindtap="editAddress" data-id="{{item.id}}">修改</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加地址按钮 -->
+  <view class="btn" bindtap="onAddAddressClick">
+    <text class="iconfont icon-add" />
+    <view>新增地址</view>
+  </view>
+
+  <!-- 添加/编辑地址弹窗 -->
+  <view class="dialog-mask" wx:if="{{showAddDialog}}" bindtap="onCancelAdd"></view>
+  <view class="add-dialog" wx:if="{{showAddDialog}}">
+    <view class="dialog-title">{{editMode ? '编辑地址' : '新增地址'}}</view>
+
+    <view class="dialog-form">
+      <!-- 姓名 -->
+      <view class="form-item">
+        <view class="form-label">姓名</view>
+        <input class="form-input" placeholder="请输入收件人姓名" value="{{newAddress.receiver_name}}" bindinput="handleInput" data-field="receiver_name" />
+      </view>
+
+      <!-- 电话 -->
+      <view class="form-item">
+        <view class="form-label">电话</view>
+        <input class="form-input" placeholder="请输入联系电话" type="number" value="{{newAddress.receiver_phone}}" bindinput="handleInput" data-field="receiver_phone" maxlength="11" />
+      </view>
+
+      <!-- 地区选择 -->
+      <view class="form-item">
+        <view class="form-label">地区</view>
+        <view class="picker-container">
+          <picker mode="region" value="{{region}}" bindchange="handleRegionChange" class="form-picker">
+            <view class="picker-view">
+              {{region.length === 3 && region[0] && region[1] && region[2] ? region[0] + ' ' + region[1] + ' ' + region[2] : '请选择省/市/区'}}
+            </view>
+          </picker>
+        </view>
+        <view class="map-btn-after-picker" bindtap="chooseLocation">
+          <text class="iconfont icon-address" />
+        </view>
+      </view>
+
+      <!-- 详细地址 -->
+      <view class="form-item">
+        <view class="form-label">详细地址</view>
+        <textarea class="form-textarea" placeholder="请输入详细地址" value="{{newAddress.detail_address}}" bindinput="handleInput" data-field="detail_address"></textarea>
+      </view>
+
+      <!-- 标签选择 -->
+      <view class="form-item">
+        <view class="form-label">标签</view>
+        <view class="tag-group">
+          <view class="tag-item {{newAddress.address_tag === item.value ? 'tag-active' : ''}}" wx:for="{{tagOptions}}" wx:key="value" bindtap="handleTagSelect" data-tag="{{item.value}}">
+            {{item.label}}
+          </view>
+        </view>
+      </view>
+
+      <!-- 设为默认 -->
+      <view class="form-item checkbox-item">
+        <checkbox checked="{{newAddress.is_default}}" bindchange="handleDefaultChange" color="#1677ff" />
+        <view class="checkbox-text">设为默认地址</view>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="dialog-actions">
+      <button class="btns" bindtap="onCancelAdd">取消</button>
+      <button class="btn-primary" bindtap="onSaveAddress">保存</button>
+    </view>
+  </view>
+</view>

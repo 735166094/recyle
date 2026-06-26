@@ -1,0 +1,116 @@
+<view class="rules-container" animation="{{animationData}}">
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-wrapper">
+    <view class="loading-content">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+
+  <view wx:else class="content-wrapper">
+    <!-- 头部区域 -->
+    <view class="header-section">
+      <view class="header-title">
+        <text class="title-text">积分规则</text>
+        <text class="subtitle-text">POINTS RULES</text>
+      </view>
+    </view>
+
+    <!-- 规则内容 -->
+    <view class="rules-content">
+      <!-- 获得积分规则 -->
+      <view class="rule-section">
+        <view class="section-header" bindtap="toggleSection" data-section="earn">
+          <view class="section-title">
+            <text class="title-text">获得积分</text>
+            <text class="title-desc">如何获得积分</text>
+          </view>
+          <view class="section-arrow {{expandedSections.earn ? 'expanded' : ''}}">›</view>
+        </view>
+
+        <view class="section-content {{expandedSections.earn ? 'expanded' : ''}}">
+          <view class="rules-grid">
+            <view wx:for="{{rules.earnRules}}" wx:key="id" class="rule-card {{item.status}}">
+              <view class="rule-icon {{item.icon}}"></view>
+              <view class="rule-content">
+                <text class="rule-title">{{item.type}}</text>
+                <text class="rule-points">{{item.points}}</text>
+                <text class="rule-frequency">{{item.frequency}}</text>
+                <text class="rule-desc">{{item.desc}}</text>
+              </view>
+              <view wx:if="{{item.status === 'completed'}}" class="status-badge">已完成</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 使用积分规则 -->
+      <view class="rule-section">
+        <view class="section-header" bindtap="toggleSection" data-section="use">
+          <view class="section-title">
+            <text class="title-text">使用积分</text>
+            <text class="title-desc">如何使用积分</text>
+          </view>
+          <view class="section-arrow {{expandedSections.use ? 'expanded' : ''}}">›</view>
+        </view>
+
+        <view class="section-content {{expandedSections.use ? 'expanded' : ''}}">
+          <view class="rules-list">
+            <view wx:for="{{rules.useRules}}" wx:key="id" class="rule-item">
+              <view class="rule-icon {{item.icon}}"></view>
+              <view class="rule-content">
+                <text class="rule-title">{{item.title}}</text>
+                <text class="rule-desc">{{item.desc}}</text>
+                <text class="rule-condition">{{item.condition}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 过期规则 -->
+      <view class="rule-section">
+        <view class="section-header" bindtap="toggleSection" data-section="expire">
+          <view class="section-title">
+            <text class="title-text">过期规则</text>
+            <text class="title-desc">积分有效期说明</text>
+          </view>
+          <view class="section-arrow {{expandedSections.expire ? 'expanded' : ''}}">›</view>
+        </view>
+
+        <view class="section-content {{expandedSections.expire ? 'expanded' : ''}}">
+          <view class="rules-list">
+            <view wx:for="{{rules.expireRules}}" wx:key="id" class="rule-item {{item.important ? 'important' : ''}}">
+              <view class="rule-icon {{item.icon}}"></view>
+              <view class="rule-content">
+                <text class="rule-title">{{item.title}}</text>
+                <text class="rule-desc">{{item.desc}}</text>
+              </view>
+              <view wx:if="{{item.important}}" class="important-badge">重要</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部操作 -->
+    <view class="bottom-actions">
+      <view class="action-buttons">
+        <view class="action-btn primary" bindtap="navigateToCheckin">
+          <text class="btn-text">立即签到</text>
+        </view>
+        <view class="action-btn secondary" bindtap="navigateToTasks">
+          <text class="btn-text">查看任务</text>
+        </view>
+      </view>
+
+      <view class="contact-section">
+        <text class="contact-text">如有技术疑问，请联系客服</text>
+        <view class="contact-btn" bindtap="contactCustomerService">
+          <text class="contact-icon">📞</text>
+          <text class="contact-text">18356998052</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,91 @@
+<view class="record-container" animation="{{animationData}}">
+  <!-- 加载状态 -->
+  <view wx:if="{{loading && records.length === 0}}" class="loading-wrapper">
+    <view class="loading-content">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+
+  <view wx:else class="content-wrapper">
+    <!-- 头部区域 -->
+    <view class="header-section">
+      <view class="header-title">
+        <text class="title-text">积分记录</text>
+        <text class="subtitle-text">POINTS RECORD</text>
+      </view>
+    </view>
+
+    <!-- 统计卡片 -->
+    <view class="stats-card">
+      <view class="stats-grid">
+        <view class="stat-item">
+          <text class="stat-value">{{stats.totalEarn}}</text>
+          <text class="stat-label">总获得</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">-{{stats.totalSpend}}</text>
+          <text class="stat-label">总消费</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value {{stats.balance >= 0 ? 'positive' : 'negative'}}">{{stats.balance >= 0 ? '' : ''}}{{stats.balance}}</text>
+          <text class="stat-label">余额</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 筛选选项 -->
+    <view class="filter-section">
+      <view class="filter-tabs">
+        <view wx:for="{{filterOptions}}" wx:key="value" class="filter-tab {{filterType === item.value ? 'active' : ''}}" bindtap="onFilterChange" data-type="{{item.value}}">
+          <text class="tab-text">{{item.label}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 记录列表 -->
+    <view class="records-section">
+      <view wx:if="{{records.length > 0}}" class="records-list">
+        <view wx:for="{{records}}" wx:key="id" class="record-item">
+          <view class="record-icon {{item.type}}"></view>
+          <view class="record-content">
+            <text class="record-title">{{item.desc}}</text>
+            <text class="record-time">{{item.time}}</text>
+          </view>
+          <view class="record-amount">
+            <text class="amount-text {{item.points.startsWith('+') ? 'earn' : 'spend'}}">
+              {{item.points}}
+            </text>
+            <text class="amount-status">{{item.status}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view wx:if="{{records.length === 0 && !loading}}" class="empty-state">
+        <view class="empty-icon"></view>
+        <text class="empty-text">暂无积分记录</text>
+      </view>
+
+      <!-- 加载更多 -->
+      <view wx:if="{{loading && records.length > 0}}" class="loading-more">
+        <view class="loading-spinner"></view>
+        <text class="loading-text">加载中...</text>
+      </view>
+
+      <!-- 没有更多 -->
+      <view wx:if="{{!hasMore && records.length > 0}}" class="no-more">
+        <text class="no-more-text">没有更多记录了</text>
+      </view>
+    </view>
+
+    <!-- 错误状态 -->
+    <view wx:if="{{error}}" class="error-state">
+      <view class="error-icon"></view>
+      <text class="error-text">加载失败</text>
+      <view class="retry-btn" bindtap="retryLoad">
+        <text class="retry-text">重试</text>
+      </view>
+    </view>
+  </view>
+</view>

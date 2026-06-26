@@ -1,0 +1,18 @@
+<view class="webview-container">
+
+  <!-- 加载提示 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="spinner"></view>
+    <text class="loading-text">正在加载...</text>
+  </view>
+
+  <!-- 网页容器 -->
+  <web-view src="{{webUrl}}" bindload="onWebLoad" binderror="onWebError" wx:if="{{!error && webUrl}}" style="width: 100%; height: calc(100vh - 80rpx);"></web-view>
+
+  <!-- 错误提示 -->
+  <view class="error-view" wx:if="{{error}}">
+    <text class="iconfont icon-close"></text>
+    <text class="error-text">{{errorMessage}}</text>
+    <button class="reload-btn" bindtap="reloadPage">重新加载</button>
+  </view>
+</view>
