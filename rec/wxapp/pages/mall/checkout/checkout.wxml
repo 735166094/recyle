@@ -1,0 +1,152 @@
+<!-- pages/mall/checkout/checkout.wxml -->
+<view class="checkout-container">
+  <!-- 收货地址（点击弹出选择器） -->
+  <view class="address-section" bindtap="selectAddress">
+    <view wx:if="{{selectedAddress}}" class="address-info">
+      <view class="address-header">
+        <text class="address-name">{{selectedAddress.name}}</text>
+        <text class="address-phone">{{selectedAddress.phone}}</text>
+        <text class="address-tag" wx:if="{{selectedAddress.is_default}}">默认</text>
+      </view>
+      <view class="address-detail">{{selectedAddress.full_address}}</view>
+    </view>
+    <view wx:else class="no-address">
+      <text class="iconfont icon-address" />
+      <text class="add-address-text">请选择收货地址</text>
+    </view>
+    <view class="address-arrow">
+      <text class="iconfont icon-right"></text>
+    </view>
+  </view>
+
+  <!-- 商品列表 -->
+  <view class="goods-section">
+    <view class="section-title">商品信息</view>
+    <view class="goods-list">
+      <view class="goods-item" wx:for="{{checkoutItems}}" wx:key="id">
+        <image class="goods-image" src="{{item.product_image}}" mode="aspectFill"></image>
+        <view class="goods-info">
+          <view class="goods-title">{{item.product_name}}</view>
+          <view class="goods-spec">{{item.spec_display}}</view>
+          <view class="goods-price">
+            <view class="price">
+              <text class="iconfont icon-point price-icon-point"></text>
+              {{item.price}}
+            </view>
+            <text class="quantity">x{{item.quantity}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 优惠券（预留） -->
+  <view class="coupon-section" bindtap="selectCoupon">
+    <view class="section-item">
+      <text class="item-label">优惠券</text>
+      <view class="item-value">
+        <text wx:if="{{selectedCoupon}}" class="coupon-text">{{selectedCoupon.name}}</text>
+        <text wx:else class="coupon-text">暂无可使用优惠券</text>
+        <text class="iconfont icon-right"></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 订单信息 -->
+  <view class="order-info-section">
+    <view class="section-title">订单信息</view>
+    <view class="info-list">
+      <view class="info-item">
+        <text class="info-label">商品金额</text>
+        <view class="info-value">
+          <text class="iconfont icon-point price-icon-point"></text>
+          {{orderInfo.total_price}}
+        </view>
+      </view>
+      <view class="info-item">
+        <text class="info-label">运费</text>
+        <view class="info-value">
+          <text class="iconfont icon-point price-icon-point"></text>
+          0
+        </view>
+      </view>
+      <view class="info-item">
+        <text class="info-label">优惠券</text>
+        <view class="info-value">
+          <text class="iconfont icon-point price-icon-point"></text>
+          {{orderInfo.coupon_discount}}
+        </view>
+      </view>
+      <view class="info-item total">
+        <text class="info-label">实付款</text>
+        <view class="info-value total-price">
+          <text class="iconfont icon-point price-icon-point"></text>
+          {{orderInfo.final_price}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 备注 -->
+  <view class="remark-section">
+    <view class="section-item">
+      <text class="item-label">备注</text>
+      <input class="remark-input" placeholder="选填，填写备注信息" value="{{remark}}" bindinput="onRemarkInput" />
+    </view>
+  </view>
+
+  <!-- 底部提交栏 -->
+  <view class="checkout-footer">
+    <view class="footer-total">
+      <text class="total-label">合计:</text>
+      <view class="info-value total-price">
+        <text class="iconfont icon-point price-icon-point"></text>
+        {{orderInfo.final_price}}
+      </view>
+    </view>
+    <view class="submit-btn" bindtap="submitOrder">
+      提交订单
+    </view>
+  </view>
+
+  <!-- ========== 地址选择弹窗 ========== -->
+  <view class="dialog-mask" wx:if="{{showAddressSelector}}" bindtap="closeAddressSelector"></view>
+  <view class="address-selector" wx:if="{{showAddressSelector}}">
+    <view class="selector-header">
+      <text class="selector-title">选择收货地址</text>
+      <text class="selector-close" bindtap="closeAddressSelector">×</text>
+    </view>
+    <view class="selector-list">
+      <!-- 加载中 -->
+      <view class="loading" wx:if="{{loadingAddresses}}">
+        <text class="loading-text">加载中...</text>
+      </view>
+      <!-- 无地址 -->
+      <view class="empty-address" wx:elif="{{addressList.length === 0}}">
+        <text class="iconfont icon-address" />
+        <view class="empty-text">暂无地址</view>
+        <view class="empty-desc">点击下方按钮添加新地址</view>
+      </view>
+      <!-- 地址列表 -->
+      <view class="address-item" wx:for="{{addressList}}" wx:key="id" bindtap="selectAddressItem" data-address="{{item}}">
+        <view class="addr-info">
+          <view class="addr-header">
+            <text class="addr-name">{{item.receiver_name}}</text>
+            <text class="addr-phone">{{item.receiver_phone}}</text>
+            <text class="addr-tag" wx:if="{{item.is_default}}">默认</text>
+          </view>
+          <view class="addr-detail">{{item.full_address || item.region_display}} {{item.detail_address}}</view>
+        </view>
+        <view class="addr-check" wx:if="{{selectedAddress && selectedAddress.id === item.id}}">
+          <text class="iconfont icon-check"></text>
+        </view>
+      </view>
+    </view>
+    <view class="selector-footer">
+      <button class="add-address-btn" bindtap="goToAddAddress">
+        <text class="iconfont icon-add"></text>
+        新增地址
+      </button>
+    </view>
+  </view>
+</view>

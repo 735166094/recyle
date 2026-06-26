@@ -1,0 +1,215 @@
+@import "/static/css/iconfont.wxss";
+
+.iconfont {
+  font-family: "iconfont" !important;
+  margin: 20rpx;
+  font-size: 60rpx;
+  color: var(--light);
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+}
+
+
+page {
+  /* 主色调定义 */
+  --primary: #0a1929;
+  --secondary: #1e2a3a;
+  --accent: #3a6ea5;
+  --highlight: #5e87b8;
+  --light: #e0e7ff;
+  --success: #2ecc71;
+  --warning: #f39c12;
+  --danger: #e74c3c;
+  --gold: #d4af37;
+
+  /* 组件样式变量 */
+  --card-radius: 32rpx;
+  --shadow: 0 12rpx 50rpx rgba(0, 0, 0, 0.4);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  /* 基础页面样式 */
+  background: linear-gradient(135deg, #0a0f1d 100%, #121b2d 50%, #1c2c3c 100%);
+  color: var(--light);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+  font-size: 28rpx;
+}
+
+view,
+text {
+  box-sizing: border-box;
+}
+
+/* 卡片通用样式 */
+.card {
+  background: linear-gradient(135deg, var(--secondary), #1a2538);
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(119, 141, 169, 0.2);
+  overflow: hidden;
+}
+
+.card-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  text-align: center;
+  margin-bottom: 24rpx;
+}
+
+.card-content {
+  padding: 24rpx;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx 30rpx;
+  margin: 20rpx 20rpx 40rpx;
+  border-radius: 20rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  transition: var(--transition);
+  border: none;
+  outline: none;
+}
+
+.btn:active {
+  background-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(4rpx);
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+.btn-primary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, var(--accent), #2a4365);
+  color: var(--light);
+}
+
+.btn-primary:active {
+  background: linear-gradient(135deg, #2a4365, var(--accent));
+  transform: translateY(4rpx);
+}
+
+.title-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 32rpx;
+  color: #FFFFFF;
+  font-size: 32rpx;
+  font-weight: bold;
+  flex-wrap: nowrap;
+  margin-top: 10rpx;
+}
+
+.title-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.title-titlespace {
+  background: linear-gradient(to bottom, #415a77, #778da9);
+  width: 15rpx;
+  height: 45rpx;
+  border-radius: 10rpx;
+}
+
+.title-titlename {
+  font-size: 40rpx;
+  margin-left: 24rpx;
+  font-weight: 700;
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.title-more {
+  display: flex;
+  align-items: center;
+  color: rgb(119, 141, 169);
+  font-size: 28rpx;
+  font-weight: normal;
+  gap: 8rpx;
+  white-space: nowrap;
+}
+
+.menu {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10rpx 16rpx;
+  margin: 10rpx 30rpx;
+  width: calc(100% - 60rpx);
+}
+
+.menu-item {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: space-around;
+  text-align: center;
+  align-items: center;
+  padding: 10rpx;
+  transition: all 0.2s ease;
+  flex: 1;
+  width: 25%;
+  gap: 20rpx;
+}
+
+.menu-backc {
+  background: linear-gradient(135deg, #1b263b, #1a2538);
+  border-radius: 30rpx;
+  padding: 10rpx;
+  width: 120rpx;
+  height: 120rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.menu-backc .iconfont {
+  margin: 0;
+  font-size: 60rpx;
+  color: var(--light);
+}
+
+.menu-text {
+  font-size: 26rpx;
+  color: #FFFFFF;
+  font-weight: 500;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menu-item:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+.icon-point {
+  font-family: "iconfont" !important;
+  font-size: 32rpx;
+  color: #FF6B6B;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  margin-right: 4rpx;
+  vertical-align: baseline;
+}
+
+.price-icon-point {
+  font-size: 32rpx;
+  color: red;
+  margin-right: 6rpx;
+  vertical-align: baseline;
+}

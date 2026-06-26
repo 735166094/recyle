@@ -1,0 +1,120 @@
+.card-titles {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  text-align: center;
+  margin: 30rpx;
+}
+
+.form-row {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  margin: 24rpx;
+}
+
+.form-label {
+  width: 130rpx;
+  font-size: 28rpx;
+  color: white;
+  margin: 0 10rpx 0 50rpx;
+}
+
+.valinput {
+  background-color: #3c4555;
+  border-radius: 8rpx;
+  padding: 6rpx 40rpx;
+  margin: 6rpx;
+  font-size: 26rpx;
+}
+
+input::placeholder {
+  color: #B0B6BE;
+}
+
+.eval-note {
+  font-size: 26rpx;
+  text-align: center;
+  margin-bottom: 32rpx;
+  opacity: 0.8;
+  color: white;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.eval-result {
+  margin-top: 32rpx;
+  font-size: 28rpx;
+  text-align: center;
+  font-weight: bold;
+  color: #32CD32;
+  padding: 16rpx 0;
+}
+
+.card {
+  padding: 0;
+  margin: 10rpx 30rpx 30rpx;
+  overflow: hidden;
+}
+
+.cards-group .card {
+  margin: 10rpx;
+  border-radius: 16rpx;
+}
+
+.card-image {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  display: block;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 24rpx;
+  padding: 0 4rpx;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6rpx 10rpx 16rpx;
+}
+
+.meta-item .iconfont {
+  font-size: 24rpx;
+  color: var(--accent);
+  margin-right: 12rpx;
+}
+
+.card-desc {
+  margin-bottom: 20rpx;
+}
+
+.card-more {
+  margin-bottom: 32rpx;
+}
+
+.read-more {
+  color: var(--highlight);
+}
+
+.loading-text,
+.no-more-text,
+.no-data-text {
+  text-align: center;
+  padding: 30rpx;
+  font-size: 28rpx;
+  color: #999;
+  width: 100%;
+}
+
+.card-image {
+  height: 360rpx;
+  width: 100%;
+}

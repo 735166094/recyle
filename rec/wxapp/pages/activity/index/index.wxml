@@ -1,0 +1,125 @@
+<!-- 顶部搜索栏 + UI切换 -->
+<view class="search-bar">
+  <view class="search-input">
+    <icon type="search" size="18" color="#888"></icon>
+    <input placeholder="搜索活动..." placeholder-class="placeholder-style" bindinput="onSearchInput" value="{{searchValue}}" />
+  </view>
+  <!-- UI模式切换按钮（列表/卡片） -->
+  <view class="ui-toggle" bindtap="toggleUIMode">
+    <text>{{uiMode === 'points' ? '卡片' : '列表'}}</text>
+  </view>
+</view>
+
+
+<!-- 分类标签 -->
+<scroll-view class="category-scroll" scroll-x="true" enable-flex="true" scroll-with-animation="true">
+  <view class="category-wrapper">
+    <view class="category-item {{currentCategory == 'all' ? 'active' : ''}}" bind:tap="switchCategory" data-category="all">全部</view>
+    <view class="category-item {{currentCategory == 'online' ? 'active' : ''}}" bind:tap="switchCategory" data-category="online">线上活动</view>
+    <view class="category-item {{currentCategory == 'offline' ? 'active' : ''}}" bind:tap="switchCategory" data-category="offline">线下活动</view>
+    <view class="category-item {{currentCategory == 'discount' ? 'active' : ''}}" bind:tap="switchCategory" data-category="discount">优惠活动</view>
+    <view class="category-item {{currentCategory == 'points' ? 'active' : ''}}" bind:tap="switchCategory" data-category="points">积分活动</view>
+    <view class="category-item {{currentCategory == 'recycle' ? 'active' : ''}}" bind:tap="switchCategory" data-category="recycle">回收活动</view>
+  </view>
+</scroll-view>
+
+<!-- 模式1：卡片样式 -->
+<view wx:if="{{uiMode === 'points'}}">
+  <view class="list-container">
+    <view class="cards-group">
+      <block wx:for="{{filteredActivities}}" wx:key="id">
+        <view class="cards" bindtap="goToDetail" data-id="{{item.id}}" data-category="{{item.category}}">
+          <!-- 卡片图片 -->
+          <image class="card-img" src="{{item.image}}" mode="widthFix"></image>
+          <!-- 卡片内容 -->
+          <view class="card-content">
+            <text class="card-title">{{item.title}}</text>
+            <view class="card-meta">
+              <view class="meta-item">
+                <text class="iconfont icon-rili " />
+                <text>{{item.time}}</text>
+              </view>
+              <view class="meta-item">
+                <text class="iconfont icon-eye meta-icon" />
+                <text>{{item.participants}} 参与</text>
+              </view>
+              <view class="meta-item">
+                <text class="iconfont icon-sources meta-icon" />
+                <text>{{item.organizer}}</text>
+              </view>
+            </view>
+
+            <text class="card-desc">{{item.desc}}</text>
+
+            <!-- 活动状态标签 -->
+            <view class="activity-status {{item.status === '进行中' ? 'ongoing' : 'upcoming'}}">
+              {{item.status}}
+            </view>
+
+            <view class="read-more" bindtap="goToDetail" data-id="{{item.id}}" data-category="{{item.category}}">
+              查看详情 >
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- 加载提示 -->
+    <view class="loading-tip" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text>加载中...</text>
+    </view>
+
+    <!-- 无数据提示 -->
+    <view class="no-more" wx:if="{{!loading && filteredActivities.length === 0}}">
+      暂无相关活动
+    </view>
+
+    <!-- 到底提示 -->
+    <view class="no-more" wx:if="{{!loading && hasMore === false && filteredActivities.length > 0}}">
+      已经到底啦~
+    </view>
+  </view>
+</view>
+
+
+<!-- 模式2：列表样式（默认） -->
+<view wx:else>
+  <view class="activity-list">
+    <block wx:for="{{filteredActivities}}" wx:key="id">
+      <view class="activity-item" bindtap="goToDetail" data-id="{{item.id}}" data-category="{{item.category}}">
+        <view class="activity-image">
+          <image src="{{item.image}}" mode="cover"></image>
+          <!-- 活动状态标签 -->
+          <view class="status-badge {{item.status === '进行中' ? 'ongoing' : 'upcoming'}}">
+            {{item.status}}
+          </view>
+        </view>
+        <view class="activity-content">
+          <view class="activity-title">{{item.title}}</view>
+          <view class="activity-meta">
+            <text class="activity-organizer">{{item.organizer}}</text>
+            <text class="activity-time">{{item.time}}</text>
+            <text class="activity-participants">{{item.participants}} 参与</text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 加载提示 -->
+    <view class="loading-tip" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text>加载中...</text>
+    </view>
+
+    <!-- 无数据提示 -->
+    <view class="no-more" wx:if="{{!loading && filteredActivities.length === 0}}">
+      暂无相关活动
+    </view>
+
+    <!-- 到底提示 -->
+    <view class="no-more" wx:if="{{!loading && hasMore === false && filteredActivities.length > 0}}">
+      已经到底啦~
+    </view>
+  </view>
+</view>

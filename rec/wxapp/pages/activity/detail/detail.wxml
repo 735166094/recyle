@@ -1,0 +1,68 @@
+<view class="detail-container" wx:if="{{showDetail}}">
+  <!-- 遮罩层（点击关闭） -->
+  <view class="mask" bindtap="closeDetail"></view>
+
+  <!-- 详情内容（带弹跳动画） -->
+  <view class="detail-content" style="{{detailStyle}}">
+
+    <!-- 活动内容 -->
+    <view class="activity-content">
+      <!-- 标题 -->
+      <view class="activity-title">{{currentActivity.title}}</view>
+
+      <!-- 元数据（主办方、时间、分类、状态） -->
+      <view class="activity-meta">
+        <view class="activity-organizer">{{currentActivity.organizer}}</view>
+        <view class="activity-time">{{currentActivity.time}}</view>
+        <view class="activity-category {{currentActivity.category}}">
+          {{categoryMap[currentActivity.category] || currentActivity.category}}
+        </view>
+        <view class="activity-status {{currentActivity.status === '进行中' ? 'ongoing' : 'upcoming'}}">
+          {{currentActivity.status}}
+        </view>
+      </view>
+
+      <!-- 参与人数 -->
+      <view class="participants-info">
+        <text class="iconfont icon-eye"></text>
+        <text>{{currentActivity.participants}} 人已参与</text>
+      </view>
+
+      <!-- 封面图 -->
+      <view class="activity-image-container" wx:if="{{currentActivity.image}}">
+        <image src="{{currentActivity.image}}" mode="widthFix" class="activity-image"></image>
+      </view>
+
+      <!-- 正文（支持换行） -->
+      <view class="activity-body">
+        <text>{{currentActivity.content}}</text>
+      </view>
+
+      <!-- 参与按钮 -->
+      <view class="participate-section">
+        <button class="participate-btn {{currentActivity.status === '进行中' ? 'active' : 'disabled'}}" 
+                bindtap="participateActivity" 
+                disabled="{{currentActivity.status !== '进行中'}}">
+          {{currentActivity.status === '进行中' ? '立即参与' : '活动未开始'}}
+        </button>
+      </view>
+
+      <!-- 相关活动 -->
+      <view class="related-activities" wx:if="{{relatedActivities.length > 0}}">
+        <view class="related-title">相关活动</view>
+        <view class="related-list">
+          <view class="related-item" wx:for="{{relatedActivities}}" wx:key="id" bindtap="navigateToRelated" data-id="{{item.id}}">
+            <image src="{{item.image}}" mode="widthFix" class="related-image"></image>
+            <view class="related-info">
+              <view class="related-item-title">{{item.title}}</view>
+              <view class="related-item-meta">{{item.organizer}} · {{item.time}}</view>
+              <view class="related-item-status {{item.status === '进行中' ? 'ongoing' : 'upcoming'}}">
+                {{item.status}}
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "奇奇回收",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "search-bar": "/components/search-bar/search-bar",
+    "banner": "/components/banner/banner"
+  }
+}

@@ -1,0 +1,258 @@
+.detail-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+}
+
+.mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.detail-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #0a0f1d, #121b2d);
+  overflow-y: auto;
+  z-index: 1001;
+}
+
+/* 活动内容样式 */
+.activity-content {
+  padding: 30rpx 24rpx;
+}
+
+.activity-title {
+  color: #fff;
+  font-size: 40rpx;
+  font-weight: bold;
+  line-height: 1.4;
+  margin-bottom: 24rpx;
+}
+
+.activity-meta {
+  display: flex;
+  align-items: center;
+  color: #888;
+  font-size: 26rpx;
+  margin-bottom: 20rpx;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.activity-category {
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+}
+
+.online {
+  background-color: rgba(66, 133, 244, 0.2);
+  color: #4285f4;
+}
+
+.offline {
+  background-color: rgba(15, 157, 88, 0.2);
+  color: #0f9d58;
+}
+
+.discount {
+  background-color: rgba(244, 160, 0, 0.2);
+  color: #f4a000;
+}
+
+.points {
+  background-color: rgba(199, 69, 199, 0.2);
+  color: #c745c7;
+}
+
+.recycle {
+  background-color: rgba(255, 107, 107, 0.2);
+  color: #ff6b6b;
+}
+
+.activity-status {
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.activity-status.ongoing {
+  background-color: rgba(15, 157, 88, 0.2);
+  color: #0f9d58;
+}
+
+.activity-status.upcoming {
+  background-color: rgba(244, 160, 0, 0.2);
+  color: #f4a000;
+}
+
+/* 参与人数信息 */
+.participants-info {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  color: #3a7bd5;
+  font-size: 26rpx;
+  margin-bottom: 30rpx;
+}
+
+.participants-info .iconfont {
+  font-size: 32rpx;
+}
+
+.activity-image-container {
+  width: 100%;
+  margin-bottom: 30rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.activity-image {
+  width: 100%;
+  display: block;
+}
+
+.activity-body {
+  color: #e0e1dd;
+  font-size: 32rpx;
+  line-height: 1.8;
+  margin-bottom: 40rpx;
+  white-space: pre-line;
+}
+
+/* 参与按钮样式 */
+.participate-section {
+  margin: 40rpx 0;
+  padding: 30rpx 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.participate-btn {
+  width: 100%;
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.participate-btn.active {
+  background: linear-gradient(135deg, #3a7bd5, #00d4ff);
+  color: #fff;
+}
+
+.participate-btn.disabled {
+  background-color: #666;
+  color: #999;
+}
+
+.participate-btn.active:active {
+  transform: scale(0.98);
+  background: linear-gradient(135deg, #2c5aa0, #00b8e6);
+}
+
+/* 相关活动样式 */
+.related-activities {
+  margin-top: 40rpx;
+  padding-top: 30rpx;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.related-title {
+  color: #fff;
+  font-size: 34rpx;
+  font-weight: 500;
+  margin-bottom: 24rpx;
+}
+
+.related-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.related-item {
+  display: flex;
+  gap: 20rpx;
+  padding: 20rpx;
+  border-radius: 16rpx;
+  background-color: rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.related-item:active {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(0.99);
+}
+
+.related-image {
+  width: 200rpx;
+  height: 140rpx;
+  border-radius: 10rpx;
+  object-fit: cover;
+}
+
+.related-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.related-item-title {
+  color: #fff;
+  font-size: 28rpx;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 8rpx;
+}
+
+.related-item-meta {
+  color: #888;
+  font-size: 24rpx;
+  margin-bottom: 8rpx;
+}
+
+.related-item-status {
+  display: inline-block;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  font-size: 20rpx;
+  font-weight: 500;
+  align-self: flex-start;
+}
+
+.related-item-status.ongoing {
+  background-color: rgba(15, 157, 88, 0.2);
+  color: #0f9d58;
+}
+
+.related-item-status.upcoming {
+  background-color: rgba(244, 160, 0, 0.2);
+  color: #f4a000;
+}

@@ -1,0 +1,113 @@
+<!-- 搜索框 -->
+<view class="search-wrap">
+  <search-bar placeholder="搜索车辆品牌或商城商品" value="{{inputValue}}" bindinput="onInput" bindclear="clearInput" bindconfirm="onSearch" />
+</view>
+
+<!-- 轮播图 -->
+<view class="banner-wrapper">
+  <banner list="{{bannerList}}" />
+</view>
+
+<!-- 快捷入口 -->
+<view class="menu">
+  <view class="menu-item" bind:tap="goToRecyleCarPage">
+    <view class="menu-backc"><text class="iconfont icon-carcrash" /> </view>
+    <text class="menu-text">报废车回收</text>
+  </view>
+  <view class="menu-item" bind:tap="goToShopPage">
+    <view class="menu-backc"><text class="iconfont icon-shop" /></view>
+    <text class="menu-text">积分商城</text>
+  </view>
+  <view class="menu-item" bind:tap="goToPolicyPage">
+    <view class="menu-backc"><text class="iconfont icon-policy" /> </view>
+    <text class="menu-text">政策资讯</text>
+  </view>
+  <view class="menu-item" bind:tap="goToPointPage">
+    <view class="menu-backc"><text class="iconfont icon-points" /> </view>
+    <text class="menu-text">我的积分</text>
+  </view>
+</view>
+
+<!-- 车辆评估 -->
+<view>
+  <!--title -->
+  <view class="title-header">
+    <view class="title-title">
+      <view class="title-titlespace" />
+      <text class="title-titlename">车辆评估</text>
+    </view>
+  </view>
+
+  <!-- 评估卡片 -->
+  <view class="card">
+    <view class="card-titles">快速评估您的爱车</view>
+    <view class="form-row">
+      <text class="form-label">车辆材质</text>
+      <picker class="valinput" mode="selector" range="{{evaluateList.materials}}" bindchange="onMaterialChange" value="{{evaluateList.selectedIndex}}">
+        <view class="form-picker"> {{evaluateList.materials[evaluateList.selectedIndex]}} </view>
+      </picker>
+    </view>
+
+    <view class="form-row">
+      <text class="form-label">整车质量</text>
+      <input class="valinput" type="number" placeholder="请输入整车质量（kg）" bindinput="onWeightInput" value="{{evaluateList.weight}}" />
+    </view>
+    <view class="eval-note" bind:tap="gotoRecyleInfo">注意：此仅供参考，如需准确价格，请点击</view>
+    <button class="btn" bindtap="calculatePrice">快速评估</button>
+
+    <!-- 评估结果显示 -->
+    <view class="eval-result" wx:if="{{evaluateList.showResult}}">
+      评估价格：¥{{formattedResultPrice}}
+    </view>
+  </view>
+</view>
+
+<!-- 资讯 -->
+<view>
+  <block wx:for="{{newsdata}}" wx:key="id">
+    <!--title -->
+    <view class="title-header">
+      <view class="title-title">
+        <view class="title-titlespace"></view>
+        <text class="title-titlename">{{item.types}}</text>
+      </view>
+      <view bind:tap="goToPolicyPage" data-category="policy" class="title-more">更多 ></view>
+    </view>
+
+    <!-- card -->
+    <view class="cards-group">
+      <block wx:for="{{item.cards}}" wx:key="id">
+        <!-- 卡片整体点击（跳详情） -->
+        <view class="card" bindtap="goToDetail" data-id="{{item.id}}" data-category="{{item.category}}" data-category="policy">
+          <!-- 卡片图片 -->
+          <image class="card-image" src="{{item.image}}" mode="widthFix"></image>
+          <!-- 卡片内容 -->
+          <view class="card-content">
+            <text class="card-title">{{item.title}}</text>
+
+            <view class="card-meta">
+              <view class="meta-item">
+                <text class="iconfont icon-rili meta-icon" />
+                <text>{{item.time}}</text>
+              </view>
+              <view class="meta-item">
+                <text class="iconfont icon-eye meta-icon" />
+                <text>{{item.views}}</text>
+              </view>
+            </view>
+            <text class="card-desc">{{item.desc}}</text>
+
+            <!-- 阅读全文 （跳详情，阻止冒泡） -->
+            <view class="read-more" bindtap="goToDetail" data-id="{{item.id}}" data-category="policy">
+              阅读全文 >
+            </view>
+          </view>
+        </view>
+      </block>
+      <!-- 加载状态提示 -->
+      <view wx:if="{{loadingNews}}" class="loading-text"> 加载中... </view>
+      <view wx:if="{{!hasMoreNews && item.cards.length > 0}}" class="no-more-text"> 没有更多数据了 </view>
+      <view wx:if="{{item.cards.length === 0 && !loadingNews}}" class="no-data-text"> 暂无新闻数据 </view>
+    </view>
+  </block>
+</view>

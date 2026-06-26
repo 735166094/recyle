@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "积分商城",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "navigationBarBackgroundColor": "#0a0f1d",
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "search-bar": "/components/search-bar/search-bar",
+    "banner": "/components/banner/banner"
+  }
+}

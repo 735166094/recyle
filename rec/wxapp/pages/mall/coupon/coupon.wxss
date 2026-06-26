@@ -1,0 +1,243 @@
+.coupon-page {
+  min-height: 100vh;
+  padding-bottom: 30rpx;
+}
+
+
+
+
+/* 分类标签 */
+.tab-bar {
+  display: flex;
+  background: linear-gradient(135deg, #1b263b, #1a2538);
+  border-bottom: 1rpx solid #1a2538;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 25rpx 0;
+  font-size: 30rpx;
+  color: #666;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80rpx;
+  height: 4rpx;
+  background-color: #ffffff;
+  border-radius: 2rpx;
+}
+
+/* 优惠卷列表 */
+.coupon-list {
+  padding: 20rpx 30rpx;
+}
+
+/* 优惠卷卡片基础样式 */
+.coupon-card {
+  display: flex;
+  background: linear-gradient(135deg, #1b263b, #1a2538);
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-bottom: 25rpx;
+  position: relative;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 左侧金额区域 */
+.coupon-left {
+  width: 220rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30rpx 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* 右侧信息区域 */
+.coupon-right {
+  flex: 1;
+  padding: 30rpx 25rpx 30rpx 40rpx;
+  position: relative;
+}
+
+/* 右侧信息区域前的虚线 */
+.coupon-right::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10rpx;
+  bottom: 10rpx;
+  width: 2rpx;
+  background-image: linear-gradient(to bottom, #eee 50%, transparent 50%);
+  background-size: 2rpx 20rpx;
+  background-repeat: repeat-y;
+}
+
+/* 金额样式 */
+.amount {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 10rpx;
+}
+
+.symbol {
+  font-size: 36rpx;
+  font-weight: 500;
+  margin-bottom: 10rpx;
+}
+
+.number {
+  font-size: 70rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* 满减券样式 */
+.full-reduction .coupon-left {
+  background: linear-gradient(135deg, #FF7A45, #FF4400);
+  color: #fff;
+}
+
+/* 折扣券样式 */
+.discount .coupon-left {
+  background: linear-gradient(135deg, #722ED1, #EB5757);
+  color: #fff;
+}
+
+.discount .amount {
+  align-items: center;
+}
+
+.discount .symbol {
+  font-size: 32rpx;
+  margin-bottom: 0;
+  margin-left: 5rpx;
+}
+
+/* 兑换券样式 */
+.exchange .coupon-left {
+  background: linear-gradient(135deg, #36B37E, #00875A);
+  color: #fff;
+}
+
+.gift-text {
+  font-size: 40rpx;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* 优惠条件 */
+.condition {
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+
+/* 优惠卷标题 */
+.coupon-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-bottom: 15rpx;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 有效期 */
+.valid-date {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 10rpx;
+}
+
+/* 优惠卷说明 */
+.coupon-desc {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 25rpx;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 使用按钮 */
+.use-btn {
+  width: 100%;
+  height: 60rpx;
+  line-height: 60rpx;
+  font-size: 26rpx;
+  padding: 0;
+  border-radius: 30rpx;
+  background-color: transparent;
+  color: #FF4400;
+  border: 2rpx solid #FF4400;
+}
+
+.use-btn:active {
+  background-color: #fff5f0;
+}
+
+/* 右上角折角 */
+.coupon-corner {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.coupon-corner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-top: 40rpx solid #f5f5f5;
+  border-left: 40rpx solid transparent;
+  border-radius: 0 0 0 8rpx;
+}
+
+/* 空状态样式 */
+.empty-state {
+  padding: 100rpx 30rpx;
+  text-align: center;
+}
+
+.empty-img {
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 30rpx;
+  color: #999;
+  margin-bottom: 40rpx;
+  display: block;
+}
+
+.get-coupon {
+  width: 240rpx;
+  height: 70rpx;
+  line-height: 70rpx;
+  font-size: 28rpx;
+  background-color: #FF4400;
+  color: #fff;
+  border-radius: 35rpx;
+  padding: 0;
+}

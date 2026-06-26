@@ -1,0 +1,72 @@
+<view class="coupon-page">
+
+  <!-- 分类标签 -->
+  <view class="tab-bar">
+    <view class="tab-item active">可用</view>
+    <view class="tab-item">已使用</view>
+    <view class="tab-item">已过期</view>
+  </view>
+
+  <!-- 优惠卷列表 -->
+  <view class="coupon-list">
+    <!-- 满减券 -->
+    <view class="coupon-card full-reduction">
+      <view class="coupon-left">
+        <view class="amount">
+          <text class="symbol">¥</text>
+          <text class="number">50</text>
+        </view>
+        <view class="condition">满500元可用</view>
+      </view>
+      <view class="coupon-right">
+        <view class="coupon-title">全品类通用券</view>
+        <view class="valid-date">有效期至：2023-12-31</view>
+        <view class="coupon-desc">限线上商城使用</view>
+        <button class="use-btn">立即使用</button>
+      </view>
+      <view class="coupon-corner"></view>
+    </view>
+
+    <!-- 折扣券 -->
+    <view class="coupon-card discount">
+      <view class="coupon-left">
+        <view class="amount">
+          <text class="number">8.5</text>
+          <text class="symbol">折</text>
+        </view>
+        <view class="condition">满200元可用</view>
+      </view>
+      <view class="coupon-right">
+        <view class="coupon-title">新能源配件专用</view>
+        <view class="valid-date">有效期至：2023-11-30</view>
+        <view class="coupon-desc">限配件类商品使用</view>
+        <button class="use-btn">立即使用</button>
+      </view>
+      <view class="coupon-corner"></view>
+    </view>
+
+    <!-- 兑换券 -->
+    <view class="coupon-card exchange">
+      <view class="coupon-left">
+        <view class="amount gift">
+          <text class="gift-text">免费洗车</text>
+        </view>
+        <view class="condition">不限消费金额</view>
+      </view>
+      <view class="coupon-right">
+        <view class="coupon-title">售后服务兑换券</view>
+        <view class="valid-date">有效期至：2023-10-15</view>
+        <view class="coupon-desc">限指定门店使用</view>
+        <button class="use-btn">立即使用</button>
+      </view>
+      <view class="coupon-corner"></view>
+    </view>
+  </view>
+
+  <!-- 空状态提示（默认隐藏） -->
+  <view class="empty-state" wx:if="{{false}}">
+    <image src="/static/icon/coupons.png" class="empty-img" mode="widthFix"></image>
+    <text class="empty-text">暂无可用优惠卷</text>
+    <button class="get-coupon">去领券中心</button>
+  </view>
+</view>

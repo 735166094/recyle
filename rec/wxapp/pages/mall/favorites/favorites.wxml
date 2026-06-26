@@ -1,0 +1,94 @@
+<view class="container">
+  <!-- 收藏为空状态 -->
+  <view class="empty-favorites" wx:if="{{favoritesList.length === 0}}">
+    <text class="iconfont icon-heart" style="font-size: 120rpx; color: rgba(224, 225, 221, 0.3);"></text>
+    <text class="empty-text">还没有收藏商品</text>
+    <text class="empty-desc">收藏喜欢的商品，方便下次查看</text>
+    <!-- 使用view替代button，避免原生样式 -->
+    <view class="btn-primary" bindtap="goToMall">去逛逛</view>
+  </view>
+
+  <!-- 收藏商品列表 -->
+  <view class="favorites-content" wx:else>
+    <!-- 操作栏 -->
+    <view class="action-bar">
+      <view class="select-all">
+        <checkbox checked="{{selectAll}}" bindtap="onSelectAll"></checkbox>
+        <text class="select-text">全选</text>
+      </view>
+      <view class="action-buttons">
+        <view class="action-btn" bindtap="addToCart" wx:if="{{selectedCount > 0}}">
+          加入购物车({{selectedCount}})
+        </view>
+        <view class="action-btn" wx:else style="opacity: 0.6;">
+          加入购物车
+        </view>
+        <view class="action-btn delete" bindtap="deleteSelected" wx:if="{{selectedCount > 0}}">
+          取消收藏({{selectedCount}})
+        </view>
+        <view class="action-btn delete" wx:else style="opacity: 0.6;">
+          取消收藏
+        </view>
+      </view>
+    </view>
+
+    <!-- 商品列表 -->
+    <view class="favorites-list">
+      <view class="favorites-item" wx:for="{{favoritesList}}" wx:key="id">
+        <!-- 选择框 -->
+        <checkbox class="item-checkbox" checked="{{item.selected}}" bindtap="onItemSelect" data-favoriteid="{{item.favoriteId}}"></checkbox>
+
+        <!-- 商品图片 -->
+        <image class="item-image" src="{{item.image}}" mode="aspectFill" bindtap="onItemTap" data-id="{{item.id}}"></image>
+
+        <!-- 商品信息 -->
+        <view class="item-info">
+          <text class="item-title">{{item.title}}</text>
+          <view class="item-price">
+            <text class="iconfont icon-point price-icon-point"></text>
+            <text class="points">{{item.points || 0}}</text>
+            <!-- <text class="points-unit">积分</text> -->
+          </view>
+
+          <!-- 商品标签 -->
+          <!-- <view class="item-tags" wx:if="{{item.tags && item.tags.length > 0}}">
+            <text class="tag" wx:for="{{item.tags}}" wx:key="*this">{{item}}</text>
+          </view> -->
+        </view>
+
+        <!-- 操作按钮  -->
+        <view class="item-actions">
+          <view class="action-btn-small" bindtap="addToCartSingle" data-favoriteid="{{item.favoriteId}}">
+            <text class="iconfont icon-cart"></text>
+          </view>
+          <view class="action-btn-small delete" bindtap="deleteSingle" data-favoriteid="{{item.favoriteId}}">
+            <text class="iconfont icon-delete"></text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 推荐商品 -->
+    <view class="recommend-section" wx:if="{{recommendItems.length > 0}}">
+      <view class="title-header">
+        <view class="title-title">
+          <view class="title-titlespace"></view>
+          <text class="title-titlename">猜你喜欢</text>
+        </view>
+      </view>
+
+      <view class="recommend-list">
+        <view class="recommend-item" wx:for="{{recommendItems}}" wx:key="id" bindtap="onRecommendTap" data-id="{{item.id}}">
+          <image class="recommend-image" src="{{item.image}}" mode="aspectFill"></image>
+          <view class="recommend-info">
+            <text class="recommend-title">{{item.title}}</text>
+            <view class="recommend-price">
+              <text class="points">{{item.points || 0}}</text>
+              <text class="points-unit">积分</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

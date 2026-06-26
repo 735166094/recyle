@@ -1,0 +1,251 @@
+<!-- 固定搜索框容器 -->
+<view class="fixed-search-container" wx:if="{{!isSearching}}">
+  <search-bar placeholder="{{isCategoryPage ? '搜索分类或商品' : '搜索车辆品牌或商城商品'}}" value="{{inputValue}}" bind:input="onInput" bind:clear="clearInput" bind:confirm="onSearch" />
+</view>
+
+<!-- 搜索状态下的固定头部 -->
+<view class="fixed-search-header" wx:if="{{isSearching}}">
+  <view class="search-header">
+    <view class="search-back" bindtap="cancelSearch">
+      <text class="iconfont icon-left" />
+      <text>返回</text>
+    </view>
+    <view class="search-info">
+      <text class="search-keyword">"{{searchKeyword}}"</text>
+      <text class="search-count">找到{{searchResults.length}}个商品</text>
+    </view>
+  </view>
+</view>
+
+<!-- 页面内容容器 - 添加顶部内边距 -->
+<view class="page-content {{isSearching ? 'search-mode' : ''}}">
+  <!-- 首页内容 -->
+  <view wx:if="{{!isCategoryPage && !isSearching}}">
+    <!-- 商品分类 -->
+    <view class="title-header">
+      <view class="title-title">
+        <view class="title-titlespace" />
+        <text class="title-titlename">商品分类</text>
+      </view>
+    </view>
+
+    <!-- 快捷入口 -->
+    <view class="menu">
+      <view class="menu-item" wx:for="{{displayCategories}}" wx:key="id" bindtap="goToCategoryPage" data-id="{{item.id}}">
+        <view class="menu-backc">
+          <!-- 优先使用图标，没有图标使用图片 -->
+          <text wx:if="{{item.icon}}" class="iconfont {{item.icon}}" />
+          <image wx:else src="{{item.image}}" mode="aspectFit" class="category-image" />
+        </view>
+        <text class="menu-text">{{item.name}}</text>
+      </view>
+    </view>
+
+    <view class="title-header">
+      <view class="title-title">
+        <view class="title-titlespace" />
+        <text class="title-titlename">最新活动</text>
+      </view>
+      <navigator url="/pages/activity/index/index" class="title-more"> 更多 > </navigator>
+    </view>
+
+    <!-- 轮播图 -->
+    <view class="banner-wrapper">
+      <banner list="{{activeList}}" />
+    </view>
+
+    <view class="title-header">
+      <view class="title-title">
+        <view class="title-titlespace" />
+        <text class="title-titlename">热门商品</text>
+      </view>
+      <navigator url="/pages/more/more?category={{item.titles}}" class="title-more"> 更多 > </navigator>
+    </view>
+
+    <view class="hot-items">
+      <view class="hot-item" wx:for="{{goodList}}" wx:key="id" bindtap="goToGoodDetail" data-id="{{item.id}}">
+        <image class="hot-img" src="{{item.imgUrl}}" mode="aspectFill" />
+        <view class="hot-title">{{item.title}}</view>
+        <view class="hot-price">
+          <view class="hot-left">
+            <text class="iconfont icon-point price-icon-point" />
+            <text class="hot-pricetext">{{item.price}}</text>
+          </view>
+          <text class="iconfont icon-cart" catchtap="showAddCartPopup" data-id="{{item.id}}" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载状态提示 -->
+    <view class="loading-status" wx:if="{{goodList.length > 0}}">
+      <view wx:if="{{pagination.isLoading}}" class="loading-text">
+        <text>正在加载更多商品...</text>
+      </view>
+      <view wx:if="{{!pagination.hasMore && !pagination.isLoading}}" class="no-more-text">
+        <text>没有更多商品了</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类页面内容 -->
+  <view wx:if="{{isCategoryPage && !isSearching}}">
+    <!-- 返回按钮 -->
+    <view class="back-button" bindtap="backToHome">
+      <text class="iconfont icon-left" />
+      <text>返回商城首页</text>
+    </view>
+
+    <!-- 分类导航 -->
+    <view class="category-nav">
+      <scroll-view scroll-x="true" class="category-scroll">
+        <view class="category-items">
+          <view class="category-item" wx:for="{{categories}}" wx:key="id" data-id="{{item.id}}" bindtap="switchCategory" class="{{activeCategoryId == item.id ? 'category-item active' : 'category-item'}}">
+            <view class="category-icon">
+              <text class="iconfont {{item.icon}}" />
+            </view>
+            <text class="category-name">{{item.name}}</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 分类商品列表标题 -->
+    <view class="title-header">
+      <view class="title-title">
+        <view class="title-titlespace"></view>
+        <text class="title-titlename">{{activeCategoryName}}</text>
+      </view>
+    </view>
+
+    <view class="good-grid">
+      <view class="good-item" wx:for="{{categoryGoods[activeCategoryId] || []}}" wx:key="id" bindtap="goToGoodDetail" data-id="{{item.id}}">
+        <view class="good-img-container">
+          <image class="good-img" src="{{item.imgUrl}}" mode="aspectFill" />
+        </view>
+        <view class="good-title">{{item.title}}</view>
+        <view class="good-price">
+          <view class="good-left">
+            <text class="iconfont icon-point price-icon-point" />
+            <text class="good-pricetext">{{item.price}}</text>
+          </view>
+          <text class="iconfont icon-cart" catchtap="showAddCartPopup" data-id="{{item.id}}" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载状态提示 -->
+    <view class="loading-status">
+
+      <!-- 加载中提示 -->
+      <view wx:if="{{pagination.isLoading}}" class="loading-text">
+        <text>正在加载更多商品...</text>
+      </view>
+
+      <!-- 没有更多数据提示 -->
+      <view wx:if="{{!pagination.hasMore && !pagination.isLoading && (categoryGoods[activeCategoryId] && categoryGoods[activeCategoryId].length > 0)}}" class="no-more-text">
+        <text>没有更多商品了</text>
+      </view>
+
+      <!-- 空状态提示 -->
+      <view wx:if="{{(!categoryGoods[activeCategoryId] || categoryGoods[activeCategoryId].length === 0) && !pagination.isLoading}}" class="no-more-text">
+        <text>暂无商品</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索结果页 -->
+  <view wx:if="{{isSearching}}">
+    <!-- 搜索结果列表 -->
+    <view class="search-results">
+      <view class="search-good-list">
+        <view class="search-good-item" wx:for="{{searchResults}}" wx:key="id" bindtap="goToGoodDetail" data-id="{{item.id}}">
+          <image class="search-good-img" src="{{item.imgUrl}}" mode="aspectFill" />
+          <view class="search-good-info">
+            <view class="search-good-title">{{item.title}}</view>
+            <view class="search-good-price">
+              <text class="iconfont icon-point price-icon-point" />
+              <text class="search-good-price-number">{{item.price}}</text>
+            </view>
+            <view class="search-good-meta">
+              <text class="search-good-sales">已售{{item.salesCount}}</text>
+              <text class="search-good-stock">库存{{item.stock}}</text>
+            </view>
+          </view>
+          <view class="search-good-actions">
+            <text class="iconfont icon-cart search-cart-icon" catchtap="showAddCartPopup" data-id="{{item.id}}" />
+          </view>
+        </view>
+      </view>
+
+      <!-- 搜索加载状态提示 -->
+      <view class="loading-status">
+        <view wx:if="{{searchPagination.isLoading}}" class="loading-text">
+          <text>正在加载更多搜索结果...</text>
+        </view>
+        <view wx:if="{{!searchPagination.hasMore && !searchPagination.isLoading && searchResults.length > 0}}" class="no-more-text">
+          <text>没有更多搜索结果了</text>
+        </view>
+        <view wx:if="{{searchResults.length === 0 && !searchPagination.isLoading}}" class="no-data">
+          <text class="no-data-text">未找到相关商品</text>
+          <text class="no-data-desc">换个关键词试试吧</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 购物车悬浮窗口 -->
+<view class="cart-float-window" bindtap="goToCart">
+  <text class="iconfont icon-cart" />
+  <view class="cart-float-badge">{{cartBadgeCount}}</view>
+</view>
+
+<!-- 加入购物车弹窗 -->
+<view class="buy-popup" wx:if="{{addCartPopupVisible}}">
+  <view class="popup-mask" bindtap="closeAddCartPopup"></view>
+  <view class="popup-content">
+    <view class="popup-header">
+      <text class="popup-title">加入购物车</text>
+      <icon type="clear" size="32" color="#999" bindtap="closeAddCartPopup" />
+    </view>
+
+    <view class="popup-body">
+      <image src="{{popupGoodsDetail ? popupGoodsDetail.imgUrl : ''}}" class="popup-img" mode="aspectFit" />
+      <view class="popup-info">
+        <text class="popup-title-text">{{popupGoodsDetail ? popupGoodsDetail.title : ''}}</text>
+        <text class="popup-price">{{popupGoodsDetail ? popupGoodsDetail.price : 0}}积分</text>
+        <view class="popup-spec">
+          <text class="spec-label">已选：</text>
+          <text class="spec-value">{{getSelectedSpecValue() || '请选择规格'}}</text>
+        </view>
+        <view class="popup-stock"> 库存: {{popupGoodsDetail ? popupGoodsDetail.stock : 0}}件 </view>
+      </view>
+    </view>
+
+    <!-- 弹窗中的规格选择 -->
+    <view class="popup-spec-section" wx:if="{{specGroups.length > 0}}">
+      <view class="popup-spec-title">选择规格</view>
+      <view class="popup-spec-content">
+        <view wx:for="{{specGroups}}" wx:for-item="specGroup" wx:key="id">
+          <view class="popup-spec-group-name">{{specGroup.name}}</view>
+          <view class="popup-spec-options">
+            <view class="popup-spec-option {{option.selected ? 'popup-spec-option-selected' : ''}} {{option.disabled ? 'popup-spec-option-disabled' : ''}}" wx:for="{{specGroup.options}}" wx:for-item="option" wx:key="id" bindtap="selectSpec" data-groupid="{{specGroup.id}}" data-optionid="{{option.id}}">
+              <view class="color-block" wx:if="{{option.color_code}}" style="background-color: {{option.color_code}};"></view>
+              <image wx:if="{{option.image && !option.color_code}}" src="{{option.image}}" class="popup-spec-option-img" mode="aspectFit" />
+              <text class="popup-spec-option-text">{{option.value}}</text>
+              <text class="price-adjustment" wx:if="{{option.price_increment != 0}}">
+                {{option.price_increment > 0 ? '+' : ''}}{{option.price_increment}}积分
+              </text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 购物车弹窗底部 -->
+    <view class="popup-footer">
+      <button class="cancel-btn" bindtap="closeAddCartPopup">取消</button>
+      <button class="confirm-btn confirm-addCart {{isButtonDisabled ? 'disabled' : ''}}" bindtap="confirmAddToCart" disabled="{{isButtonDisabled}}" data-specs="{{JSON.stringify(selectedSpecs)}}"> 加入购物车 </button>
+    </view>
+  </view>
+</view>

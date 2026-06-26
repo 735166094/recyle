@@ -1,0 +1,264 @@
+<view class="container">
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="error-container" wx:if="{{error && !loading}}">
+    <icon type="error" class="error-img" />
+    <text class="error-text">数据加载失败，请重试</text>
+    <button class="retry-btn" bindtap="loadGoodsDetail">重新加载</button>
+  </view>
+
+  <!-- 商品内容 -->
+  <scroll-view class="detail-scroll" wx:if="{{goodsDetail && !loading && !error}}" bindscroll="onScroll" scroll-y scroll-with-animation>
+    <!-- 商品轮播图 -->
+    <view class="goods-swiper">
+      <swiper class="swiper-component" autoplay circular bindchange="onSwiperChange" indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#ff4400">
+        <swiper-item wx:for="{{goodsDetail.images}}" wx:key="index">
+          <image src="{{item}}" class="swiper-img" mode="aspectFill" bindtap="previewImage" data-img="{{item}}" />
+        </swiper-item>
+      </swiper>
+      <view class="swiper-count">{{currentSwiperIndex + 1}}/{{goodsDetail.images.length}}</view>
+
+      <!-- 商品标签 -->
+      <view class="goods-tags">
+        <view class="goods-tag hot" wx:if="{{goodsDetail.is_hot}}">热销</view>
+        <view class="goods-tag new" wx:if="{{goodsDetail.is_new}}">新品</view>
+        <view class="goods-tag recommend" wx:if="{{goodsDetail.is_recommended}}">推荐</view>
+      </view>
+    </view>
+
+    <!-- 商品信息 -->
+    <view class="goods-info">
+      <view class="goods-title">{{goodsDetail.name}}</view>
+      <view class="goods-subtitle">{{goodsDetail.description}}</view>
+
+      <!-- 价格信息 -->
+      <view class="price-container">
+        <view class="price-wrap">
+          <text class="price-label">兑换积分:</text>
+          <text class="current-price">{{currentPrice}}</text>
+          <text class="price-unit">积分</text>
+          <text class="original-price" wx:if="{{goodsDetail.discount_percent > 0}}">
+            原价: {{goodsDetail.original_points}}积分
+          </text>
+        </view>
+        <view class="sales-volume">已兑换{{goodsDetail.sales_count}}次</view>
+      </view>
+
+      <!-- 促销信息 -->
+      <view class="promotion-info" wx:if="{{goodsDetail.discount_percent > 0}}">
+        <view class="discount-tag">
+          <text class="discount-text">{{goodsDetail.discount_percent}}折</text>
+        </view>
+        <text class="promotion-text">限时特惠</text>
+      </view>
+
+      <!-- 服务保障 -->
+      <view class="service-tags">
+        <view class="service-tag">官方正品</view>
+        <view class="service-tag">即时到账</view>
+        <view class="service-tag">虚拟商品</view>
+        <view class="service-tag">概不退货</view>
+      </view>
+    </view>
+
+    <!-- SKU规格选择 -->
+    <view class="spec-section" wx:if="{{specGroups.length > 0}}">
+      <view class="spec-title">选择规格</view>
+      <view class="spec-content">
+        <view wx:for="{{specGroups}}" wx:for-item="specGroup" wx:key="id">
+          <view class="spec-group-name">{{specGroup.name}}</view>
+          <view class="spec-options">
+            <view class="spec-option {{option.selected ? 'spec-option-selected' : ''}} {{option.disabled ? 'spec-option-disabled' : ''}}" wx:for="{{specGroup.options}}" wx:for-item="option" wx:key="id" bindtap="selectSpec" data-groupid="{{specGroup.id}}" data-optionid="{{option.id}}">
+              <!-- 颜色规格 -->
+              <view class="color-block" wx:if="{{option.color_code}}" style="background-color: {{option.color_code}};"></view>
+              <!-- 图片规格 -->
+              <image wx:if="{{option.image && !option.color_code}}" src="{{option.image}}" class="spec-option-img" mode="aspectFit" />
+              <text class="spec-option-text">{{option.value}}</text>
+              <!-- 价格调整 -->
+              <text class="price-adjustment" wx:if="{{option.price_increment != 0}}">
+                {{option.price_increment > 0 ? '+' : ''}}{{option.price_increment}}积分
+              </text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="spec-stock">
+        库存{{selectedSku ? selectedSku.stock : goodsDetail.stock}}件
+        <text wx:if="{{isCalculatingPrice}}"> | 计算中...</text>
+        <text wx:elif="{{priceCalculationError}}"> | 价格计算失败</text>
+      </view>
+    </view>
+
+    <!-- 商品评分 -->
+    <view class="rating-section">
+      <view class="rating-item">
+        <text class="rating-label">商品评分:</text>
+        <view class="stars">
+          <icon wx:for="{{5}}" wx:key="index" type="{{index < Math.floor(goodsDetail.rating) ? 'star' : 'star-o'}}" size="24" color="{{index < Math.floor(goodsDetail.rating) ? '#ffb400' : '#ddd'}}" />
+        </view>
+        <text class="rating-value">{{goodsDetail.rating}}</text>
+      </view>
+      <view class="rating-item">
+        <text class="rating-label">评价数量:</text>
+        <text class="rating-value">{{goodsDetail.review_count}}条</text>
+      </view>
+    </view>
+
+    <!-- 标签切换 -->
+    <view class="detail-tabs">
+      <view class="tab-item {{activeTab === 'detail' ? 'tab-active' : ''}}" bindtap="switchTab" data-tab="detail">商品详情</view>
+      <view class="tab-item {{activeTab === 'comment' ? 'tab-active' : ''}}" bindtap="switchTab" data-tab="comment">用户评价({{goodsDetail.review_count}})</view>
+    </view>
+
+    <!-- 商品详情内容 -->
+    <view class="detail-content" wx:if="{{activeTab === 'detail'}}">
+      <view class="detail-desc">
+        <text>{{goodsDetail.description}}</text>
+      </view>
+
+      <!-- 商品详情图片 -->
+      <view class="detail-images" wx:if="{{goodsDetail.detail_images && goodsDetail.detail_images.length}}">
+        <image wx:for="{{goodsDetail.detail_images}}" wx:key="index" src="{{item}}" class="detail-img" mode="widthFix" />
+      </view>
+
+      <!-- 商品详情HTML -->
+      <view class="detail-html" wx:if="{{goodsDetail.detail_html}}">
+        <rich-text nodes="{{goodsDetail.detail_html}}"></rich-text>
+      </view>
+
+      <!-- 无详情内容提示 -->
+      <view class="no-detail" wx:if="{{!goodsDetail.detail_html && (!goodsDetail.detail_images || goodsDetail.detail_images.length === 0)}}">
+        <text>暂无商品详情</text>
+      </view>
+    </view>
+
+    <!-- 评价内容 -->
+    <view class="comment-content" wx:if="{{activeTab === 'comment'}}">
+      <view class="comment-header">
+        <view class="comment-score">
+          <text class="score-value">{{goodsDetail.rating}}</text>
+          <text class="score-text">分</text>
+          <view class="stars">
+            <icon wx:for="{{5}}" wx:key="index" type="{{index < Math.floor(goodsDetail.rating) ? 'star' : 'star-o'}}" size="24" color="{{index < Math.floor(goodsDetail.rating) ? '#ffb400' : '#ddd'}}" />
+          </view>
+        </view>
+        <view class="comment-total">全部{{goodsDetail.review_count}}条评价</view>
+      </view>
+
+      <view class="comment-list" wx:if="{{goodsDetail.reviews && goodsDetail.reviews.length > 0}}">
+        <view class="comment-item" wx:for="{{goodsDetail.reviews}}" wx:key="index">
+          <view class="comment-user">
+            <image src="{{item.user_avatar || '/static/tabbar/my-active.png'}}" class="user-avatar" mode="aspectFit" />
+            <text class="user-name">{{item.user_name || '匿名用户'}}</text>
+          </view>
+
+          <view class="comment-star">
+            <icon wx:for="{{5}}" wx:key="index" type="{{index < item.rating ? 'star' : 'star-o'}}" size="22" color="{{index < item.rating ? '#ffb400' : '#ddd'}}" />
+          </view>
+
+          <text class="comment-text">{{item.content}}</text>
+
+          <view class="comment-images" wx:if="{{item.images && item.images.length}}">
+            <image wx:for="{{item.images}}" wx:key="img{{index}}" src="{{item}}" class="comment-img" mode="aspectFit" bindtap="previewImage" data-img="{{item}}" />
+          </view>
+
+          <view class="comment-footer">
+            <text class="comment-time">{{item.created_at}}</text>
+            <view class="comment-like" wx:if="{{item.likes > 0}}">
+              <icon type="like" size="20" color="#999" />
+              <text>{{item.likes}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="no-comment" wx:if="{{!goodsDetail.reviews || goodsDetail.reviews.length === 0}}">
+        <text class="iconfont icon-no-comment" mode="aspectFit" />
+        <text class="no-comment-text">暂无评价</text>
+        <text class="no-comment-desc">成为第一个评价的人吧</text>
+      </view>
+    </view>
+
+    <!-- 底部占位 -->
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar" wx:if="{{!loading && !error}}">
+  
+    <view class="bottom-btn favorite-btn" bindtap="toggleFavorite">
+      <text class="iconfont icon-heart {{isFavorite ? 'favorite-active' : ''}}"></text>
+      <text class="icon-text">{{isFavorite ? '已收藏' : '收藏'}}</text>
+    </view>
+
+    <view class="bottom-btn cart-btn" bindtap="goToCart">
+      <text class="iconfont icon-cart"></text>
+      <text class="icon-text">购物车</text>
+      <view class="cart-badge" wx:if="{{cartCount > 0}}">{{cartCount}}</view>
+    </view>
+
+    <view class="bottom-btn add-cart-btn" bindtap="addToCartWithAnimation">加入购物车</view>
+    <view class="bottom-btn buy-btn" bindtap="buyNow">立即兑换</view>
+  </view>
+
+  <!-- 购买/加购弹窗 -->
+  <view class="buy-popup" wx:if="{{buyPopupVisible}}">
+    <view class="popup-mask" bindtap="closeBuyPopup"></view>
+    <view class="popup-content">
+      <view class="popup-header">
+        <text class="popup-title">{{popupType === 'addCart' ? '加入购物车' : '立即兑换'}}</text>
+        <icon type="clear" size="32" color="#999" bindtap="closeBuyPopup" />
+      </view>
+
+      <view class="popup-body">
+        <image src="{{selectedSku ? selectedSku.image : goodsDetail.main_image}}" class="popup-img" mode="aspectFit" />
+        <view class="popup-info">
+          <text class="popup-title-text">{{goodsDetail.name}}</text>
+          <text class="popup-price">{{currentPrice}}积分</text>
+          <view class="popup-spec">
+            <text class="spec-label">已选：</text>
+            <text class="spec-value">{{getSelectedSpecValue() || '请选择规格'}}</text>
+          </view>
+          <view class="popup-stock">
+            库存: {{selectedSku ? selectedSku.stock : goodsDetail.stock}}件
+            <text wx:if="{{isCalculatingPrice}}">(计算中...)</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 弹窗中的规格选择 -->
+      <view class="popup-spec-section" wx:if="{{specGroups.length > 0}}">
+        <view class="popup-spec-title">选择规格</view>
+        <view class="popup-spec-content">
+          <view wx:for="{{specGroups}}" wx:for-item="specGroup" wx:key="id">
+            <view class="popup-spec-group-name">{{specGroup.name}}</view>
+            <view class="popup-spec-options">
+              <view class="popup-spec-option {{option.selected ? 'popup-spec-option-selected' : ''}} {{option.disabled ? 'popup-spec-option-disabled' : ''}}" wx:for="{{specGroup.options}}" wx:for-item="option" wx:key="id" bindtap="selectSpec" data-groupid="{{specGroup.id}}" data-optionid="{{option.id}}">
+                <view class="color-block" wx:if="{{option.color_code}}" style="background-color: {{option.color_code}};"></view>
+                <image wx:if="{{option.image && !option.color_code}}" src="{{option.image}}" class="popup-spec-option-img" mode="aspectFit" />
+                <text class="popup-spec-option-text">{{option.value}}</text>
+                <text class="price-adjustment" wx:if="{{option.price_increment != 0}}">
+                  {{option.price_increment > 0 ? '+' : ''}}{{option.price_increment}}积分
+                </text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="popup-footer">
+        <button class="cancel-btn" bindtap="closeBuyPopup">取消</button>
+
+        <!-- 根据popupType显示不同颜色的按钮 -->
+        <button class="confirm-btn {{popupType === 'addCart' ? 'confirm-addCart' : 'confirm-buyNow'}} {{(!isSpecSelectionComplete() || isOutOfStock()) ? 'disabled' : ''}}" bindtap="{{popupType === 'addCart' ? 'confirmAddCart' : 'confirmBuy'}}" disabled="{{!isSpecSelectionComplete() || isOutOfStock()}}">
+          {{popupType === 'addCart' ? '加入购物车' : '立即兑换'}}
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

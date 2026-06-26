@@ -1,0 +1,116 @@
+<view class="cart-container">
+  <!-- 购物车头部 -->
+  <view class="cart-header">
+    <view class="address" bindtap="gotoMyAddress">
+      <text class="iconfont icon-address"> 我的地址</text>
+    </view>
+    <view class="edit-btn" bindtap="toggleEditMode"> {{isEditing ? '完成' : '编辑'}} </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view wx:if="{{isLoading}}" class="loading-container">
+    <text class="iconfont icon-loading" />
+    <text>加载中...</text>
+  </view>
+
+  <!-- 购物车列表 -->
+  <view wx:if="{{!isLoading && cartData.length > 0}}" class="cart-list">
+    <!-- 商品项 -->
+    <block wx:for="{{cartData}}" wx:key="id" wx:for-index="index" wx:for-item="item">
+      <movable-area class="movable-area">
+        <movable-view class="movable-view" direction="horizontal" x="{{item.x}}" data-index="{{index}}" bindtouchstart="onTouchStart" bindtouchend="onTouchEnd" animation="{{true}}">
+          <!-- 商品信息 -->
+          <view class="cart-item">
+            <view class="item-checkbox" bindtap="toggleItemCheck" data-index="{{index}}">
+              <checkbox class="cart-checkbox" checked="{{item.checked}}" color="#165DFF" data-index="{{index}}" />
+            </view>
+
+            <view class="item-image" bindtap="navigateToDetail" data-id="{{item.id}}">
+              <image src="{{item.imgUrl}}" mode="aspectFill" class="goods-img" />
+              <!-- 库存不足或商品下架提示 -->
+              <view wx:if="{{!item.is_available}}" class="goods-status-tag">失效</view>
+            </view>
+
+            <view class="item-info">
+              <view class="info-content">
+                <view class="item-title" bindtap="navigateToDetail" data-id="{{item.id}}">{{item.title}}</view>
+                <view class="item-spec editable-spec" bindtap="onSpecClick" data-index="{{index}}">
+                  {{item.spec}}
+                  <text class="iconfont icon-edit" style="margin-left: 8rpx; font-size: 24rpx; color: #86909C;"></text>
+                </view>
+              </view>
+
+              <view class="info-bottom">
+                <view class="price-section">
+                  <view class="current-price">
+                    <text class="iconfont icon-point price-icon-point" />
+                    {{item.price}}
+                  </view>
+                  <view class="original-price" wx:if="{{item.originalPrice}}">
+                    <text class="iconfont icon-point price-icon-point" />
+                    {{item.originalPrice}}
+                  </view>
+                </view>
+
+                <view class="quantity-control">
+                  <view class="quantity-btn minus {{item.quantity <= 1 ? 'disabled' : ''}}" bindtap="decreaseQuantity" data-index="{{index}}">
+                    <text>-</text>
+                  </view>
+                  <view class="quantity-number">{{item.quantity}}</view>
+                  <view class="quantity-btn plus {{item.quantity >= item.stock ? 'disabled' : ''}}" bindtap="increaseQuantity" data-index="{{index}}">
+                    <text>+</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+
+          <!-- 滑动操作按钮 -->
+          <view class="slide-actions">
+            <view class="action-btn collect" bindtap="toggleCollection" data-index="{{index}}">
+              <text class="iconfont {{item.collected ? 'icon-collect' : 'icon-collect-empty'}}" />
+              <text>{{item.collected ? '已收藏' : '收藏'}}</text>
+            </view>
+            <view class="action-btn similar" bindtap="findSimilar" data-index="{{index}}">
+              <text class="iconfont icon-search" />
+              <text>找相似</text>
+            </view>
+            <view class="action-btn delete" bindtap="deleteItem" data-index="{{index}}">
+              <text class="iconfont icon-delete" />
+              <text>删除</text>
+            </view>
+          </view>
+        </movable-view>
+      </movable-area>
+    </block>
+  </view>
+
+  <!-- 空购物车状态 -->
+  <view wx:if="{{!isLoading && cartData.length === 0}}" class="empty-cart">
+    <text class="iconfont icon-cart" />
+    <view class="empty-text">购物车还是空的</view>
+    <view class="empty-subtext">快去添加心仪的商品吧~</view>
+    <view class="go-shopping" bindtap="goToShopping">去逛逛</view>
+  </view>
+
+  <!-- 底部结算栏 -->
+  <view wx:if="{{!isLoading && cartData.length > 0}}" class="cart-footer">
+    <view class="footer-select-all" bindtap="toggleAllCheck">
+      <checkbox class="footer-checkbox" checked="{{allChecked}}" color="#165DFF" />
+      <text class="select-all-text">全选</text>
+      <text class="selected-count" wx:if="{{isEditing}}">({{selectedCount}}/{{cartData.length}})</text>
+    </view>
+
+    <view class="footer-total">
+      <view class="total-text">合计:</view>
+      <view class="total-price">
+        <text class="iconfont icon-point price-icon-point" /> {{totalPrice}}
+      </view>
+      <view class="total-quantity" wx:if="{{!isEditing}}">({{totalQuantity}}件)</view>
+    </view>
+
+    <view class="btn {{(isEditing ? selectedCount === 0 : totalQuantity === 0) ? 'disabled' : ''}}" bindtap="{{isEditing ? 'deleteSelected' : 'goToCheckout'}}">
+      {{isEditing ? '删除选中' : '结算'}}
+    </view>
+  </view>
+</view>
