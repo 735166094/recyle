@@ -214,19 +214,17 @@ class VinQueryResultAdmin(admin.ModelAdmin):
     raw_response_data_preview.short_description = "原始响应数据预览"
 
     def model_list_preview(self, obj):
-        """车型列表预览"""
-        if obj.model_list and len(obj.model_list) > 0:
-            preview = []
-            for i, model in enumerate(obj.model_list[:3]):
-                model_detail = model.get('Model_detail', '未知车型')
-                factory = model.get('Factory', '')
-                preview.append(f"{i + 1}. {model_detail} ({factory})")
-
-            if len(obj.model_list) > 3:
-                preview.append(f"... 还有 {len(obj.model_list) - 3} 个车型")
-
-            return format_html('<br>'.join(preview))
-        return "无车型数据"
+    if obj.model_list and len(obj.model_list) > 0:
+        preview = []
+        for i, model in enumerate(obj.model_list[:3]):
+            model_detail = model.get('Model_detail', '未知车型')
+            factory = model.get('Factory', '')
+            preview.append(f"{i + 1}. {model_detail} ({factory})")
+        if len(obj.model_list) > 3:
+            preview.append(f"... 还有 {len(obj.model_list) - 3} 个车型")
+        content = '<br>'.join(preview)
+        return format_html(content) if content else "无车型数据"
+    return "无车型数据"
 
     model_list_preview.short_description = "车型列表预览"
 
