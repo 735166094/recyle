@@ -297,19 +297,25 @@ class VinQueryResultAdmin(admin.ModelAdmin):
 
     original_attributes_preview.short_description = "原厂属性预览"
 
-    def statistics_display(self, obj):
-        """统计信息显示"""
+   def statistics_display(self, obj):
+    try:
         stats = obj.get_detailed_info()
         display_lines = [
-            f"车型数量: {stats['model_count']}",
-            f"原厂属性数量: {stats['original_attributes_count']}",
-            f"公告数量: {stats['gonggao_count']}",
-            f"进口车型数量: {stats['import_count']}",
-            f"原厂EPC数量: {stats['original_epc_count']}",
-            f"是否有图片: {'是' if stats['has_images'] else '否'}",
+            f"车型数量: {stats.get('model_count', 0)}",
+            f"原厂属性数量: {stats.get('original_attributes_count', 0)}",
+            f"公告数量: {stats.get('gonggao_count', 0)}",
+            f"进口车型数量: {stats.get('import_count', 0)}",
+            f"原厂EPC数量: {stats.get('original_epc_count', 0)}",
+            f"是否有图片: {'是' if stats.get('has_images', False) else '否'}",
             f"是否有车辆信息: {'是' if obj.has_vehicle_info else '否'}"
         ]
+        # 防御性检查：如果 display_lines 为空（理论上不会发生），返回默认提示
+        if not display_lines:
+            return "暂无统计数据"
         return format_html('<br>'.join(display_lines))
+    except Exception as e:
+        logger.error(f"统计信息展示出错: {str(e)}")
+        return "统计信息生成失败，请检查数据完整性"
 
     statistics_display.short_description = "统计信息"
 
